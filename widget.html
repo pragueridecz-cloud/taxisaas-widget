@@ -1778,7 +1778,7 @@
     }
   };
 
-  function nllShowTBox(){
+  window.nllShowTBox=function(){
     var box=document.getElementById('nll-tbox');
     if(!nllPuType||!NLL_TCFG[nllPuType]){box.classList.remove('show');return;}
     var c=NLL_TCFG[nllPuType];
