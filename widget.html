@@ -2532,7 +2532,7 @@ function gpShowDefs(inp,id,q){
 function gpLoad(){
   if(gpReady||gpLoading)return;gpLoading=true;
   var s=document.createElement('script');
-  s.src='https://maps.googleapis.com/maps/api/js?key='+GP_KEY+'&libraries=places,directions&language=cs';
+  s.src='https://maps.googleapis.com/maps/api/js?key='+GP_KEY+'&libraries=places&language=cs';
   s.async=true;s.onload=function(){gpReady=true;gpLoading=false;try{if(window.google&&window.google.maps.places)gpSession=new window.google.maps.places.AutocompleteSessionToken();}catch(e){gpSession=null;}};
   document.head.appendChild(s);
 }
