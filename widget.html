@@ -694,16 +694,41 @@
           </button>
         </div>
 
-        <div class="nll-rbox">
+        <div class="nll-rbox" style="position:relative">
           <div class="nll-rrow">
             <div class="nll-rdot"></div>
             <input class="nll-rinp" id="nll-pu" placeholder="Místo vyzvednutí..." autocomplete="off" oninput="gpInput(this,'gp-pu')" onfocus="gpFocus(this,'gp-pu')" onblur="setTimeout(function(){gpHide('gp-pu')},200)">
             <div class="nll-gp-drop" id="gp-pu"></div>
           </div>
+          <!-- Zastávka 1 -->
+          <div class="nll-rrow" id="nll-stop1-row" style="display:none">
+            <div style="width:11px;height:11px;border-radius:3px;background:var(--gold);flex-shrink:0"></div>
+            <input class="nll-rinp" id="nll-stop1" placeholder="Zastávka 1..." autocomplete="off" oninput="gpInputStop(this,'gp-stop1')" onfocus="gpFocusStop(this,'gp-stop1')" onblur="setTimeout(function(){gpHide('gp-stop1')},200)" oninput="gpInput(this,'gp-stop1')" onfocus="gpFocus(this,'gp-stop1')" onblur="setTimeout(function(){gpHide('gp-stop1')},200)">
+            <button onclick="nllRemoveStop(1)" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px;flex-shrink:0">×</button>
+            <div class="nll-gp-drop" id="gp-stop1"></div>
+          </div>
+          <!-- Zastávka 2 -->
+          <div class="nll-rrow" id="nll-stop2-row" style="display:none">
+            <div style="width:11px;height:11px;border-radius:3px;background:var(--gold);flex-shrink:0"></div>
+            <input class="nll-rinp" id="nll-stop2" placeholder="Zastávka 2..." autocomplete="off" oninput="gpInputStop(this,'gp-stop2')" onfocus="gpFocusStop(this,'gp-stop2')" onblur="setTimeout(function(){gpHide('gp-stop2')},200)" oninput="gpInput(this,'gp-stop2')" onfocus="gpFocus(this,'gp-stop2')" onblur="setTimeout(function(){gpHide('gp-stop2')},200)">
+            <button onclick="nllRemoveStop(2)" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px;flex-shrink:0">×</button>
+            <div class="nll-gp-drop" id="gp-stop2"></div>
+          </div>
           <div class="nll-rrow">
             <div class="nll-rdot dest"></div>
             <input class="nll-rinp" id="nll-do" placeholder="Cíl cesty..." autocomplete="off" oninput="gpInput(this,'gp-do')" onfocus="gpFocus(this,'gp-do')" onblur="setTimeout(function(){gpHide('gp-do')},200)">
             <div class="nll-gp-drop" id="gp-do"></div>
+          </div>
+          <!-- Akce: prohození + přidat zastávku -->
+          <div style="display:flex;gap:8px;padding:8px 12px;border-top:1px solid var(--borderl)">
+            <button onclick="nllSwapAddresses()" style="font-size:11px;color:var(--navy-mid);background:rgba(7,90,170,.06);border:1px solid rgba(7,90,170,.15);border-radius:5px;padding:5px 10px;cursor:pointer;font-family:Montserrat,sans-serif;font-weight:600;display:flex;align-items:center;gap:5px">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7 16 3 12 7 8"/><polyline points="17 8 21 12 17 16"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
+              Prohodit
+            </button>
+            <button onclick="nllAddStop()" id="nll-add-stop-btn" style="font-size:11px;color:var(--navy-mid);background:rgba(7,90,170,.06);border:1px solid rgba(7,90,170,.15);border-radius:5px;padding:5px 10px;cursor:pointer;font-family:Montserrat,sans-serif;font-weight:600;display:flex;align-items:center;gap:5px">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              Přidat zastávku
+            </button>
           </div>
         </div>
 
@@ -754,6 +779,30 @@
             <div class="nll-ri-stat"><div class="nll-ri-stat-lbl">Čas jízdy</div><div class="nll-ri-stat-val" id="nll-ri-time">—</div></div>
             <div class="nll-ri-stat"><div class="nll-ri-stat-lbl">Typ trasy</div><div class="nll-ri-stat-val" id="nll-ri-type">—</div></div>
           </div>
+        </div>
+
+        <!-- Čekání v destinaci -->
+        <div style="margin-top:16px;padding-top:16px;border-top:2px dashed var(--borderl)">
+          <div style="font-size:11px;color:var(--navy-mid);font-weight:600;display:flex;align-items:center;gap:7px;margin-bottom:10px">
+            <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Čekání v destinaci
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <select id="nll-wait-time" onchange="nllUpdPrice()" class="nll-sel" style="flex:1">
+              <option value="0">Bez čekání</option>
+              <option value="0.5">30 minut</option>
+              <option value="1">1 hodina</option>
+              <option value="1.5">1,5 hodiny</option>
+              <option value="2">2 hodiny</option>
+              <option value="3">3 hodiny</option>
+              <option value="4">4 hodiny</option>
+              <option value="5">5 hodin</option>
+              <option value="6">6 hodin</option>
+              <option value="8">8 hodin</option>
+            </select>
+            <div id="nll-wait-price" style="font-size:12px;color:var(--navy-mid);font-weight:700;white-space:nowrap;min-width:70px;text-align:right"></div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:5px">Řidič počká na místě. Účtuje se hodinová sazba zvoleného vozidla.</div>
         </div>
 
         <!-- Zpáteční -->
@@ -1635,11 +1684,17 @@
     }
 
     var directionsService=new google.maps.DirectionsService();
+    var waypoints=[];
+    ['nll-stop1','nll-stop2'].forEach(function(sid){
+      var el=document.getElementById(sid);
+      if(el&&el.value.trim())waypoints.push({location:el.value.trim(),stopover:true});
+    });
     directionsService.route({
       origin:origin,
       destination:destination,
-      travelMode:google.maps.TravelMode.DRIVING,
-      drivingOptions:{departureTime:new Date(),trafficModel:google.maps.TrafficModel.BEST_GUESS}
+      waypoints:waypoints,
+      optimizeWaypoints:false,
+      travelMode:google.maps.TravelMode.DRIVING
     },function(result,status){
       if(loading)loading.style.display='none';
       if(status==='OK'){
@@ -1877,7 +1932,9 @@
   }
 
   function nllUpdPriceFallback(){
-    var total=nllTrip==='rt'?nllVeh.p*2:nllVeh.p;
+    nllUpdateWaitPrice();
+    var waitPrice=nllGetWaitPrice();
+    var total=(nllTrip==='rt'?nllVeh.p*2:nllVeh.p)+waitPrice;
     var ps=nllFormatPrice(total);
     ['nll-price','nll-price2'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=ps;});
     ['nll-stripe-amount','nll-stripe-btn-amt'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=ps;});
@@ -2549,6 +2606,40 @@ function gpLoad(){
   document.head.appendChild(s);
 }
 window.gpFocus=function(inp,id){gpLoad();gpPos(inp,id);gpShowDefs(inp,id,inp.value.trim().length>=2?inp.value.trim():'');};
+window.gpFocusStop=function(inp,id){gpLoad();gpPos(inp,id);};
+window.gpInputStop=function(inp,id){
+  gpPos(inp,id);
+  var q=inp.value.trim();
+  if(q.length<2) return;
+  clearTimeout(gpTimer[id]);
+  gpTimer[id]=setTimeout(function(){gpFetchStop(inp,id,q);},280);
+};
+async function gpFetchStop(inp,id,q){
+  if(!gpReady||!window.google) return;
+  var inpId=id.replace('gp-','nll-');
+  var drop=document.getElementById(id); if(!drop) return;
+  drop.innerHTML='';
+  try {
+    var req={input:q,locationBias:new google.maps.Circle({center:{lat:50.0755,lng:14.4378},radius:50000}),includedRegionCodes:['cz','sk','at','de','pl','hu','ch','fr']};
+    var result=await window.google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions(req);
+    var suggs=result&&result.suggestions?result.suggestions:[];
+    suggs.forEach(function(s){
+      var p=s.placePrediction; if(!p) return;
+      var full=p.text?p.text.toString():'';
+      var sec=p.secondaryText?p.secondaryText.toString():'';
+      var div=document.createElement('div');
+      div.className='nll-gp-item';
+      div.innerHTML='<div><div class="nll-gp-main">'+full+'</div>'+(sec?'<div class="nll-gp-sub">'+sec+'</div>':'')+'</div>';
+      div.onmousedown=function(){
+        var el=document.getElementById(inpId); if(el) el.value=full;
+        drop.classList.remove('open');
+        setTimeout(nllCalcRoute, 200);
+      };
+      drop.appendChild(div);
+    });
+    if(drop.children.length){gpPos(inp,id);drop.classList.add('open');}
+  } catch(e) { console.warn('Stop autocomplete error:', e); }
+}
 window.gpHide=function(id){var d=document.getElementById(id);if(d)d.classList.remove('open');};
 window.gpInput=function(inp,id){
   gpPos(inp,id);
@@ -2716,6 +2807,67 @@ function vUpdPrice(){
     if(p2)p2.textContent=nllFormatPrice(base);
   }
 }
+
+
+  /* ===== PROHOZENÍ ADRES ===== */
+  window.nllSwapAddresses = function() {
+    var pu = document.getElementById('nll-pu');
+    var doEl = document.getElementById('nll-do');
+    if (!pu || !doEl) return;
+    var tmp = pu.value;
+    pu.value = doEl.value;
+    doEl.value = tmp;
+    // Prohoď i nllPuType
+    window.nllPuType = null;
+    var ri = document.getElementById('nll-route-info');
+    if (ri) ri.classList.remove('show');
+    nllCurrentKm = null;
+    if (pu.value && doEl.value) setTimeout(nllCalcRoute, 200);
+  };
+
+  /* ===== ZASTÁVKY ===== */
+  var nllStopCount = 0;
+  window.nllAddStop = function() {
+    if (nllStopCount >= 2) return;
+    nllStopCount++;
+    var row = document.getElementById('nll-stop' + nllStopCount + '-row');
+    if (row) row.style.display = 'flex';
+    if (nllStopCount >= 2) {
+      var btn = document.getElementById('nll-add-stop-btn');
+      if (btn) btn.style.display = 'none';
+    }
+    if (nllCurrentKm) nllCalcRoute();
+  };
+
+  window.nllRemoveStop = function(n) {
+    var row = document.getElementById('nll-stop' + n + '-row');
+    var inp = document.getElementById('nll-stop' + n);
+    if (row) row.style.display = 'none';
+    if (inp) inp.value = '';
+    nllStopCount = Math.max(0, nllStopCount - 1);
+    var btn = document.getElementById('nll-add-stop-btn');
+    if (btn) btn.style.display = 'flex';
+    if (nllCurrentKm) nllCalcRoute();
+  };
+
+  /* ===== ČEKÁNÍ V DESTINACI ===== */
+  function nllGetWaitPrice() {
+    var sel = document.getElementById('nll-wait-time');
+    if (!sel) return 0;
+    var hours = parseFloat(sel.value) || 0;
+    if (hours <= 0) return 0;
+    var hourlyRate = nllVeh.hourly_rate || nllVeh.p || 0;
+    return Math.round(hours * hourlyRate);
+  }
+
+  function nllUpdateWaitPrice() {
+    var price = nllGetWaitPrice();
+    var el = document.getElementById('nll-wait-price');
+    if (!el) return;
+    var sel = document.getElementById('nll-wait-time');
+    if (!sel || parseFloat(sel.value) <= 0) { el.textContent = ''; return; }
+    el.textContent = '+' + nllFormatPrice(price);
+  }
 
 })();
 </script>
