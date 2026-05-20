@@ -2597,7 +2597,7 @@ function gpFetch(inp,id,q){
   if(!gpReady||!window.google){gpShowDefs(inp,id,q);return;}
   var svc=new window.google.maps.places.AutocompleteService();
   var inpId=id==='gp-pu'?'nll-pu':'nll-do';
-  var req={input:q,componentRestrictions:{country:['cz','sk','at','de','pl']},types:['geocode','establishment']};if(gpSession)req.sessionToken=gpSession;svc.getPlacePredictions(req,function(preds,st){
+  var req={input:q,locationBias:{circle:{center:{lat:50.0755,lng:14.4378},radius:200000}},componentRestrictions:{country:['cz','sk','at','de','pl','hu','ch','fr']},types:['geocode','establishment']};if(gpSession)req.sessionToken=gpSession;svc.getPlacePredictions(req,function(preds,st){
     var drop=document.getElementById(id);if(!drop)return;
     var defItems=GP_DEF[id==='gp-pu'?'pu':'do'].filter(function(d){return d.n.toLowerCase().indexOf(q.toLowerCase())>=0;});
     drop.innerHTML='';
