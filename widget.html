@@ -15,6 +15,37 @@
 .nll-w{width:100%;background:#fff;border-radius:8px;box-shadow:0 32px 80px rgba(0,32,91,.18);overflow:visible;font-family:'Montserrat',sans-serif}
 .nll-w *{box-sizing:border-box;font-family:'Montserrat',sans-serif}
 
+
+/* ===== CUSTOM DATETIME PICKER ===== */
+.nll-dtp-wrap{position:relative;width:100%}
+.nll-dtp-inp{background:var(--bg,#fff);border:1.5px solid var(--borderl);border-radius:5px;padding:11px 13px;color:var(--navy);font-size:13px;font-weight:600;outline:none;width:100%;cursor:pointer;font-family:'Montserrat',sans-serif;text-align:left;display:flex;align-items:center;gap:8px;-webkit-appearance:none}
+.nll-dtp-inp svg{flex-shrink:0;opacity:.5}
+.nll-dtp-panel{position:absolute;top:calc(100% + 6px);left:0;background:#fff;border:1.5px solid var(--borderl);border-radius:10px;box-shadow:0 8px 32px rgba(0,32,91,.14);z-index:9999;display:none;overflow:hidden;min-width:320px}
+.nll-dtp-panel.open{display:flex}
+.nll-dtp-cal{padding:14px;border-right:1px solid var(--borderl);min-width:220px}
+.nll-dtp-cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.nll-dtp-cal-title{font-size:13px;font-weight:700;color:var(--navy)}
+.nll-dtp-cal-nav{background:none;border:none;cursor:pointer;color:var(--navy-mid);padding:4px 8px;border-radius:5px;font-size:16px;line-height:1}
+.nll-dtp-cal-nav:hover{background:var(--off,#f4f6fa)}
+.nll-dtp-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.nll-dtp-cal-day{font-size:11px;font-weight:700;color:var(--muted);text-align:center;padding:4px 0;letter-spacing:.5px}
+.nll-dtp-cal-cell{font-size:12px;font-weight:600;color:var(--navy);text-align:center;padding:6px 2px;border-radius:5px;cursor:pointer;transition:background .15s}
+.nll-dtp-cal-cell:hover{background:rgba(7,90,170,.08)}
+.nll-dtp-cal-cell.today{border:1.5px solid var(--navy-mid);color:var(--navy-mid)}
+.nll-dtp-cal-cell.selected{background:var(--navy);color:#fff}
+.nll-dtp-cal-cell.other{color:var(--muted);opacity:.4}
+.nll-dtp-cal-cell.disabled{opacity:.25;cursor:default;pointer-events:none}
+.nll-dtp-time{padding:14px;display:flex;flex-direction:column;gap:8px;min-width:100px}
+.nll-dtp-time-lbl{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase}
+.nll-dtp-time-col{display:flex;flex-direction:column;gap:4px;max-height:220px;overflow-y:auto;scrollbar-width:thin}
+.nll-dtp-time-col::-webkit-scrollbar{width:4px}
+.nll-dtp-time-col::-webkit-scrollbar-thumb{background:var(--borderl);border-radius:2px}
+.nll-dtp-time-item{font-size:13px;font-weight:600;color:var(--navy);padding:5px 10px;border-radius:5px;cursor:pointer;text-align:center;transition:background .15s;white-space:nowrap}
+.nll-dtp-time-item:hover{background:rgba(7,90,170,.08)}
+.nll-dtp-time-item.selected{background:var(--navy);color:#fff}
+.nll-dtp-confirm{display:block;width:calc(100% - 28px);margin:0 14px 14px;padding:9px;background:var(--navy);color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif}
+.nll-dtp-confirm:hover{background:var(--navy-mid)}
+
 /* TOP */
 .nll-top{background:var(--navy);border-radius:8px 8px 0 0;padding:16px 32px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
 .nll-top-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4)}
@@ -730,7 +761,36 @@
         <div class="nll-dtg cols4" style="grid-template-columns:2fr 1fr 1fr">
           <div class="nll-fg">
             <div class="nll-lbl">Datum a čas jízdy</div>
-            <input class="nll-inp" type="datetime-local" id="nll-datetime" onchange="nllSyncDatetime()" style="cursor:pointer">
+            <div class="nll-dtp-wrap" id="nll-dtp-1-wrap">
+              <button type="button" class="nll-dtp-inp" onclick="nllDtpToggle('1')" id="nll-dtp-1-btn">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span id="nll-dtp-1-lbl">Vyberte datum a čas</span>
+              </button>
+              <div class="nll-dtp-panel" id="nll-dtp-1-panel">
+                <div class="nll-dtp-cal">
+                  <div class="nll-dtp-cal-head">
+                    <button class="nll-dtp-cal-nav" onclick="nllDtpPrevMonth('1')">&#8249;</button>
+                    <div class="nll-dtp-cal-title" id="nll-dtp-1-monthlbl"></div>
+                    <button class="nll-dtp-cal-nav" onclick="nllDtpNextMonth('1')">&#8250;</button>
+                  </div>
+                  <div class="nll-dtp-cal-grid" id="nll-dtp-1-grid"></div>
+                </div>
+                <div class="nll-dtp-time">
+                  <div>
+                    <div class="nll-dtp-time-lbl">Hodina</div>
+                    <div class="nll-dtp-time-col" id="nll-dtp-1-hours"></div>
+                  </div>
+                  <div>
+                    <div class="nll-dtp-time-lbl">Minuta</div>
+                    <div class="nll-dtp-time-col" id="nll-dtp-1-mins"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Hidden compat fields -->
+            <input type="hidden" id="nll-date">
+            <input type="hidden" id="nll-hr">
+            <input type="hidden" id="nll-mn">
           </div>
           <div class="nll-fg">
             <div class="nll-lbl">Cestující</div>
@@ -772,16 +832,40 @@
             <svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
             Datum a čas zpáteční jízdy
           </div>
-          <div class="nll-dtg" style="grid-template-columns:1.2fr 0.7fr 0.65fr">
-            <div class="nll-fg"><div class="nll-lbl">Datum návratu</div><input class="nll-inp" type="date" id="nll-date2"></div>
+          <div class="nll-dtg" style="grid-template-columns:1fr">
             <div class="nll-fg">
-              <div class="nll-lbl">Hodina návratu</div>
-              <select class="nll-sel" id="nll-hr2"></select>
+            <div class="nll-lbl">Datum a čas návratu</div>
+            <div class="nll-dtp-wrap" id="nll-dtp-2-wrap">
+              <button type="button" class="nll-dtp-inp" onclick="nllDtpToggle('2')" id="nll-dtp-2-btn">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span id="nll-dtp-2-lbl">Vyberte datum a čas</span>
+              </button>
+              <div class="nll-dtp-panel" id="nll-dtp-2-panel">
+                <div class="nll-dtp-cal">
+                  <div class="nll-dtp-cal-head">
+                    <button class="nll-dtp-cal-nav" onclick="nllDtpPrevMonth('2')">&#8249;</button>
+                    <div class="nll-dtp-cal-title" id="nll-dtp-2-monthlbl"></div>
+                    <button class="nll-dtp-cal-nav" onclick="nllDtpNextMonth('2')">&#8250;</button>
+                  </div>
+                  <div class="nll-dtp-cal-grid" id="nll-dtp-2-grid"></div>
+                </div>
+                <div class="nll-dtp-time">
+                  <div>
+                    <div class="nll-dtp-time-lbl">Hodina</div>
+                    <div class="nll-dtp-time-col" id="nll-dtp-2-hours"></div>
+                  </div>
+                  <div>
+                    <div class="nll-dtp-time-lbl">Minuta</div>
+                    <div class="nll-dtp-time-col" id="nll-dtp-2-mins"></div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="nll-fg">
-              <div class="nll-lbl">Minuta návratu</div>
-              <select class="nll-sel" id="nll-mn2"></select>
-            </div>
+            <!-- Hidden compat fields -->
+            <input type="hidden" id="nll-date2">
+            <input type="hidden" id="nll-hr2">
+            <input type="hidden" id="nll-mn2">
+          </div>
           </div>
         </div>
 
@@ -2890,6 +2974,148 @@ function vUpdPrice(){
   }
 
 })();
+
+/* ===== CUSTOM DATETIME PICKER JS ===== */
+(function(){
+  var MONTHS = ['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'];
+  var DAYS = ['Po','Út','St','Čt','Pá','So','Ne'];
+  var pickers = {};
+
+  function pad(n){ return String(n).padStart(2,'0'); }
+
+  function initPicker(pid) {
+    var now = new Date();
+    now.setMinutes(0,0,0);
+    if(now.getHours() < 6) now.setHours(8);
+    pickers[pid] = {
+      viewYear: now.getFullYear(),
+      viewMonth: now.getMonth(),
+      selDate: null,
+      selHour: now.getHours()+1 > 23 ? 8 : now.getHours()+1,
+      selMin: 0
+    };
+    renderHours(pid);
+    renderMins(pid);
+    renderCal(pid);
+  }
+
+  function renderCal(pid) {
+    var p = pickers[pid];
+    var grid = document.getElementById('nll-dtp-'+pid+'-grid');
+    var lbl = document.getElementById('nll-dtp-'+pid+'-monthlbl');
+    if(!grid||!lbl) return;
+    lbl.textContent = MONTHS[p.viewMonth] + ' ' + p.viewYear;
+    grid.innerHTML = '';
+    DAYS.forEach(function(d){ var el=document.createElement('div'); el.className='nll-dtp-cal-day'; el.textContent=d; grid.appendChild(el); });
+    var first = new Date(p.viewYear, p.viewMonth, 1);
+    var dow = (first.getDay()+6)%7;
+    var today = new Date(); today.setHours(0,0,0,0);
+    // Prev month filler
+    for(var i=0;i<dow;i++){
+      var prev = new Date(p.viewYear, p.viewMonth, -dow+i+1);
+      var el=document.createElement('div'); el.className='nll-dtp-cal-cell other'; el.textContent=prev.getDate(); grid.appendChild(el);
+    }
+    var daysInMonth = new Date(p.viewYear, p.viewMonth+1, 0).getDate();
+    for(var d=1;d<=daysInMonth;d++){
+      var date = new Date(p.viewYear, p.viewMonth, d);
+      var el=document.createElement('div'); el.className='nll-dtp-cal-cell';
+      el.textContent=d;
+      if(date<today) { el.classList.add('disabled'); }
+      if(date.getTime()===today.getTime()) el.classList.add('today');
+      if(p.selDate && date.toDateString()===p.selDate.toDateString()) el.classList.add('selected');
+      (function(dt){ el.onclick=function(){ p.selDate=dt; renderCal(pid); updateLabel(pid); }; })(date);
+      grid.appendChild(el);
+    }
+  }
+
+  function renderHours(pid) {
+    var p = pickers[pid];
+    var col = document.getElementById('nll-dtp-'+pid+'-hours');
+    if(!col) return;
+    col.innerHTML = '';
+    for(var h=0;h<24;h++){
+      var el=document.createElement('div'); el.className='nll-dtp-time-item';
+      el.textContent=pad(h)+':00';
+      if(h===p.selHour) el.classList.add('selected');
+      (function(hh){ el.onclick=function(){ p.selHour=hh; renderHours(pid); updateLabel(pid); }; })(h);
+      col.appendChild(el);
+    }
+    // Scroll to selected
+    setTimeout(function(){
+      var sel=col.querySelector('.selected');
+      if(sel) sel.scrollIntoView({block:'center'});
+    },50);
+  }
+
+  function renderMins(pid) {
+    var p = pickers[pid];
+    var col = document.getElementById('nll-dtp-'+pid+'-mins');
+    if(!col) return;
+    col.innerHTML = '';
+    [0,15,30,45].forEach(function(m){
+      var el=document.createElement('div'); el.className='nll-dtp-time-item';
+      el.textContent=':'+pad(m);
+      if(m===p.selMin) el.classList.add('selected');
+      (function(mm){ el.onclick=function(){ p.selMin=mm; renderMins(pid); updateLabel(pid); }; })(m);
+      col.appendChild(el);
+    });
+  }
+
+  function updateLabel(pid) {
+    var p = pickers[pid];
+    var lbl = document.getElementById('nll-dtp-'+pid+'-lbl');
+    if(!lbl) return;
+    if(!p.selDate) { lbl.textContent='Vyberte datum a čas'; return; }
+    var d = p.selDate;
+    var str = pad(d.getDate())+'.'+pad(d.getMonth()+1)+'.'+d.getFullYear()+' '+pad(p.selHour)+':'+pad(p.selMin);
+    lbl.textContent = str;
+    // Sync hidden fields
+    var dateField = document.getElementById(pid==='1'?'nll-date':'nll-date2');
+    var hrField = document.getElementById(pid==='1'?'nll-hr':'nll-hr2');
+    var mnField = document.getElementById(pid==='1'?'nll-mn':'nll-mn2');
+    if(dateField) dateField.value = d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+    if(hrField) hrField.value = p.selHour;
+    if(mnField) mnField.value = p.selMin;
+  }
+
+  window.nllDtpToggle = function(pid) {
+    if(!pickers[pid]) initPicker(pid);
+    var panel = document.getElementById('nll-dtp-'+pid+'-panel');
+    if(!panel) return;
+    var isOpen = panel.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.nll-dtp-panel.open').forEach(function(el){ el.classList.remove('open'); });
+    if(!isOpen) panel.classList.add('open');
+  };
+
+  window.nllDtpPrevMonth = function(pid) {
+    var p = pickers[pid]; if(!p) return;
+    p.viewMonth--; if(p.viewMonth<0){p.viewMonth=11;p.viewYear--;}
+    renderCal(pid);
+  };
+
+  window.nllDtpNextMonth = function(pid) {
+    var p = pickers[pid]; if(!p) return;
+    p.viewMonth++; if(p.viewMonth>11){p.viewMonth=0;p.viewYear++;}
+    renderCal(pid);
+  };
+
+  // Close on outside click
+  document.addEventListener('click', function(e){
+    document.querySelectorAll('.nll-dtp-panel.open').forEach(function(panel){
+      var wrap = panel.closest('.nll-dtp-wrap');
+      if(wrap && !wrap.contains(e.target)) panel.classList.remove('open');
+    });
+  });
+
+  // Init on load
+  setTimeout(function(){
+    ['1','2'].forEach(function(pid){
+      if(document.getElementById('nll-dtp-'+pid+'-wrap')) initPicker(pid);
+    });
+  }, 100);
+})();
+
 </script>
 
 <!-- TaxiSaaS Pricing Engine -->
