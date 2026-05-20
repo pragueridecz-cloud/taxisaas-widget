@@ -2387,10 +2387,14 @@
       /* Oblíbené lokace */
       if (cfg.favorite_locations && cfg.favorite_locations.length) {
         GP_DEF.pu = cfg.favorite_locations.map(function(l){
-          return {ic: l.icon==='plane'?'p': l.icon==='train'?'t':'b', n: l.name, s: l.sub, t: l.type||''};
+          var ic = l.icon==='plane'?'p': l.icon==='train'?'t':'b';
+          var t = l.type || (l.icon==='plane'?'airport': l.icon==='train'?'train': l.icon==='bus'?'bus':'');
+          return {ic: ic, n: l.name, s: l.sub, t: t};
         });
         GP_DEF.do = cfg.favorite_locations.map(function(l){
-          return {ic: l.icon==='plane'?'p': l.icon==='train'?'t':'b', n: l.name, s: l.sub, t: ''};
+          var ic = l.icon==='plane'?'p': l.icon==='train'?'t':'b';
+          var t = l.type || (l.icon==='plane'?'airport': l.icon==='train'?'train': l.icon==='bus'?'bus':'');
+          return {ic: ic, n: l.name, s: l.sub, t: t};
         });
       }
 
@@ -2484,9 +2488,9 @@ var GP_DEF={
     {ic:'p',n:'Letiště Václava Havla Praha',s:'Praha 6 — Ružyně',t:'airport'},
     {ic:'t',n:'Praha Hlavní nádraží',s:'Wilsonova, Praha 2',t:'train'},
     {ic:'t',n:'Praha Masarykovo nádraží',s:'Hybernská, Praha 1',t:'train'},
-    {ic:'b',n:'Praha Florenc',s:'Autobusové nádraží',t:''},
-    {ic:'b',n:'Praha Zlíčín',s:'Autobusové nádraží',t:''},
-    {ic:'b',n:'Praha Holešovice',s:'Autobusové nádraží',t:''}
+    {ic:'b',n:'Praha Florenc',s:'Autobusové nádraží',t:'bus'},
+    {ic:'b',n:'Praha Zlíčín',s:'Autobusové nádraží',t:'bus'},
+    {ic:'b',n:'Praha Holešovice',s:'Autobusové nádraží',t:'bus'}
   ],
   do:[
     {ic:'p',n:'Letiště Václava Havla Praha',s:'Praha 6 — Ružyně',t:''},
