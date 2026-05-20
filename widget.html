@@ -16,6 +16,26 @@
 .nll-w *{box-sizing:border-box;font-family:'Montserrat',sans-serif}
 
 
+
+/* ===== TIME PICKER ===== */
+.nll-tp-wrap{position:relative;width:100%}
+.nll-tp-btn{background:#fff;border:1.5px solid var(--borderl);border-radius:5px;padding:10px 13px;color:var(--navy);font-size:13px;font-weight:600;width:100%;cursor:pointer;font-family:'Montserrat',sans-serif;text-align:left;display:flex;align-items:center;gap:8px;-webkit-appearance:none;outline:none}
+.nll-tp-btn svg{flex-shrink:0;opacity:.5}
+.nll-tp-btn span{flex:1}
+.nll-tp-panel{position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1.5px solid var(--borderl);border-radius:10px;box-shadow:0 8px 32px rgba(0,32,91,.14);z-index:9999;display:none;flex-direction:column;overflow:hidden;min-width:200px}
+.nll-tp-panel.open{display:flex}
+.nll-tp-cols{display:flex;border-bottom:1px solid var(--borderl)}
+.nll-tp-col{flex:1;max-height:220px;overflow-y:auto;scrollbar-width:thin;border-right:1px solid var(--borderl)}
+.nll-tp-col:last-child{border-right:none}
+.nll-tp-col::-webkit-scrollbar{width:4px}
+.nll-tp-col::-webkit-scrollbar-thumb{background:var(--borderl);border-radius:2px}
+.nll-tp-col-lbl{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;padding:8px 12px;position:sticky;top:0;background:#fff;border-bottom:1px solid var(--borderl);text-align:center}
+.nll-tp-item{font-size:13px;font-weight:600;color:var(--navy);padding:8px 12px;cursor:pointer;text-align:center;transition:background .1s}
+.nll-tp-item:hover{background:rgba(7,90,170,.06)}
+.nll-tp-item.sel{background:var(--navy);color:#fff}
+.nll-tp-ok{margin:10px;padding:9px;background:var(--navy);color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;width:calc(100% - 20px)}
+.nll-tp-ok:hover{background:var(--navy-mid)}
+
 /* TOP */
 .nll-top{background:var(--navy);border-radius:8px 8px 0 0;padding:16px 32px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
 .nll-top-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4)}
@@ -763,13 +783,32 @@
           </div>
           <div class="nll-dtg" style="grid-template-columns:1fr">
             <div class="nll-fg">
-              <div class="nll-lbl">Datum a čas návratu</div>
-              <div style="display:flex;gap:8px">
-                <input class="nll-inp" type="date" id="nll-date2" style="flex:1.5">
-                <select class="nll-sel" id="nll-hr2" style="flex:1"></select>
-                <select class="nll-sel" id="nll-mn2" style="flex:1"></select>
+            <div class="nll-lbl">Datum a čas návratu</div>
+            <div style="display:flex;gap:8px;align-items:stretch">
+              <input class="nll-inp" type="date" id="nll-date2" style="flex:1.5;cursor:pointer">
+              <div class="nll-tp-wrap" style="flex:1" id="nll-tp-2-wrap">
+                <button type="button" class="nll-tp-btn" onclick="nllTpToggle('2')" id="nll-tp-2-btn">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span id="nll-tp-2-lbl">Čas</span>
+                </button>
+                <div class="nll-tp-panel" id="nll-tp-2-panel">
+                  <div class="nll-tp-cols">
+                    <div class="nll-tp-col" id="nll-tp-2-hrs">
+                      <div class="nll-tp-col-lbl">Hodina</div>
+                    </div>
+                    <div class="nll-tp-col" id="nll-tp-2-mins">
+                      <div class="nll-tp-col-lbl">Minuta</div>
+                    </div>
+                  </div>
+                  <button class="nll-tp-ok" onclick="nllTpConfirm('2','nll-hr2-tp','nll-mn2-tp')">OK</button>
+                </div>
               </div>
+              <input type="hidden" id="nll-hr2-tp">
+              <input type="hidden" id="nll-mn2-tp">
             </div>
+          </div>
+          <select id="nll-hr2" style="display:none"></select>
+          <select id="nll-mn2" style="display:none"></select>
         </div>
 
         <div class="nll-brow"><div style="flex:1"></div>
