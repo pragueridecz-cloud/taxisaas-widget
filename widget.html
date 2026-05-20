@@ -694,39 +694,36 @@
           </button>
         </div>
 
-        <div class="nll-rbox" style="position:relative">
+        <div class="nll-rbox" style="position:relative;padding-left:28px">
           <div class="nll-rrow">
             <div class="nll-rdot"></div>
             <input class="nll-rinp" id="nll-pu" placeholder="Místo vyzvednutí..." autocomplete="off" oninput="gpInput(this,'gp-pu')" onfocus="gpFocus(this,'gp-pu')" onblur="setTimeout(function(){gpHide('gp-pu')},200)">
             <div class="nll-gp-drop" id="gp-pu"></div>
           </div>
           <!-- Zastávka 1 -->
-          <div class="nll-rrow" id="nll-stop1-row" style="display:none">
+          <div class="nll-rrow" id="nll-stop1-row" style="display:none;position:relative"><div style="position:absolute;left:0;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;top:0"><button onclick="nllSwap('nll-pu','nll-stop1')" style="background:none;border:none;cursor:pointer;padding:1px;color:var(--muted);line-height:1"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg></button><button onclick="nllSwap('nll-stop1','nll-pu')" style="background:none;border:none;cursor:pointer;padding:1px;color:var(--muted);line-height:1"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button></div>
             <div style="width:11px;height:11px;border-radius:3px;background:var(--gold);flex-shrink:0"></div>
             <input class="nll-rinp" id="nll-stop1" placeholder="Zastávka 1..." autocomplete="off" oninput="gpInputStop(this,'gp-stop1')" onfocus="gpFocusStop(this,'gp-stop1')" onblur="setTimeout(function(){gpHide('gp-stop1')},200)" oninput="gpInput(this,'gp-stop1')" onfocus="gpFocus(this,'gp-stop1')" onblur="setTimeout(function(){gpHide('gp-stop1')},200)">
             <span style="display:inline-flex;align-items:center;border:1px solid var(--borderl);border-radius:5px;overflow:hidden;margin:0 4px;flex-shrink:0"><select id="nll-stop1-wait-h" onchange="nllUpdPrice()" style="font-size:11px;border:1px solid var(--borderl);padding:3px 4px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif;flex-shrink:0;border:none;border-right:1px solid var(--borderl)"><option value="0">0h</option><option value="1">1h</option><option value="2">2h</option><option value="3">3h</option><option value="4">4h</option><option value="5">5h</option><option value="6">6h</option></select><span style="font-size:11px;color:var(--muted);padding:0 2px;font-weight:700">:</span><select id="nll-stop1-wait-m" onchange="nllUpdPrice()" style="font-size:11px;border:1px solid var(--borderl);padding:3px 4px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif;flex-shrink:0;border:none"><option value="0">00</option><option value="0.25">15</option><option value="0.5">30</option><option value="0.75">45</option></select></span>
             <button onclick="nllRemoveStop(1)" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px;flex-shrink:0">&#215;</button>
             <div class="nll-gp-drop" id="gp-stop1"></div>
           </div>
-          <!-- Zastávka 2 -->
-          <div class="nll-rrow" id="nll-stop2-row" style="display:none">
+          <!-- Zastavka 2 -->
+          <div class="nll-rrow" id="nll-stop2-row" style="display:none;position:relative"><div style="position:absolute;left:0;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;top:0"><button onclick="nllSwap('nll-stop1','nll-stop2')" style="background:none;border:none;cursor:pointer;padding:1px;color:var(--muted);line-height:1"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg></button><button onclick="nllSwap('nll-stop2','nll-stop1')" style="background:none;border:none;cursor:pointer;padding:1px;color:var(--muted);line-height:1"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button></div>
             <div style="width:11px;height:11px;border-radius:3px;background:var(--gold);flex-shrink:0"></div>
             <input class="nll-rinp" id="nll-stop2" placeholder="Zastávka 2..." autocomplete="off" oninput="gpInputStop(this,'gp-stop2')" onfocus="gpFocusStop(this,'gp-stop2')" onblur="setTimeout(function(){gpHide('gp-stop2')},200)" oninput="gpInput(this,'gp-stop2')" onfocus="gpFocus(this,'gp-stop2')" onblur="setTimeout(function(){gpHide('gp-stop2')},200)">
             <span style="display:inline-flex;align-items:center;border:1px solid var(--borderl);border-radius:5px;overflow:hidden;margin:0 4px;flex-shrink:0"><select id="nll-stop2-wait-h" onchange="nllUpdPrice()" style="font-size:11px;border:1px solid var(--borderl);padding:3px 4px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif;flex-shrink:0;border:none;border-right:1px solid var(--borderl)"><option value="0">0h</option><option value="1">1h</option><option value="2">2h</option><option value="3">3h</option><option value="4">4h</option><option value="5">5h</option><option value="6">6h</option></select><span style="font-size:11px;color:var(--muted);padding:0 2px;font-weight:700">:</span><select id="nll-stop2-wait-m" onchange="nllUpdPrice()" style="font-size:11px;border:1px solid var(--borderl);padding:3px 4px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif;flex-shrink:0;border:none"><option value="0">00</option><option value="0.25">15</option><option value="0.5">30</option><option value="0.75">45</option></select></span>
             <button onclick="nllRemoveStop(2)" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px;flex-shrink:0">&#215;</button>
             <div class="nll-gp-drop" id="gp-stop2"></div>
           </div>
-          <div class="nll-rrow">
+          <div class="nll-rrow" style="position:relative" id="nll-do-row"><div style="position:absolute;left:0;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;top:0"><button onclick="nllSwap('nll-pu','nll-do')" style="background:none;border:none;cursor:pointer;padding:1px;color:var(--muted);line-height:1"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg></button><button onclick="nllSwap('nll-do','nll-pu')" style="background:none;border:none;cursor:pointer;padding:1px;color:var(--muted);line-height:1"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg></button></div>
             <div class="nll-rdot dest"></div>
             <input class="nll-rinp" id="nll-do" placeholder="Cíl cesty..." autocomplete="off" oninput="gpInput(this,'gp-do')" onfocus="gpFocus(this,'gp-do')" onblur="setTimeout(function(){gpHide('gp-do')},200)">
             <div class="nll-gp-drop" id="gp-do"></div>
           </div>
           <!-- Akce: prohození + přidat zastávku -->
           <div style="display:flex;gap:8px;padding:8px 12px;border-top:1px solid var(--borderl)">
-            <button onclick="nllSwapAddresses()" style="font-size:11px;color:var(--navy-mid);background:rgba(7,90,170,.06);border:1px solid rgba(7,90,170,.15);border-radius:5px;padding:5px 10px;cursor:pointer;font-family:Montserrat,sans-serif;font-weight:600;display:flex;align-items:center;gap:5px">
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><polyline points="7 16 3 12 7 8"/><polyline points="17 8 21 12 17 16"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
-              Prohodit
-            </button>
+
             <button onclick="nllAddStop()" id="nll-add-stop-btn" style="font-size:11px;color:var(--navy-mid);background:rgba(7,90,170,.06);border:1px solid rgba(7,90,170,.15);border-radius:5px;padding:5px 10px;cursor:pointer;font-family:Montserrat,sans-serif;font-weight:600;display:flex;align-items:center;gap:5px">
               <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
               Přidat zastávku
@@ -2812,6 +2809,16 @@ function vUpdPrice(){
 
 
   /* ===== PROHOZENÍ ADRES ===== */
+
+  window.nllSwap = function(id1, id2) {
+    var el1 = document.getElementById(id1);
+    var el2 = document.getElementById(id2);
+    if (!el1 || !el2) return;
+    var tmp = el1.value; el1.value = el2.value; el2.value = tmp;
+    window.nllPuType = null;
+    if (el1.value || el2.value) setTimeout(nllCalcRoute, 200);
+  };
+
   window.nllSwapAddresses = function() {
     var pu = document.getElementById('nll-pu');
     var doEl = document.getElementById('nll-do');
