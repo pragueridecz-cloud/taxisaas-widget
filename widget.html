@@ -727,18 +727,10 @@
         </div>
 
         <!-- Datum + ČAS v jednom poli -->
-        <div class="nll-dtg cols4" style="grid-template-columns:1.6fr 1.2fr 1fr 1fr 1fr">
+        <div class="nll-dtg cols4" style="grid-template-columns:2fr 1fr 1fr">
           <div class="nll-fg">
-            <div class="nll-lbl">Datum jízdy</div>
-            <input class="nll-inp" type="date" id="nll-date">
-          </div>
-          <div class="nll-fg">
-            <div class="nll-lbl">Hodina</div>
-            <select class="nll-sel" id="nll-hr"></select>
-          </div>
-          <div class="nll-fg">
-            <div class="nll-lbl">Minuta</div>
-            <select class="nll-sel" id="nll-mn"></select>
+            <div class="nll-lbl">Datum a čas jízdy</div>
+            <input class="nll-inp" type="datetime-local" id="nll-datetime" onchange="nllSyncDatetime()" style="cursor:pointer">
           </div>
           <div class="nll-fg">
             <div class="nll-lbl">Cestující</div>
@@ -2392,6 +2384,40 @@
   })();
   /* INIT */
   var today=new Date().toISOString().split('T')[0];
+
+  window.nllSyncDatetime = function() {
+    var dt = document.getElementById('nll-datetime');
+    if (!dt || !dt.value) return;
+    var parts = dt.value.split('T');
+    var d = parts[0];
+    var t = parts[1] ? parts[1].split(':') : ['10','00'];
+    var h = parseInt(t[0]);
+    var m = parseInt(t[1]);
+    // Sync do starych poli pro kompatibilitu
+    var dateEl = document.getElementById('nll-date');
+    var hrEl = document.getElementById('nll-hr');
+    var mnEl = document.getElementById('nll-mn');
+    if (dateEl) dateEl.value = d;
+    if (hrEl) hrEl.value = h;
+    if (mnEl) mnEl.value = m;
+  };
+
+  // Nastav vychozi datetime na dnesek + 2 hodiny
+  (function() {
+    var dt = document.getElementById('nll-datetime');
+    if (dt) {
+      var now = new Date();
+      now.setHours(now.getHours() + 2, 0, 0, 0);
+      var y = now.getFullYear();
+      var mo = String(now.getMonth()+1).padStart(2,'0');
+      var d = String(now.getDate()).padStart(2,'0');
+      var h = String(now.getHours()).padStart(2,'0');
+      dt.value = y+'-'+mo+'-'+d+'T'+h+':00';
+      dt.min = y+'-'+mo+'-'+d+'T'+String(now.getHours()).padStart(2,'0')+':00';
+      nllSyncDatetime();
+    }
+  })();
+
 
   /* Načti nastavení ze Supabase */
   (async function nllLoadSettings(){
