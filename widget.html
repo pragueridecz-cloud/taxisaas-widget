@@ -2374,7 +2374,7 @@
       await window.nllLoadPricingData(NLL_SB_URL, NLL_SB_KEY);
     }
     try {
-      var res = await fetch(NLL_SB_URL+'/rest/v1/tenant_settings?select=vehicles,favorite_locations,surcharge_night,surcharge_night_enabled,surcharge_night_type,surcharge_weekend,surcharge_weekend_enabled,surcharge_weekend_type,surcharge_holiday,surcharge_holiday_enabled,surcharge_holiday_type,surcharge_bike,surcharge_bike_type,surcharge_ski,surcharge_ski_type,min_price,discounts&limit=1', {
+      var res = await fetch(NLL_SB_URL+'/rest/v1/tenant_settings?select=vehicles,favorite_locations,surcharge_night,surcharge_night_enabled,surcharge_night_type,surcharge_weekend,surcharge_weekend_enabled,surcharge_weekend_type,surcharge_holiday,surcharge_holiday_enabled,surcharge_holiday_type,surcharge_bike,surcharge_bike_type,surcharge_ski,surcharge_ski_type,min_price,discounts&id=eq.768a3345-9118-421b-a162-2508a3b462dd&limit=1', {
         headers: { 'apikey': NLL_SB_KEY, 'Authorization': 'Bearer '+NLL_SB_KEY }
       });
       var data = await res.json();
