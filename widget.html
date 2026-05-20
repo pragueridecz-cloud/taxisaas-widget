@@ -2618,8 +2618,9 @@ async function gpFetch(inp,id,q){
 
   try {
     // Nové Places API (AutocompleteSuggestion)
+    console.log('[GP] AutocompleteSuggestion available:', !!window.google.maps.places.AutocompleteSuggestion);
     if(window.google.maps.places.AutocompleteSuggestion){
-      var req={input:q,locationBias:{circle:{center:{lat:50.0755,lng:14.4378},radius:300000}},includedRegionCodes:['cz','sk','at','de','pl','hu','ch','fr']};
+      var req={input:q,locationBias:new google.maps.Circle({center:{lat:50.0755,lng:14.4378},radius:50000}),includedRegionCodes:['cz','sk','at','de','pl','hu','ch','fr']};
       var result=await window.google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions(req);
       var suggs=result&&result.suggestions?result.suggestions:[];
       if(suggs.length){
@@ -2636,6 +2637,7 @@ async function gpFetch(inp,id,q){
       throw new Error('Use legacy');
     }
   } catch(e){
+    console.error('[GP] AutocompleteSuggestion error:', e);
     // Fallback na starý AutocompleteService
     try {
       var svc=new window.google.maps.places.AutocompleteService();
