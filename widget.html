@@ -703,13 +703,13 @@
           <!-- Zastávka 1 -->
           <div class="nll-rrow" id="nll-stop1-row" style="display:none">
             <div style="width:11px;height:11px;border-radius:3px;background:var(--gold);flex-shrink:0"></div>
-            <input class="nll-rinp" id="nll-stop1" placeholder="Zastávka 1..." autocomplete="off" oninput="gpInput(this,'gp-stop1')" onfocus="gpFocus(this,'gp-stop1')" onblur="setTimeout(function(){gpHide('gp-stop1')},200)"><span style="font-size:10px;color:var(--muted);font-weight:700;margin-left:6px;flex-shrink:0">ČEKÁNÍ:</span><span style="display:inline-flex;align-items:center;border:1px solid var(--borderl);border-radius:5px;overflow:hidden;margin-left:4px;flex-shrink:0"><select id="nll-stop1-wait-h" onchange="nllUpdPrice()" style="font-size:11px;border:none;border-right:1px solid var(--borderl);padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">0h</option><option value="1">1h</option><option value="2">2h</option><option value="3">3h</option><option value="4">4h</option><option value="5">5h</option><option value="6">6h</option></select><span style="font-size:11px;color:var(--muted);padding:0 2px;font-weight:700">:</span><select id="nll-stop1-wait-m" onchange="nllUpdPrice()" style="font-size:11px;border:none;padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">00</option><option value="0.25">15</option><option value="0.5">30</option><option value="0.75">45</option></select></span>
+            <input class="nll-rinp" id="nll-stop1" placeholder="Zastávka 1..." autocomplete="off" oninput="gpInput(this,'gp-stop1')" onfocus="gpFocus(this,'gp-stop1')" onblur="setTimeout(function(){gpHide('gp-stop1')},200)"><span style="font-size:10px;color:var(--muted);font-weight:700;margin-left:6px;flex-shrink:0">ČEKÁNÍ V DESTINACI:</span><span style="display:inline-flex;align-items:center;border:1px solid var(--borderl);border-radius:5px;overflow:hidden;margin-left:4px;flex-shrink:0"><select id="nll-stop1-wait-h" onchange="nllUpdPrice()" style="font-size:11px;border:none;border-right:1px solid var(--borderl);padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">0h</option><option value="1">1h</option><option value="2">2h</option><option value="3">3h</option><option value="4">4h</option><option value="5">5h</option><option value="6">6h</option></select><span style="font-size:11px;color:var(--muted);padding:0 2px;font-weight:700">:</span><select id="nll-stop1-wait-m" onchange="nllUpdPrice()" style="font-size:11px;border:none;padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">00</option><option value="0.25">15</option><option value="0.5">30</option><option value="0.75">45</option></select></span>
             <button onclick="nllRemoveStop(1)" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px;flex-shrink:0">&#215;</button>
             <div class="nll-gp-drop" id="gp-stop1"></div>
           </div>
           <div class="nll-rrow" id="nll-stop2-row" style="display:none">
             <div style="width:11px;height:11px;border-radius:3px;background:var(--gold);flex-shrink:0"></div>
-            <input class="nll-rinp" id="nll-stop2" placeholder="Zastávka 2..." autocomplete="off" oninput="gpInput(this,'gp-stop2')" onfocus="gpFocus(this,'gp-stop2')" onblur="setTimeout(function(){gpHide('gp-stop2')},200)"><span style="font-size:10px;color:var(--muted);font-weight:700;margin-left:6px;flex-shrink:0">ČEKÁNÍ:</span><span style="display:inline-flex;align-items:center;border:1px solid var(--borderl);border-radius:5px;overflow:hidden;margin-left:4px;flex-shrink:0"><select id="nll-stop2-wait-h" onchange="nllUpdPrice()" style="font-size:11px;border:none;border-right:1px solid var(--borderl);padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">0h</option><option value="1">1h</option><option value="2">2h</option><option value="3">3h</option><option value="4">4h</option><option value="5">5h</option><option value="6">6h</option></select><span style="font-size:11px;color:var(--muted);padding:0 2px;font-weight:700">:</span><select id="nll-stop2-wait-m" onchange="nllUpdPrice()" style="font-size:11px;border:none;padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">00</option><option value="0.25">15</option><option value="0.5">30</option><option value="0.75">45</option></select></span>
+            <input class="nll-rinp" id="nll-stop2" placeholder="Zastávka 2..." autocomplete="off" oninput="gpInput(this,'gp-stop2')" onfocus="gpFocus(this,'gp-stop2')" onblur="setTimeout(function(){gpHide('gp-stop2')},200)"><span style="font-size:10px;color:var(--muted);font-weight:700;margin-left:6px;flex-shrink:0">ČEKÁNÍ V DESTINACI:</span><span style="display:inline-flex;align-items:center;border:1px solid var(--borderl);border-radius:5px;overflow:hidden;margin-left:4px;flex-shrink:0"><select id="nll-stop2-wait-h" onchange="nllUpdPrice()" style="font-size:11px;border:none;border-right:1px solid var(--borderl);padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">0h</option><option value="1">1h</option><option value="2">2h</option><option value="3">3h</option><option value="4">4h</option><option value="5">5h</option><option value="6">6h</option></select><span style="font-size:11px;color:var(--muted);padding:0 2px;font-weight:700">:</span><select id="nll-stop2-wait-m" onchange="nllUpdPrice()" style="font-size:11px;border:none;padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">00</option><option value="0.25">15</option><option value="0.5">30</option><option value="0.75">45</option></select></span>
             <button onclick="nllRemoveStop(2)" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px;flex-shrink:0">&#215;</button>
             <div class="nll-gp-drop" id="gp-stop2"></div>
           </div>
@@ -727,7 +727,7 @@
         </div>
 
         <!-- Datum + ČAS v jednom poli -->
-        <div class="nll-dtg cols4" style="grid-template-columns:1.6fr 1.2fr 1fr">
+        <div class="nll-dtg cols4" style="grid-template-columns:1.6fr 1.2fr 1fr 1fr 1fr">
           <div class="nll-fg">
             <div class="nll-lbl">Datum jízdy</div>
             <input class="nll-inp" type="date" id="nll-date">
@@ -748,10 +748,7 @@
               <option value="5">5–6 os.</option><option value="7">7+ os.</option>
             </select>
           </div>
-        </div>
-
-        <div style="margin-bottom:16px">
-          <div class="nll-fg" style="max-width:220px">
+          <div class="nll-fg">
             <div class="nll-lbl">Zavazadla</div>
             <select class="nll-sel" id="nll-lug" onchange="nllCheckV()">
               <option value="0">Bez zavazadel</option><option value="1">1 kufr</option>
@@ -775,29 +772,7 @@
           </div>
         </div>
 
-        <!-- Čekání v destinaci -->
-        <div style="margin-top:16px;padding-top:16px;border-top:2px dashed var(--borderl)">
-          <div style="font-size:11px;color:var(--navy-mid);font-weight:600;display:flex;align-items:center;gap:7px;margin-bottom:10px">
-            <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            Čekání v destinaci
-          </div>
-          <div style="display:flex;align-items:center;gap:10px">
-            <select id="nll-wait-time" onchange="nllUpdPrice()" class="nll-sel" style="flex:1">
-              <option value="0">Bez čekání</option>
-              <option value="0.5">30 minut</option>
-              <option value="1">1 hodina</option>
-              <option value="1.5">1,5 hodiny</option>
-              <option value="2">2 hodiny</option>
-              <option value="3">3 hodiny</option>
-              <option value="4">4 hodiny</option>
-              <option value="5">5 hodin</option>
-              <option value="6">6 hodin</option>
-              <option value="8">8 hodin</option>
-            </select>
-            <div id="nll-wait-price" style="font-size:12px;color:var(--navy-mid);font-weight:700;white-space:nowrap;min-width:70px;text-align:right"></div>
-          </div>
-          <div style="font-size:11px;color:var(--muted);margin-top:5px">Řidič počká na místě. Účtuje se hodinová sazba zvoleného vozidla.</div>
-        </div>
+
 
         <!-- Zpáteční -->
         <div class="nll-ret" id="nll-ret">
