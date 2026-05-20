@@ -1547,7 +1547,7 @@
   });
   window.nllOpenDd=function(f){
     document.getElementById('nll-dd-'+f).style.display='block';
-    if(f==='pu') nllPuType=null;
+
   };
   window.nllCloseDd=function(f){document.getElementById('nll-dd-'+f).style.display='none'};
   window.nllPickDd=function(f,val,type){
@@ -1555,6 +1555,7 @@
     nllCloseDd(f);
     if(f==='pu'){
       nllPuType=type||null;
+      window.nllPuType=nllPuType;
       if(nllPuType) nllUpdateTransportField();
     }
     var pu=document.getElementById('nll-pu').value;
@@ -1780,8 +1781,10 @@
 
   window.nllShowTBox=function(){
     var box=document.getElementById('nll-tbox');
-    if(!nllPuType||!NLL_TCFG[nllPuType]){box.classList.remove('show');return;}
-    var c=NLL_TCFG[nllPuType];
+    var _puType=window.nllPuType||nllPuType;
+    if(!_puType||!NLL_TCFG[_puType]){box.classList.remove('show');return;}
+    nllPuType=_puType;
+    var c=NLL_TCFG[_puType];
     /* Ikona */
     document.getElementById('nll-tico').innerHTML='<path d="'+c.ico+'"/>';
     /* Nadpis + popis v hlavičce */
@@ -1995,7 +1998,7 @@
   /* ===== KROKY ===== */
   window.nllGoStep=function(n){
     if(n===2&&!nllV1())return;
-    if(n===3){if(!nllV2())return;nllShowTBox();}
+    if(n===3){if(!nllV2())return;console.log('[STEP3] calling nllShowTBox, puType=',nllPuType);nllShowTBox();}
     if(n===4&&!nllV3())return;
     for(var i=1;i<=5;i++){
       var sn=document.getElementById('nll-sn'+i),sl=document.getElementById('nll-sl'+i),ln=document.getElementById('nll-wl'+i);
@@ -2008,14 +2011,14 @@
     document.getElementById('nll-p'+n).classList.add('show');
   };
 
-  function nllV1(){
+  window.nllV1=function(){
     if(!document.getElementById('nll-pu').value.trim()){alert(window.NLL_VAL?window.NLL_VAL.pickup:'Zadejte místo vyzvednutí');return false;}
     if(!document.getElementById('nll-do').value.trim()){alert(window.NLL_VAL?window.NLL_VAL.dropoff:'Zadejte cíl cesty');return false;}
     if(!document.getElementById('nll-date').value){alert(window.NLL_VAL?window.NLL_VAL.date:'Vyberte datum');return false;}
     return true;
   }
-  function nllV2(){return true;}
-  function nllV3(){
+  window.nllV2=function(){return true;}
+  window.nllV3=function(){
     if(!document.getElementById('nll-name').value.trim()){alert(window.NLL_VAL?window.NLL_VAL.name:'Zadejte jméno');return false;}
     if(!document.getElementById('nll-phone').value.trim()){alert(window.NLL_VAL?window.NLL_VAL.phone:'Zadejte telefon');return false;}
     var e=document.getElementById('nll-email');
