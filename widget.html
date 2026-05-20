@@ -704,7 +704,7 @@
           <div class="nll-rrow" id="nll-stop1-row" style="display:none">
             <div style="width:11px;height:11px;border-radius:3px;background:var(--gold);flex-shrink:0"></div>
             <input class="nll-rinp" id="nll-stop1" placeholder="Zastávka 1..." autocomplete="off" oninput="gpInputStop(this,'gp-stop1')" onfocus="gpFocusStop(this,'gp-stop1')" onblur="setTimeout(function(){gpHide('gp-stop1')},200)" oninput="gpInput(this,'gp-stop1')" onfocus="gpFocus(this,'gp-stop1')" onblur="setTimeout(function(){gpHide('gp-stop1')},200)">
-            <select id="nll-stop1-wait" onchange="nllUpdPrice()" style="font-size:11px;border:1px solid var(--borderl);border-radius:5px;padding:3px 5px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif;flex-shrink:0;margin:0 4px"><option value="0">Bez cekani</option><option value="0.5">30 min</option><option value="1">1 hod</option><option value="1.5">1.5 hod</option><option value="2">2 hod</option><option value="3">3 hod</option><option value="4">4 hod</option></select>
+            <select id="nll-stop1-wait-h" onchange="nllUpdPrice()" style="font-size:11px;border:1px solid var(--borderl);border-radius:5px 0 0 5px;padding:3px 4px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif;flex-shrink:0;margin-left:4px;border-right:none"><option value="0">0h</option><option value="1">1h</option><option value="2">2h</option><option value="3">3h</option><option value="4">4h</option><option value="5">5h</option><option value="6">6h</option></select><select id="nll-stop1-wait-m" onchange="nllUpdPrice()" style="font-size:11px;border:1px solid var(--borderl);border-radius:0 5px 5px 0;padding:3px 4px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif;flex-shrink:0;margin-right:4px"><option value="0">00m</option><option value="0.25">15m</option><option value="0.5">30m</option><option value="0.75">45m</option></select>
             <button onclick="nllRemoveStop(1)" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px;flex-shrink:0">&#215;</button>
             <div class="nll-gp-drop" id="gp-stop1"></div>
           </div>
@@ -712,7 +712,7 @@
           <div class="nll-rrow" id="nll-stop2-row" style="display:none">
             <div style="width:11px;height:11px;border-radius:3px;background:var(--gold);flex-shrink:0"></div>
             <input class="nll-rinp" id="nll-stop2" placeholder="Zastávka 2..." autocomplete="off" oninput="gpInputStop(this,'gp-stop2')" onfocus="gpFocusStop(this,'gp-stop2')" onblur="setTimeout(function(){gpHide('gp-stop2')},200)" oninput="gpInput(this,'gp-stop2')" onfocus="gpFocus(this,'gp-stop2')" onblur="setTimeout(function(){gpHide('gp-stop2')},200)">
-            <select id="nll-stop2-wait" onchange="nllUpdPrice()" style="font-size:11px;border:1px solid var(--borderl);border-radius:5px;padding:3px 5px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif;flex-shrink:0;margin:0 4px"><option value="0">Bez cekani</option><option value="0.5">30 min</option><option value="1">1 hod</option><option value="1.5">1.5 hod</option><option value="2">2 hod</option><option value="3">3 hod</option><option value="4">4 hod</option></select>
+            <select id="nll-stop2-wait-h" onchange="nllUpdPrice()" style="font-size:11px;border:1px solid var(--borderl);border-radius:5px 0 0 5px;padding:3px 4px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif;flex-shrink:0;margin-left:4px;border-right:none"><option value="0">0h</option><option value="1">1h</option><option value="2">2h</option><option value="3">3h</option><option value="4">4h</option><option value="5">5h</option><option value="6">6h</option></select><select id="nll-stop2-wait-m" onchange="nllUpdPrice()" style="font-size:11px;border:1px solid var(--borderl);border-radius:0 5px 5px 0;padding:3px 4px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif;flex-shrink:0;margin-right:4px"><option value="0">00m</option><option value="0.25">15m</option><option value="0.5">30m</option><option value="0.75">45m</option></select>
             <button onclick="nllRemoveStop(2)" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px;flex-shrink:0">&#215;</button>
             <div class="nll-gp-drop" id="gp-stop2"></div>
           </div>
@@ -2853,13 +2853,21 @@ function vUpdPrice(){
   };
 
   /* ===== ČEKÁNÍ V DESTINACI ===== */
+  function nllGetStopWait(n) {
+    var h = parseFloat((document.getElementById('nll-stop'+n+'-wait-h')||{}).value) || 0;
+    var m = parseFloat((document.getElementById('nll-stop'+n+'-wait-m')||{}).value) || 0;
+    return h + m;
+  }
+
   function nllGetWaitPrice() {
     var sel = document.getElementById('nll-wait-time');
-    if (!sel) return 0;
-    var hours = parseFloat(sel.value) || 0;
-    if (hours <= 0) return 0;
+    var destHours = sel ? (parseFloat(sel.value) || 0) : 0;
+    var stop1Hours = nllGetStopWait(1);
+    var stop2Hours = nllGetStopWait(2);
+    var totalHours = destHours + stop1Hours + stop2Hours;
+    if (totalHours <= 0) return 0;
     var hourlyRate = nllVeh.hourly_rate || nllVeh.p || 0;
-    return Math.round(hours * hourlyRate);
+    return Math.round(totalHours * hourlyRate);
   }
 
   function nllUpdateWaitPrice() {
