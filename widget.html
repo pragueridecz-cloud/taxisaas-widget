@@ -743,21 +743,11 @@
 
         <!-- Route info -->
         <div class="nll-route-info" id="nll-route-info">
-          <div class="nll-ri-map">
-            <div class="nll-ri-map-bg"></div>
-            <div class="nll-map-road" style="width:60%;height:3px;top:44%;left:20%;transform:rotate(-8deg)"></div>
-            <div class="nll-map-road" style="width:2px;height:28%;top:22%;left:32%"></div>
-            <div class="nll-map-road" style="width:2px;height:24%;top:30%;left:63%"></div>
-            <div class="nll-map-line" style="width:52%;top:43%;left:22%;transform:rotate(-6deg)"></div>
-            <div class="nll-map-pin" style="left:16%;top:30%">
-              <div class="nll-map-pin-dot" style="background:#00205B"></div>
-              <div class="nll-map-pin-label" id="nll-map-from">Odkud</div>
+          <div class="nll-ri-map" id="nll-gmap" style="height:160px;width:100%;background:#e8eef6;position:relative">
+            <div id="nll-map-canvas" style="width:100%;height:100%"></div>
+            <div id="nll-map-loading" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#e8eef6;font-size:12px;color:#4a5f7a;font-family:Montserrat,sans-serif;font-weight:500">
+              <span>Načítám trasu...</span>
             </div>
-            <div class="nll-map-pin" style="right:13%;top:26%">
-              <div class="nll-map-pin-dot" style="background:#C8102E"></div>
-              <div class="nll-map-pin-label" id="nll-map-to">Kam</div>
-            </div>
-            <div class="nll-map-badge" id="nll-map-badge-txt">Simulace · po propojení Google Maps API bude živá mapa</div>
           </div>
           <div class="nll-ri-stats">
             <div class="nll-ri-stat"><div class="nll-ri-stat-lbl">Vzdálenost</div><div class="nll-ri-stat-val" id="nll-ri-dist">—</div></div>
@@ -1563,7 +1553,10 @@
   window.nllPickDd=function(f,val,type){
     document.getElementById('nll-'+f).value=val;
     nllCloseDd(f);
-    if(f==='pu'){nllPuType=type||null;}
+    if(f==='pu'){
+      nllPuType=type||null;
+      if(nllPuType) nllUpdateTransportField();
+    }
     var pu=document.getElementById('nll-pu').value;
     var doV=document.getElementById('nll-do').value;
     if(pu&&doV) setTimeout(nllCalcRoute,200);
@@ -1579,6 +1572,9 @@
     'masarykovo':{dist:'8 km',time:'17 min',type:'Centrum'},
     'default':{dist:'~15 km',time:'~25 min',type:'Odhadovaná'}
   };
+  var nllDirectionsRenderer = null;
+  var nllMapInstance = null;
+
   function nllCalcRoute(){
     var pu=document.getElementById('nll-pu').value.trim();
     var doV=document.getElementById('nll-do').value.trim();
@@ -1587,24 +1583,83 @@
     if(ri)ri.classList.add('show');
     var distEl=document.getElementById('nll-ri-dist');
     var timeEl=document.getElementById('nll-ri-time');
+    var typeEl=document.getElementById('nll-ri-type');
     if(distEl)distEl.textContent='...';
     if(timeEl)timeEl.textContent='...';
-    var fl=function(s){return s.length>12?s.substring(0,11)+'…':s};
-    document.getElementById('nll-map-from').textContent=fl(pu.charAt(0).toUpperCase()+pu.slice(1));
-    document.getElementById('nll-map-to').textContent=fl(doV.charAt(0).toUpperCase()+doV.slice(1));
-    if(window.nllGetDistance&&gpReady){
-      window.nllGetDistance(pu,doV,GP_KEY,function(result){
-        if(result){
-          nllCurrentKm=result.km;
-          if(distEl)distEl.textContent=result.distanceText;
-          if(timeEl)timeEl.textContent=result.duration;
-          var typeEl=document.getElementById('nll-ri-type');
-          if(typeEl)typeEl.textContent=result.km>50?'Dálová trasa':result.km>20?'Příměstská':'Centrum';
-        }else{nllCalcRouteFallback(pu.toLowerCase(),doV.toLowerCase());}
-        nllUpdPrice();
-      });
-    }else{nllCalcRouteFallback(pu.toLowerCase(),doV.toLowerCase());nllUpdPrice();}
+    if(typeEl)typeEl.textContent='...';
+
+    if(gpReady&&window.google&&window.google.maps){
+      nllDrawRoute(pu,doV);
+    }else{
+      nllCalcRouteFallback(pu.toLowerCase(),doV.toLowerCase());
+      nllUpdPrice();
+    }
   }
+
+  function nllDrawRoute(origin,destination){
+    var canvas=document.getElementById('nll-map-canvas');
+    var loading=document.getElementById('nll-map-loading');
+    if(!canvas) return;
+    if(loading)loading.style.display='flex';
+
+    // Inicializuj mapu pokud ještě neexistuje
+    if(!nllMapInstance){
+      nllMapInstance=new google.maps.Map(canvas,{
+        zoom:10,
+        center:{lat:50.0755,lng:14.4378},
+        mapTypeControl:false,
+        streetViewControl:false,
+        fullscreenControl:false,
+        zoomControl:true,
+        styles:[
+          {featureType:'all',elementType:'geometry',stylers:[{saturation:-20}]},
+          {featureType:'road.highway',elementType:'geometry',stylers:[{color:'#c8d4e3'}]},
+          {featureType:'road.arterial',elementType:'geometry',stylers:[{color:'#d8e2ef'}]},
+          {featureType:'water',elementType:'geometry',stylers:[{color:'#b8cfe8'}]},
+          {featureType:'poi',elementType:'labels',stylers:[{visibility:'off'}]},
+        ]
+      });
+    }
+
+    if(!nllDirectionsRenderer){
+      nllDirectionsRenderer=new google.maps.DirectionsRenderer({
+        suppressMarkers:false,
+        polylineOptions:{strokeColor:'#00205B',strokeWeight:4,strokeOpacity:0.8},
+        markerOptions:{
+          origin:{icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:'#00205B',fillOpacity:1,strokeColor:'#fff',strokeWeight:2}},
+          destination:{icon:{path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:'#C8102E',fillOpacity:1,strokeColor:'#fff',strokeWeight:2}}
+        }
+      });
+      nllDirectionsRenderer.setMap(nllMapInstance);
+    }
+
+    var directionsService=new google.maps.DirectionsService();
+    directionsService.route({
+      origin:origin,
+      destination:destination,
+      travelMode:google.maps.TravelMode.DRIVING,
+      drivingOptions:{departureTime:new Date(),trafficModel:google.maps.TrafficModel.BEST_GUESS}
+    },function(result,status){
+      if(loading)loading.style.display='none';
+      if(status==='OK'){
+        nllDirectionsRenderer.setDirections(result);
+        var leg=result.routes[0].legs[0];
+        var km=leg.distance.value/1000;
+        nllCurrentKm=km;
+        var distEl=document.getElementById('nll-ri-dist');
+        var timeEl=document.getElementById('nll-ri-time');
+        var typeEl=document.getElementById('nll-ri-type');
+        if(distEl)distEl.textContent=leg.distance.text;
+        if(timeEl)timeEl.textContent=leg.duration.text;
+        if(typeEl)typeEl.textContent=km>50?'Dálková trasa':km>20?'Příměstská':'Městská';
+        nllUpdPrice();
+      }else{
+        nllCalcRouteFallback(origin.toLowerCase(),destination.toLowerCase());
+        nllUpdPrice();
+      }
+    });
+  }
+
   function nllCalcRouteFallback(pu,doV){
     var key='default';
     Object.keys(NLL_ROUTES).forEach(function(k){if(pu.indexOf(k)>=0||doV.indexOf(k)>=0)key=k;});
@@ -1699,7 +1754,7 @@
   }
 
   /* Konfig transport políčka pro vlak/bus */
-  var NLL_TCFG={
+  window.NLL_TCFG={
     airport:{
       title:'Číslo letu',
       sub:'Začněte psát — zobrazíme dostupné lety',
@@ -2454,13 +2509,13 @@ function gpPos(inp,id){
   d.style.left=(r.left+window.scrollX)+'px';
   d.style.width=r.width+'px';
 }
-function gpMakeItem(inpId,name,sub,ic,type,dropId,q){
+function gpMakeItem(inpId,name,sub,ic,type,dropId,q,placeId){
   var main=name;
   if(q){var i=name.toLowerCase().indexOf(q.toLowerCase());if(i>=0)main=name.slice(0,i)+'<b>'+name.slice(i,i+q.length)+'</b>'+name.slice(i+q.length);}
   var div=document.createElement('div');
   div.className='nll-gp-item';
   div.innerHTML=gpIcon(ic)+'<div><div class="nll-gp-main">'+main+'</div>'+(sub?'<div class="nll-gp-sub">'+sub+'</div>':'')+'</div>';
-  div.onmousedown=function(){gpPick(inpId,name,type,dropId);};
+  div.onmousedown=function(){gpPick(inpId,name,type,dropId,placeId||null);};
   return div;
 }
 function gpShowDefs(inp,id,q){
@@ -2477,7 +2532,7 @@ function gpShowDefs(inp,id,q){
 function gpLoad(){
   if(gpReady||gpLoading)return;gpLoading=true;
   var s=document.createElement('script');
-  s.src='https://maps.googleapis.com/maps/api/js?key='+GP_KEY+'&libraries=places&language=cs';
+  s.src='https://maps.googleapis.com/maps/api/js?key='+GP_KEY+'&libraries=places,directions&language=cs';
   s.async=true;s.onload=function(){gpReady=true;gpLoading=false;try{if(window.google&&window.google.maps.places)gpSession=new window.google.maps.places.AutocompleteSessionToken();}catch(e){gpSession=null;}};
   document.head.appendChild(s);
 }
@@ -2491,12 +2546,53 @@ window.gpInput=function(inp,id){
   clearTimeout(gpTimer[id]);
   gpTimer[id]=setTimeout(function(){gpFetch(inp,id,q);},280);
 };
-window.gpPick=function(inpId,val,type,dropId){
+window.gpPick=function(inpId,val,type,dropId,placeId){
   var el=document.getElementById(inpId);if(el)el.value=val;
   gpHide(dropId);
-  if(type&&inpId==='nll-pu')window.nllPuType=type;
+  if(type&&inpId==='nll-pu'){
+    window.nllPuType=type;
+    nllUpdateTransportField();
+  }
   try{if(gpReady&&window.google&&window.google.maps.places)gpSession=new window.google.maps.places.AutocompleteSessionToken();}catch(e){}
+  // Detekuj typ místa z Google Places pokud nemáme typ z předdefinovaných lokací
+  if(inpId==='nll-pu'&&!type&&placeId&&gpReady&&window.google){
+    var svc=new google.maps.places.PlacesService(document.createElement('div'));
+    svc.getDetails({placeId:placeId,fields:['types']},function(place,status){
+      if(status!=='OK'||!place||!place.types) return;
+      var types=place.types;
+      var detectedType=null;
+      if(types.indexOf('airport')>=0) detectedType='airport';
+      else if(types.indexOf('train_station')>=0||types.indexOf('transit_station')>=0) detectedType='train';
+      else if(types.indexOf('bus_station')>=0) detectedType='bus';
+      if(detectedType){
+        window.nllPuType=detectedType;
+        nllUpdateTransportField();
+      }
+    });
+  }
+  // Spusť výpočet trasy po výběru obou adres
+  var pu=document.getElementById('nll-pu');
+  var doV=document.getElementById('nll-do');
+  if(pu&&doV&&pu.value.trim()&&doV.value.trim()) setTimeout(nllCalcRoute,200);
 };
+
+function nllUpdateTransportField(){
+  var box=document.getElementById('nll-tbox');
+  if(!box||!window.nllPuType||!window.NLL_TCFG) return;
+  if(!window.NLL_TCFG[window.nllPuType]){box.classList.remove('show');return;}
+  var c=window.NLL_TCFG[window.nllPuType];
+  var tico=document.getElementById('nll-tico');
+  if(tico)tico.innerHTML='<path d="'+c.ico+'"/>';
+  var tttl=document.getElementById('nll-tttl');
+  if(tttl)tttl.textContent=c.title;
+  var tsub=document.getElementById('nll-tsub');
+  if(tsub)tsub.textContent=c.sub;
+  var tlbl=document.getElementById('nll-tlbl');
+  if(tlbl)tlbl.textContent=c.lbl;
+  var inp=document.getElementById('nll-ac-inp');
+  if(inp)inp.placeholder=c.ph;
+  box.classList.add('show');
+}
 function gpFetch(inp,id,q){
   if(!gpReady||!window.google){gpShowDefs(inp,id,q);return;}
   var svc=new window.google.maps.places.AutocompleteService();
@@ -2514,7 +2610,7 @@ function gpFetch(inp,id,q){
       preds.forEach(function(p){
         var mn=p.structured_formatting?p.structured_formatting.main_text:p.description;
         var sb=p.structured_formatting?p.structured_formatting.secondary_text:'';
-        drop.appendChild(gpMakeItem(inpId,p.description,sb,'x','',id,q));
+        drop.appendChild(gpMakeItem(inpId,p.description,sb,'x','',id,q,p.place_id));
       });
     }
     if(!drop.children.length){drop.classList.remove('open');return;}
