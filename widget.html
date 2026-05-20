@@ -701,21 +701,18 @@
             <div class="nll-gp-drop" id="gp-pu"></div>
           </div>
           <!-- Zastávka 1 -->
-<div id="nll-sep-pu-stop1" style="display:none;align-items:center;height:14px;padding-left:14px"><button onclick="nllSwap("nll-pu","nll-stop1")" style="width:18px;height:18px;border-radius:50%;background:#f0f3f8;border:1px solid var(--borderl);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0" title="Prohodit"><svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="var(--navy-mid)" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4"/></svg></button></div>
           <div class="nll-rrow" id="nll-stop1-row" style="display:none">
             <div style="width:11px;height:11px;border-radius:3px;background:var(--gold);flex-shrink:0"></div>
             <input class="nll-rinp" id="nll-stop1" placeholder="Zastávka 1..." autocomplete="off" oninput="gpInput(this,'gp-stop1')" onfocus="gpFocus(this,'gp-stop1')" onblur="setTimeout(function(){gpHide('gp-stop1')},200)"><span style="font-size:10px;color:var(--muted);font-weight:700;margin-left:6px;flex-shrink:0">ČEKÁNÍ:</span><span style="display:inline-flex;align-items:center;border:1px solid var(--borderl);border-radius:5px;overflow:hidden;margin-left:4px;flex-shrink:0"><select id="nll-stop1-wait-h" onchange="nllUpdPrice()" style="font-size:11px;border:none;border-right:1px solid var(--borderl);padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">0h</option><option value="1">1h</option><option value="2">2h</option><option value="3">3h</option><option value="4">4h</option><option value="5">5h</option><option value="6">6h</option></select><span style="font-size:11px;color:var(--muted);padding:0 2px;font-weight:700">:</span><select id="nll-stop1-wait-m" onchange="nllUpdPrice()" style="font-size:11px;border:none;padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">00</option><option value="0.25">15</option><option value="0.5">30</option><option value="0.75">45</option></select></span>
             <button onclick="nllRemoveStop(1)" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px;flex-shrink:0">&#215;</button>
             <div class="nll-gp-drop" id="gp-stop1"></div>
           </div>
-          <div id="nll-sep-stop1-stop2" style="display:none;align-items:center;height:14px;padding-left:14px"><button onclick="nllSwap("nll-stop1","nll-stop2")" style="width:18px;height:18px;border-radius:50%;background:#f0f3f8;border:1px solid var(--borderl);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0" title="Prohodit"><svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="var(--navy-mid)" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4"/></svg></button></div>
           <div class="nll-rrow" id="nll-stop2-row" style="display:none">
             <div style="width:11px;height:11px;border-radius:3px;background:var(--gold);flex-shrink:0"></div>
             <input class="nll-rinp" id="nll-stop2" placeholder="Zastávka 2..." autocomplete="off" oninput="gpInput(this,'gp-stop2')" onfocus="gpFocus(this,'gp-stop2')" onblur="setTimeout(function(){gpHide('gp-stop2')},200)"><span style="font-size:10px;color:var(--muted);font-weight:700;margin-left:6px;flex-shrink:0">ČEKÁNÍ:</span><span style="display:inline-flex;align-items:center;border:1px solid var(--borderl);border-radius:5px;overflow:hidden;margin-left:4px;flex-shrink:0"><select id="nll-stop2-wait-h" onchange="nllUpdPrice()" style="font-size:11px;border:none;border-right:1px solid var(--borderl);padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">0h</option><option value="1">1h</option><option value="2">2h</option><option value="3">3h</option><option value="4">4h</option><option value="5">5h</option><option value="6">6h</option></select><span style="font-size:11px;color:var(--muted);padding:0 2px;font-weight:700">:</span><select id="nll-stop2-wait-m" onchange="nllUpdPrice()" style="font-size:11px;border:none;padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">00</option><option value="0.25">15</option><option value="0.5">30</option><option value="0.75">45</option></select></span>
             <button onclick="nllRemoveStop(2)" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px;flex-shrink:0">&#215;</button>
             <div class="nll-gp-drop" id="gp-stop2"></div>
           </div>
-          <div id="nll-sep-last-do" style="display:flex;align-items:center;height:14px;padding-left:14px"><button onclick="nllSwapMain()" style="width:18px;height:18px;border-radius:50%;background:#f0f3f8;border:1px solid var(--borderl);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0" title="Prohodit"><svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="var(--navy-mid)" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4"/></svg></button></div>
           <div class="nll-rrow">
             <div class="nll-rdot dest"></div>
             <input class="nll-rinp" id="nll-do" placeholder="Cíl cesty..." autocomplete="off" oninput="gpInput(this,'gp-do')" onfocus="gpFocus(this,'gp-do')" onblur="setTimeout(function(){gpHide('gp-do')},200)">
@@ -2808,22 +2805,6 @@ function vUpdPrice(){
 
   /* ===== PROHOZENÍ ADRES ===== */
 
-  window.nllSwap = function(id1, id2) {
-    var el1 = document.getElementById(id1);
-    var el2 = document.getElementById(id2);
-    if (!el1 || !el2) return;
-    var tmp = el1.value; el1.value = el2.value; el2.value = tmp;
-    window.nllPuType = null;
-    if (el1.value || el2.value) setTimeout(nllCalcRoute, 200);
-  };
-
-  window.nllSwapMain = function() {
-    var s2 = document.getElementById('nll-stop2-row');
-    var s1 = document.getElementById('nll-stop1-row');
-    var id1 = (s2 && s2.style.display!=='none') ? 'nll-stop2' : (s1 && s1.style.display!=='none') ? 'nll-stop1' : 'nll-pu';
-    window.nllSwap(id1, 'nll-do');
-  };
-
   function nllGetStopWait(n) {
     var h = parseFloat((document.getElementById('nll-stop'+n+'-wait-h')||{}).value)||0;
     var m = parseFloat((document.getElementById('nll-stop'+n+'-wait-m')||{}).value)||0;
@@ -2860,8 +2841,6 @@ function vUpdPrice(){
     nllStopCount++;
     var row = document.getElementById('nll-stop' + nllStopCount + '-row');
     if (row) row.style.display = 'flex';
-    var sep1 = document.getElementById('nll-sep-pu-stop1');
-    if (sep1) sep1.style.display = 'flex';
     if (nllStopCount === 2) {
       var sep12 = document.getElementById('nll-sep-stop1-stop2');
       if (sep12) sep12.style.display = 'flex';
@@ -2884,8 +2863,6 @@ function vUpdPrice(){
     var btn = document.getElementById('nll-add-stop-btn');
     if (btn) btn.style.display = 'flex';
     if (nllStopCount === 0) {
-      var sep1 = document.getElementById('nll-sep-pu-stop1');
-      if (sep1) sep1.style.display = 'none';
     }
     var sep12 = document.getElementById('nll-sep-stop1-stop2');
     if (sep12) sep12.style.display = 'none';
