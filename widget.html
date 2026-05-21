@@ -15,27 +15,6 @@
 .nll-w{width:100%;background:#fff;border-radius:8px;box-shadow:0 32px 80px rgba(0,32,91,.18);overflow:visible;font-family:'Montserrat',sans-serif}
 .nll-w *{box-sizing:border-box;font-family:'Montserrat',sans-serif}
 
-
-
-/* ===== TIME PICKER ===== */
-.nll-tp-wrap{position:relative;width:100%}
-.nll-tp-btn{background:#fff;border:1.5px solid var(--borderl);border-radius:5px;padding:10px 13px;color:var(--navy);font-size:13px;font-weight:600;width:100%;cursor:pointer;font-family:'Montserrat',sans-serif;text-align:left;display:flex;align-items:center;gap:8px;-webkit-appearance:none;outline:none}
-.nll-tp-btn svg{flex-shrink:0;opacity:.5}
-.nll-tp-btn span{flex:1}
-.nll-tp-panel{position:absolute;top:calc(100% + 4px);left:0;background:#fff;border:1.5px solid var(--borderl);border-radius:10px;box-shadow:0 8px 32px rgba(0,32,91,.14);z-index:9999;display:none;flex-direction:column;overflow:hidden;min-width:200px}
-.nll-tp-panel.open{display:flex}
-.nll-tp-cols{display:flex;border-bottom:1px solid var(--borderl)}
-.nll-tp-col{flex:1;max-height:220px;overflow-y:auto;scrollbar-width:thin;border-right:1px solid var(--borderl)}
-.nll-tp-col:last-child{border-right:none}
-.nll-tp-col::-webkit-scrollbar{width:4px}
-.nll-tp-col::-webkit-scrollbar-thumb{background:var(--borderl);border-radius:2px}
-.nll-tp-col-lbl{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;padding:8px 12px;position:sticky;top:0;background:#fff;border-bottom:1px solid var(--borderl);text-align:center}
-.nll-tp-item{font-size:13px;font-weight:600;color:var(--navy);padding:8px 12px;cursor:pointer;text-align:center;transition:background .1s}
-.nll-tp-item:hover{background:rgba(7,90,170,.06)}
-.nll-tp-item.sel{background:var(--navy);color:#fff}
-.nll-tp-ok{margin:10px;padding:9px;background:var(--navy);color:#fff;border:none;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;width:calc(100% - 20px)}
-.nll-tp-ok:hover{background:var(--navy-mid)}
-
 /* TOP */
 .nll-top{background:var(--navy);border-radius:8px 8px 0 0;padding:16px 32px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
 .nll-top-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4)}
@@ -100,7 +79,7 @@
 .nll-ddf svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.5;flex-shrink:0}
 
 /* DATUM + ČAS — nový blok */
-.nll-dtg{display:grid;gap:10px;margin-bottom:16px}
+.nll-dtg{display:grid;gap:10px;margin-bottom:16px;overflow:hidden}
 .nll-dtg.cols4{grid-template-columns:1.3fr 0.7fr 0.65fr 0.9fr}
 .nll-dtg.cols3{grid-template-columns:1fr 1fr 1fr}
 .nll-fg{display:flex;flex-direction:column;gap:5px}
@@ -748,15 +727,38 @@
         </div>
 
         <!-- Datum + ČAS v jednom poli -->
-        <div class="nll-dtg cols4" style="grid-template-columns:2fr 1fr 1fr">
-          <div class="nll-fg" style="display:flex;flex-direction:column;gap:0">
-            <div class="nll-lbl">Datum a čas jízdy</div>
-            <div style="display:flex;gap:8px">
-              <input class="nll-inp" type="date" id="nll-date" style="flex:1.5">
-              <select class="nll-sel" id="nll-hr" style="flex:1"></select>
-              <select class="nll-sel" id="nll-mn" style="flex:1"></select>
-            </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px;margin-bottom:6px">
+          <div class="nll-fg">
+            <div class="nll-lbl">Datum jízdy</div>
+            <input class="nll-inp" type="date" id="nll-date" style="min-width:0;padding:10px 8px;width:100%">
           </div>
+          <div class="nll-fg">
+            <div class="nll-lbl">Hodina</div>
+            <select class="nll-sel" id="nll-hr" style="min-width:0"></select>
+          </div>
+          <div class="nll-fg">
+            <div class="nll-lbl">Minuta</div>
+            <select class="nll-sel" id="nll-mn" style="min-width:0"></select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px;margin-bottom:16px">
+          <div class="nll-fg">
+            <div class="nll-lbl">Cestující</div>
+            <select class="nll-sel" id="nll-pax" onchange="nllCheckV()">
+              <option value="1">1 os.</option><option value="2">2 os.</option>
+              <option value="3">3 os.</option><option value="4">4 os.</option>
+              <option value="5">5–6 os.</option><option value="7">7+ os.</option>
+            </select>
+          </div>
+          <div class="nll-fg">
+            <div class="nll-lbl">Zavazadla</div>
+            <select class="nll-sel" id="nll-lug" onchange="nllCheckV()">
+              <option value="0">Bez zavazadel</option><option value="1">1 kufr</option>
+              <option value="2">2 kufry</option><option value="3">3 kufry</option><option value="4">4+ kufry</option>
+            </select>
+          </div>
+          <div></div>
+        </div>
 
         <!-- Route info -->
         <div class="nll-route-info" id="nll-route-info">
@@ -781,34 +783,17 @@
             <svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
             Datum a čas zpáteční jízdy
           </div>
-          <div class="nll-dtg" style="grid-template-columns:1fr">
+          <div class="nll-dtg" style="grid-template-columns:1.2fr 0.7fr 0.65fr">
+            <div class="nll-fg"><div class="nll-lbl">Datum návratu</div><input class="nll-inp" type="date" id="nll-date2"></div>
             <div class="nll-fg">
-            <div class="nll-lbl">Datum a čas návratu</div>
-            <div style="display:flex;gap:8px;align-items:stretch">
-              <input class="nll-inp" type="date" id="nll-date2" style="flex:1.5;cursor:pointer">
-              <div class="nll-tp-wrap" style="flex:1" id="nll-tp-2-wrap">
-                <button type="button" class="nll-tp-btn" onclick="nllTpToggle('2')" id="nll-tp-2-btn">
-                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  <span id="nll-tp-2-lbl">Čas</span>
-                </button>
-                <div class="nll-tp-panel" id="nll-tp-2-panel">
-                  <div class="nll-tp-cols">
-                    <div class="nll-tp-col" id="nll-tp-2-hrs">
-                      <div class="nll-tp-col-lbl">Hodina</div>
-                    </div>
-                    <div class="nll-tp-col" id="nll-tp-2-mins">
-                      <div class="nll-tp-col-lbl">Minuta</div>
-                    </div>
-                  </div>
-                  <button class="nll-tp-ok" onclick="nllTpConfirm('2','nll-hr2-tp','nll-mn2-tp')">OK</button>
-                </div>
-              </div>
-              <input type="hidden" id="nll-hr2-tp">
-              <input type="hidden" id="nll-mn2-tp">
+              <div class="nll-lbl">Hodina návratu</div>
+              <select class="nll-sel" id="nll-hr2"></select>
+            </div>
+            <div class="nll-fg">
+              <div class="nll-lbl">Minuta návratu</div>
+              <select class="nll-sel" id="nll-mn2"></select>
             </div>
           </div>
-          <select id="nll-hr2" style="display:none"></select>
-          <select id="nll-mn2" style="display:none"></select>
         </div>
 
         <div class="nll-brow"><div style="flex:1"></div>
@@ -1186,7 +1171,7 @@
 
       <!-- Místo + čas vyzvednutí -->
       <div class="nll-dtg" style="grid-template-columns:1.4fr 1fr;margin-bottom:10px">
-        <div class="nll-fg"><div class="nll-lbl">Místo vyzvednutí</div><input class="nll-inp" id="nll-hpu" placeholder="Adresa..."></div>
+        <div class="nll-fg"><div class="nll-lbl">Místo vyzvednutí</div><div style="position:relative"><input class="nll-inp" id="nll-hpu" placeholder="Adresa..." autocomplete="off" oninput="gpInput(this,'gp-hpu')" onfocus="gpFocus(this,'gp-hpu')" onblur="setTimeout(function(){gpHide('gp-hpu')},200)"><div class="nll-gp-drop" id="gp-hpu"></div></div></div>
         <div class="nll-fg"><div class="nll-lbl">Datum</div><input class="nll-inp" type="date" id="nll-hdate"></div>
       </div>
       <div class="nll-dtg" style="grid-template-columns:0.7fr 0.65fr;margin-bottom:16px">
@@ -1217,7 +1202,7 @@
         <div class="nll-er-other" id="nll-er-other-field">
           <div class="nll-fg" style="margin-top:10px">
             <div class="nll-lbl">Adresa ukončení jízdy</div>
-            <input class="nll-inp" id="nll-hend" placeholder="Kam vás zavést na konci jízdy?">
+            <div style="position:relative"><input class="nll-inp" id="nll-hend" placeholder="Kam vás zavést na konci jízdy?" autocomplete="off" oninput="gpInput(this,'gp-hend')" onfocus="gpFocus(this,'gp-hend')" onblur="setTimeout(function(){gpHide('gp-hend')},200)"><div class="nll-gp-drop" id="gp-hend"></div></div>
           </div>
         </div>
       </div>
@@ -2088,10 +2073,8 @@
   function nllBuildTime(hId,mId){
     var hS=document.getElementById(hId),mS=document.getElementById(mId);
     if(!hS||!mS)return;
-    var oh=document.createElement('option');oh.value='';oh.textContent='Hodina';oh.disabled=true;hS.appendChild(oh);
-    for(var h=0;h<24;h++){var o=document.createElement('option');o.value=h;o.textContent=(h<10?'0':'')+h+':00';hS.appendChild(o);}
-    var om=document.createElement('option');om.value='';om.textContent='Minuta';om.disabled=true;mS.appendChild(om);
-    [0,5,10,15,20,25,30,35,40,45,50,55].forEach(function(m){var o=document.createElement('option');o.value=m;o.textContent=':'+(m<10?'0':'')+m;mS.appendChild(o);});
+    for(var h=0;h<24;h++){var o=document.createElement('option');o.value=h;o.textContent=(h<10?'0':'')+h;hS.appendChild(o);}
+    [0,5,10,15,20,25,30,35,40,45,50,55].forEach(function(m){var o=document.createElement('option');o.value=m;o.textContent=(m<10?'0':'')+m;mS.appendChild(o);});
     var now=new Date(),h=now.getHours(),m=Math.ceil(now.getMinutes()/5)*5;
     if(m>=60){m=0;h++;}if(h>23)h=0;
     hS.value=h;mS.value=[0,5,10,15,20,25,30,35,40,45,50,55].find(function(x){return x>=m})||0;
@@ -2412,40 +2395,6 @@
   })();
   /* INIT */
   var today=new Date().toISOString().split('T')[0];
-
-  window.nllSyncDatetime = function() {
-    var dt = document.getElementById('nll-datetime');
-    if (!dt || !dt.value) return;
-    var parts = dt.value.split('T');
-    var d = parts[0];
-    var t = parts[1] ? parts[1].split(':') : ['10','00'];
-    var h = parseInt(t[0]);
-    var m = parseInt(t[1]);
-    // Sync do starych poli pro kompatibilitu
-    var dateEl = document.getElementById('nll-date');
-    var hrEl = document.getElementById('nll-hr');
-    var mnEl = document.getElementById('nll-mn');
-    if (dateEl) dateEl.value = d;
-    if (hrEl) hrEl.value = h;
-    if (mnEl) mnEl.value = m;
-  };
-
-  // Nastav vychozi datetime na dnesek + 2 hodiny
-  (function() {
-    var dt = document.getElementById('nll-datetime');
-    if (dt) {
-      var now = new Date();
-      now.setHours(now.getHours() + 2, 0, 0, 0);
-      var y = now.getFullYear();
-      var mo = String(now.getMonth()+1).padStart(2,'0');
-      var d = String(now.getDate()).padStart(2,'0');
-      var h = String(now.getHours()).padStart(2,'0');
-      dt.value = y+'-'+mo+'-'+d+'T'+h+':00';
-      dt.min = y+'-'+mo+'-'+d+'T'+String(now.getHours()).padStart(2,'0')+':00';
-      nllSyncDatetime();
-    }
-  })();
-
 
   /* Načti nastavení ze Supabase */
   (async function nllLoadSettings(){
@@ -2918,6 +2867,184 @@ function vUpdPrice(){
   }
 
 })();
+</script>
 
+<!-- TaxiSaaS Pricing Engine -->
+<script>
+/**
+ * TaxiSaaS Pricing Engine v1.0
+ */
+(function() {
+  var NLL_CFG = {
+    vehicles: [], landmarks: [], zone_matrix: {}, pricing_zones: [],
+    distance_rows: [], surcharges: {
+      night:   { enabled: false, type: 'fixed', value: 0 },
+      weekend: { enabled: false, type: 'fixed', value: 0 },
+      holiday: { enabled: false, type: 'fixed', value: 0 },
+      bike:    { enabled: true,  type: 'fixed', value: 200 },
+      ski:     { enabled: true,  type: 'fixed', value: 100 },
+    },
+    discounts: [], min_price: 200,
+  };
 
+  window.nllLoadPricingData = async function(sbUrl, sbKey) {
+    try {
+      var r1 = await fetch(sbUrl+'/rest/v1/tenant_settings?select=*&limit=1',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
+      var d1 = await r1.json();
+      if(d1&&d1.length){
+        var cfg=d1[0];
+        if(cfg.vehicles) NLL_CFG.vehicles=cfg.vehicles.filter(function(v){return v.active;});
+        if(cfg.min_price) NLL_CFG.min_price=cfg.min_price;
+        if(cfg.pricing_zones) NLL_CFG.pricing_zones=cfg.pricing_zones;
+        if(cfg.zone_matrix) NLL_CFG.zone_matrix=cfg.zone_matrix;
+        if(cfg.discounts) NLL_CFG.discounts=cfg.discounts;
+        NLL_CFG.surcharges={
+          night:   {enabled:cfg.surcharge_night_enabled||false,   type:cfg.surcharge_night_type||'fixed',   value:cfg.surcharge_night||0},
+          weekend: {enabled:cfg.surcharge_weekend_enabled||false, type:cfg.surcharge_weekend_type||'fixed', value:cfg.surcharge_weekend||0},
+          holiday: {enabled:cfg.surcharge_holiday_enabled||false, type:cfg.surcharge_holiday_type||'fixed', value:cfg.surcharge_holiday||0},
+          bike:    {enabled:true, type:cfg.surcharge_bike_type||'fixed', value:cfg.surcharge_bike||200},
+          ski:     {enabled:true, type:cfg.surcharge_ski_type||'fixed',  value:cfg.surcharge_ski||100},
+        };
+      }
+      var r2=await fetch(sbUrl+'/rest/v1/distance_pricing?select=*&order=km_from.asc',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
+      var d2=await r2.json();
+      if(d2&&d2.length) NLL_CFG.distance_rows=d2;
+      var r3=await fetch(sbUrl+'/rest/v1/landmarks?select=*&is_active=eq.true&order=sort_order.asc',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
+      var d3=await r3.json();
+      if(d3&&d3.length) NLL_CFG.landmarks=d3;
+      console.log('[TaxiSaaS] Pricing loaded: vehicles='+NLL_CFG.vehicles.length+', landmarks='+NLL_CFG.landmarks.length+', distance_rows='+NLL_CFG.distance_rows.length);
+    } catch(e){ console.warn('[TaxiSaaS] Pricing load error:',e); }
+  };
+
+  function findLandmark(address){
+    if(!address||!NLL_CFG.landmarks.length) return null;
+    var addr=address.toLowerCase().trim();
+    for(var i=0;i<NLL_CFG.landmarks.length;i++){
+      var lm=NLL_CFG.landmarks[i];
+      if(addr.indexOf(lm.name.toLowerCase())>=0||(lm.address&&addr.indexOf(lm.address.toLowerCase())>=0)) return lm;
+    }
+    return null;
+  }
+
+  function findZoneByPostal(address){
+    if(!address||!NLL_CFG.pricing_zones.length) return null;
+    var m=address.match(/\b(\d{3}\s?\d{2})\b/);
+    if(!m) return null;
+    var postal=m[1].replace(/\s/g,'');
+    for(var i=0;i<NLL_CFG.pricing_zones.length;i++){
+      var zone=NLL_CFG.pricing_zones[i];
+      if(!zone.postal_codes) continue;
+      var codes=zone.postal_codes.split(',').map(function(c){return c.trim().replace(/\s/g,'');});
+      if(codes.indexOf(postal)>=0) return zone;
+    }
+    return null;
+  }
+
+  function calcZonePrice(fromId,toId){
+    var m=NLL_CFG.zone_matrix;
+    if(!m||!m[fromId]||m[fromId][toId]===undefined) return null;
+    return m[fromId][toId]||null;
+  }
+
+  function calcDistancePrice(km,vehicleId,vehicle){
+    var rows=NLL_CFG.distance_rows;
+    if(!rows||!rows.length) return null;
+    var total=vehicle.price||0;
+    var remaining=km;
+    var sorted=rows.slice().sort(function(a,b){return a.km_from-b.km_from;});
+    for(var i=0;i<sorted.length;i++){
+      if(remaining<=0) break;
+      var row=sorted[i];
+      var ppm=(row.prices&&row.prices[vehicleId])?row.prices[vehicleId]:0;
+      if(ppm===0) continue;
+      var band=row.km_to-row.km_from;
+      var inBand=Math.min(remaining,band);
+      total+=inBand*ppm;
+      remaining-=inBand;
+    }
+    if(remaining>0){
+      var last=sorted[sorted.length-1];
+      var lastRate=(last.prices&&last.prices[vehicleId])?last.prices[vehicleId]:0;
+      total+=remaining*lastRate;
+    }
+    return total;
+  }
+
+  function applySurcharge(s,base){
+    if(s.type==='percent') return Math.round(base*s.value/100);
+    return s.value||0;
+  }
+
+  function calcSurcharges(base,date,extras){
+    var s=NLL_CFG.surcharges; var total=0;
+    if(s.night&&s.night.enabled&&extras.hour!==undefined){var h=parseInt(extras.hour);if(h>=22||h<6)total+=applySurcharge(s.night,base);}
+    if(s.weekend&&s.weekend.enabled&&date){var d=new Date(date);var dow=d.getDay();if(dow===0||dow===6)total+=applySurcharge(s.weekend,base);}
+    if(s.holiday&&s.holiday.enabled&&extras.isHoliday)total+=applySurcharge(s.holiday,base);
+    if(extras.bikes&&extras.bikes>0)total+=applySurcharge(s.bike,base)*extras.bikes;
+    if(extras.skis&&extras.skis>0)total+=applySurcharge(s.ski,base)*extras.skis;
+    return Math.round(total);
+  }
+
+  window.nllCalculatePrice = async function(params){
+    var vehicle=NLL_CFG.vehicles.find(function(v){return v.id===params.vehicleId;});
+    if(!vehicle) return null;
+    var basePrice=null; var pricingMethod='unknown';
+
+    // 1. Pevná místa
+    var puLM=findLandmark(params.pickup);
+    var doLM=findLandmark(params.dropoff);
+    if(puLM&&doLM){
+      var zp=calcZonePrice(puLM.zone_id||puLM.id, doLM.zone_id||doLM.id);
+      if(zp!==null){basePrice=zp;pricingMethod='landmark';}
+    }
+
+    // 2. Zóny PSČ
+    if(basePrice===null){
+      var puZ=findZoneByPostal(params.pickup);
+      var doZ=findZoneByPostal(params.dropoff);
+      if(puZ&&doZ){var zp2=calcZonePrice(puZ.id,doZ.id);if(zp2!==null){basePrice=zp2;pricingMethod='zone';}}
+    }
+
+    // 3. Vzdálenostní ceník
+    if(basePrice===null&&params.km&&params.km>0){
+      var dp=calcDistancePrice(params.km,params.vehicleId,vehicle);
+      if(dp!==null){basePrice=dp;pricingMethod='distance';}
+    }
+
+    // Fallback
+    if(basePrice===null){basePrice=vehicle.price||0;pricingMethod='base';}
+
+    // Zpáteční
+    if(params.isReturn) basePrice=basePrice*2;
+
+    // Příplatky
+    var surchargeTotal=calcSurcharges(basePrice,params.date,{
+      hour:params.hour, bikes:params.extras?params.extras.bikes:0,
+      skis:params.extras?params.extras.skis:0, isHoliday:params.extras?params.extras.isHoliday:false,
+    });
+    var priceWithSurcharges=basePrice+surchargeTotal;
+
+    // Voucher
+    var discountTotal=params.voucherDisc||0;
+    var finalPrice=Math.max(priceWithSurcharges-discountTotal, vehicle.min_price||NLL_CFG.min_price||0);
+
+    return {base:basePrice,surcharges:surchargeTotal,discounts:discountTotal,total:Math.round(finalPrice),method:pricingMethod,vehicle:vehicle};
+  };
+
+  window.nllGetDistance = function(pickup,dropoff,apiKey,callback){
+    if(!window.google||!window.google.maps){callback(null);return;}
+    var svc=new google.maps.DistanceMatrixService();
+    svc.getDistanceMatrix({origins:[pickup],destinations:[dropoff],travelMode:google.maps.TravelMode.DRIVING,unitSystem:google.maps.UnitSystem.METRIC},function(response,status){
+      if(status!=='OK'){callback(null);return;}
+      try{
+        var el=response.rows[0].elements[0];
+        if(el.status!=='OK'){callback(null);return;}
+        callback({km:el.distance.value/1000,duration:el.duration.text,distanceText:el.distance.text});
+      }catch(e){callback(null);}
+    });
+  };
+
+  window.NLL_CFG=NLL_CFG;
+  console.log('[TaxiSaaS] Pricing Engine v1.0 ready');
+})();
 </script>
