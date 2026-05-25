@@ -751,31 +751,43 @@
           </div>
         </div>
 
-        <!-- Datum + ČAS v jednom poli -->
-        <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px;margin-bottom:6px">
-          <div class="nll-fg">
-            <div class="nll-lbl">Datum jízdy</div>
-            <input class="nll-inp" type="date" id="nll-date" style="min-width:0;padding:10px 8px;width:100%">
+        <!-- Datum + cas + cestujici grid -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;border:1.5px solid var(--borderl);border-radius:8px;overflow:visible;margin-bottom:16px">
+          <div style="padding:12px 16px;border-right:1px solid var(--borderl);border-bottom:1px solid var(--borderl)">
+            <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);margin-bottom:6px">DATUM JÍZDY</div>
+            <input type="date" id="nll-date" style="border:none;outline:none;font-size:15px;font-weight:700;color:var(--navy);font-family:Montserrat,sans-serif;width:100%;background:transparent;cursor:pointer;padding:0">
           </div>
-          <div class="nll-fg" style="grid-column:span 2">
-            <div class="nll-lbl">Čas odjezdu</div>
-            <div class="nll-tp-wrap"><button type="button" class="nll-tp-btn" id="nll-tp-1-btn" onclick="nllTpToggle('1')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>08:00</span></button><div class="nll-tp-panel" id="nll-tp-1-panel"><div class="nll-tp-cols"><div class="nll-tp-col" id="nll-tp-1-h"><div class="nll-tp-col-hdr">HOD</div></div><div class="nll-tp-col" id="nll-tp-1-m"><div class="nll-tp-col-hdr">MIN</div></div></div><div class="nll-tp-footer"><button class="nll-tp-ok" onclick="nllTpConfirm('1','nll-hr-val','nll-mn-val')">OK</button></div></div><input type="hidden" id="nll-hr-val" value="8"><input type="hidden" id="nll-mn-val" value="0"></div>
+          <div style="padding:12px 16px;border-bottom:1px solid var(--borderl);overflow:visible;position:relative">
+            <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);margin-bottom:6px">ČAS ODJEZDU</div>
+            <div class="nll-tp-wrap" style="position:static">
+              <button type="button" onclick="nllTpToggle('1')" id="nll-tp-1-btn" style="border:none;background:transparent;padding:0;cursor:pointer;font-size:15px;font-weight:700;color:var(--navy);font-family:Montserrat,sans-serif;display:flex;align-items:center;gap:8px">
+                <span>08:00</span>
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.4"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </button>
+              <div class="nll-tp-panel" id="nll-tp-1-panel">
+                <div class="nll-tp-cols">
+                  <div class="nll-tp-col" id="nll-tp-1-h"><div class="nll-tp-col-hdr">HOD</div></div>
+                  <div class="nll-tp-col" id="nll-tp-1-m"><div class="nll-tp-col-hdr">MIN</div></div>
+                </div>
+                <div class="nll-tp-footer"><button class="nll-tp-ok" onclick="nllTpConfirm('1','nll-hr-val','nll-mn-val')">OK</button></div>
+              </div>
+              <input type="hidden" id="nll-hr-val" value="8">
+              <input type="hidden" id="nll-mn-val" value="0">
+            </div>
             <select id="nll-hr" style="display:none"></select>
             <select id="nll-mn" style="display:none"></select>
           </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:16px">
-          <div class="nll-fg">
-            <div class="nll-lbl">Cestující</div>
-            <select class="nll-sel" id="nll-pax" onchange="nllCheckV()">
-              <option value="1">1 os.</option><option value="2">2 os.</option>
-              <option value="3">3 os.</option><option value="4">4 os.</option>
-              <option value="5">5–6 os.</option><option value="7">7+ os.</option>
+          <div style="padding:12px 16px;border-right:1px solid var(--borderl)">
+            <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);margin-bottom:6px">CESTUJÍCÍ</div>
+            <select id="nll-pax" onchange="nllCheckV()" style="border:none;outline:none;font-size:15px;font-weight:700;color:var(--navy);font-family:Montserrat,sans-serif;width:100%;background:transparent;cursor:pointer;padding:0;-webkit-appearance:none">
+              <option value="1">1 osoba</option><option value="2">2 osoby</option>
+              <option value="3">3 osoby</option><option value="4">4 osoby</option>
+              <option value="5">5–6 osob</option><option value="7">7+ osob</option>
             </select>
           </div>
-          <div class="nll-fg">
-            <div class="nll-lbl">Zavazadla</div>
-            <select class="nll-sel" id="nll-lug" onchange="nllCheckV()">
+          <div style="padding:12px 16px">
+            <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);margin-bottom:6px">ZAVAZADLA</div>
+            <select id="nll-lug" onchange="nllCheckV()" style="border:none;outline:none;font-size:15px;font-weight:700;color:var(--navy);font-family:Montserrat,sans-serif;width:100%;background:transparent;cursor:pointer;padding:0;-webkit-appearance:none">
               <option value="0">Bez zavazadel</option><option value="1">1 kufr</option>
               <option value="2">2 kufry</option><option value="3">3 kufry</option><option value="4">4+ kufry</option>
             </select>
