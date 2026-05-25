@@ -1196,14 +1196,12 @@
         <div class="nll-fg" style="overflow:visible"><div class="nll-lbl">Místo vyzvednutí</div><div style="position:relative;overflow:visible"><div class="nll-inp-wrap"><input class="nll-inp" id="nll-hpu" placeholder="Adresa..." autocomplete="off" oninput="gpInput(this,'gp-hpu')" onfocus="gpFocus(this,'gp-hpu')" onblur="setTimeout(function(){gpHide('gp-hpu')},200)"><button class="nll-inp-clear" id="nll-clr-nll-hpu" onclick="nllClearInp('nll-hpu','gp-hpu')" tabindex="-1">&#215;</button></div><div class="nll-gp-drop" id="gp-hpu"></div></div></div>
         <div class="nll-fg"><div class="nll-lbl">Datum</div><input class="nll-inp" type="date" id="nll-hdate"></div>
       </div>
-      <div class="nll-dtg" style="grid-template-columns:0.7fr 0.65fr;margin-bottom:16px">
+      <div style="margin-bottom:16px">
         <div class="nll-fg">
-          <div class="nll-lbl">Hodina</div>
-          <select class="nll-sel" id="nll-hhr"></select>
-        </div>
-        <div class="nll-fg">
-          <div class="nll-lbl">Minuta</div>
-          <select class="nll-sel" id="nll-hmn"></select>
+          <div class="nll-lbl">Čas odjezdu</div>
+          <div class="nll-tp-wrap"><button type="button" class="nll-tp-btn" id="nll-tp-h-btn" onclick="nllTpToggle('h')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>08:00</span></button><div class="nll-tp-panel" id="nll-tp-h-panel"><div class="nll-tp-cols"><div class="nll-tp-col" id="nll-tp-h-h"><div class="nll-tp-col-hdr">HOD</div></div><div class="nll-tp-col" id="nll-tp-h-m"><div class="nll-tp-col-hdr">MIN</div></div></div><div class="nll-tp-footer"><button class="nll-tp-ok" onclick="nllTpConfirmH()">OK</button></div></div></div>
+          <select id="nll-hhr" style="display:none"></select>
+          <select id="nll-hmn" style="display:none"></select>
         </div>
       </div>
 
@@ -3100,4 +3098,75 @@ function vUpdPrice(){
   window.NLL_CFG=NLL_CFG;
   console.log('[TaxiSaaS] Pricing Engine v1.0 ready');
 })();
+</script>
+<script>
+window._nllTp={};
+window.nllTpToggle=function(tid){
+  var tp=window._nllTp;
+  if(!tp[tid]){
+    var h=new Date().getHours()+1;if(h>23)h=8;
+    tp[tid]={h:h,m:0};
+    function pad(n){return String(n).padStart(2,'0');}
+    var hC=document.getElementById('nll-tp-'+tid+'-h');
+    var mC=document.getElementById('nll-tp-'+tid+'-m');
+    if(hC){
+      var hH=hC.querySelector('.nll-tp-col-hdr');hC.innerHTML='';if(hH)hC.appendChild(hH);
+      for(var i=0;i<24;i++){
+        var e=document.createElement('div');e.className='nll-tp-item'+(i===tp[tid].h?' sel':'');e.textContent=pad(i);
+        (function(hh){e.onclick=function(){tp[tid].h=hh;hC.querySelectorAll('.nll-tp-item').forEach(function(x){x.classList.remove('sel');});this.classList.add('sel');nllTpUpdateBtn(tid);};})(i);
+        hC.appendChild(e);
+      }
+    }
+    if(mC){
+      var mH=mC.querySelector('.nll-tp-col-hdr');mC.innerHTML='';if(mH)mC.appendChild(mH);
+      for(var m=0;m<60;m+=5){
+        var e=document.createElement('div');e.className='nll-tp-item'+(m===0?' sel':'');e.textContent=pad(m);
+        (function(mm2){e.onclick=function(){tp[tid].m=mm2;mC.querySelectorAll('.nll-tp-item').forEach(function(x){x.classList.remove('sel');});this.classList.add('sel');nllTpUpdateBtn(tid);};})(m);
+        mC.appendChild(e);
+      }
+    }
+    setTimeout(function(){var sel=hC&&hC.querySelector('.sel');if(sel)sel.scrollIntoView({block:'center'});},50);
+  }
+  var panel=document.getElementById('nll-tp-'+tid+'-panel');
+  if(!panel)return;
+  var isOpen=panel.classList.contains('open');
+  document.querySelectorAll('.nll-tp-panel.open').forEach(function(p){p.classList.remove('open');});
+  if(!isOpen){
+    panel.classList.add('open');
+    var btn=document.getElementById('nll-tp-'+tid+'-btn');
+    if(btn){var r=btn.getBoundingClientRect();panel.style.top=(r.bottom+4)+'px';panel.style.left=r.left+'px';panel.style.width=r.width+'px';}
+  }
+};
+window.nllTpUpdateBtn=function(tid){
+  var s=window._nllTp[tid];if(!s)return;
+  function pad(n){return String(n).padStart(2,'0');}
+  var btn=document.getElementById('nll-tp-'+tid+'-btn');
+  if(btn){var sp=btn.querySelector('span');if(sp)sp.textContent=pad(s.h)+':'+pad(s.m);}
+};
+window.nllTpConfirmH=function(){
+  var s=window._nllTp['h'];if(!s)return;
+  function pad(n){return String(n).padStart(2,'0');}
+  var hr=document.getElementById('nll-hhr');var mn=document.getElementById('nll-hmn');
+  if(hr)hr.value=s.h;if(mn)mn.value=s.m;
+  nllTpUpdateBtn('h');
+  var panel=document.getElementById('nll-tp-h-panel');
+  if(panel)panel.classList.remove('open');
+};
+window.nllTpConfirm=function(tid,hrId,mnId){
+  var s=window._nllTp[tid];if(!s)return;
+  function pad(n){return String(n).padStart(2,'0');}
+  var hf=document.getElementById(hrId);var mf=document.getElementById(mnId);
+  if(hf)hf.value=s.h;if(mf)mf.value=s.m;
+  nllTpUpdateBtn(tid);
+  var panel=document.getElementById('nll-tp-'+tid+'-panel');
+  if(panel)panel.classList.remove('open');
+  var hr=document.getElementById('nll-hr');var mn=document.getElementById('nll-mn');
+  if(hr)hr.value=s.h;if(mn)mn.value=s.m;
+};
+document.addEventListener('click',function(e){
+  document.querySelectorAll('.nll-tp-panel.open').forEach(function(p){
+    var btn=document.getElementById(p.id.replace('-panel','-btn'));
+    if(btn&&!btn.contains(e.target)&&!p.contains(e.target))p.classList.remove('open');
+  });
+});
 </script>
