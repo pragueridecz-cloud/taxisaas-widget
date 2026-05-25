@@ -8,17 +8,38 @@
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --navy:#00205B;--navy-mid:#075aaa;--navy-light:#1a6ec0;
-  --red:#C8102E;--white:#fff;--off:#F4F6FA;
+  --red:#FF6B00;--white:#fff;--off:#F4F6FA;
   --muted:#4a5f7a;--border:#d0dae8;--borderl:#e8eef6;
   --gold:#C9A84C;--green:#27ae60;
 }
 .nll-w{width:100%;background:#fff;border-radius:8px;box-shadow:0 32px 80px rgba(0,32,91,.18);overflow:visible;font-family:'Montserrat',sans-serif}
 .nll-w *{box-sizing:border-box;font-family:'Montserrat',sans-serif}
 
-.nll-inp-wrap{position:relative;display:flex;align-items:center}
-.nll-inp-wrap .nll-rinp,.nll-inp-wrap .nll-inp{padding-right:28px;width:100%}
-.nll-inp-clear{position:absolute;right:8px;background:none;border:none;cursor:pointer;color:var(--muted);font-size:16px;line-height:1;padding:0;display:none;flex-shrink:0}
+.nll-inp-wrap{position:relative;display:flex;align-items:center;width:100%}
+.nll-inp-wrap .nll-rinp,.nll-inp-wrap .nll-inp{padding-right:32px!important;width:100%;flex:1}
+.nll-inp-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;line-height:1;padding:0;display:none;opacity:.6}
+.nll-inp-clear:hover{opacity:1}
 .nll-inp-clear.show{display:block}
+
+/* ===== TIME PICKER ===== */
+.nll-tp-wrap{position:relative}
+.nll-tp-btn{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--borderl);border-radius:5px;padding:10px 13px;color:var(--navy);font-size:13px;font-weight:700;width:100%;cursor:pointer;font-family:'Montserrat',sans-serif;text-align:left;outline:none;transition:border-color .2s}
+.nll-tp-btn:focus,.nll-tp-btn:hover{border-color:var(--navy-mid)}
+.nll-tp-panel{position:fixed;background:#fff;border:1.5px solid var(--borderl);border-radius:10px;box-shadow:0 8px 32px rgba(0,32,91,.16);z-index:99999;display:none;min-width:180px}
+.nll-tp-panel.open{display:block}
+.nll-tp-cols{display:flex}
+.nll-tp-col{flex:1;max-height:200px;overflow-y:auto;scrollbar-width:thin;border-right:1px solid var(--borderl)}
+.nll-tp-col:last-child{border-right:none}
+.nll-tp-col::-webkit-scrollbar{width:3px}
+.nll-tp-col::-webkit-scrollbar-thumb{background:var(--borderl);border-radius:2px}
+.nll-tp-col-hdr{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;padding:8px;text-align:center;position:sticky;top:0;background:#fff;border-bottom:1px solid var(--borderl)}
+.nll-tp-item{font-size:13px;font-weight:600;color:var(--navy);padding:7px 16px;cursor:pointer;text-align:center;transition:background .1s}
+.nll-tp-item:hover{background:rgba(7,90,170,.06)}
+.nll-tp-item.sel{background:var(--navy);color:#fff}
+.nll-tp-footer{padding:8px}
+.nll-tp-ok{width:100%;padding:8px;background:var(--navy);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif}
+.nll-tp-ok:hover{background:var(--navy-mid)}
+
 /* TOP */
 .nll-top{background:var(--navy);border-radius:8px 8px 0 0;padding:16px 32px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
 .nll-top-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4)}
@@ -736,16 +757,14 @@
             <div class="nll-lbl">Datum jízdy</div>
             <input class="nll-inp" type="date" id="nll-date" style="min-width:0;padding:10px 8px;width:100%">
           </div>
-          <div class="nll-fg">
-            <div class="nll-lbl">Hodina</div>
-            <select class="nll-sel" id="nll-hr" style="min-width:0"></select>
-          </div>
-          <div class="nll-fg">
-            <div class="nll-lbl">Minuta</div>
-            <select class="nll-sel" id="nll-mn" style="min-width:0"></select>
+          <div class="nll-fg" style="grid-column:span 2">
+            <div class="nll-lbl">Čas odjezdu</div>
+            <div class="nll-tp-wrap"><button type="button" class="nll-tp-btn" id="nll-tp-1-btn" onclick="nllTpToggle('1')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>08:00</span></button><div class="nll-tp-panel" id="nll-tp-1-panel"><div class="nll-tp-cols"><div class="nll-tp-col" id="nll-tp-1-h"><div class="nll-tp-col-hdr">HOD</div></div><div class="nll-tp-col" id="nll-tp-1-m"><div class="nll-tp-col-hdr">MIN</div></div></div><div class="nll-tp-footer"><button class="nll-tp-ok" onclick="nllTpConfirm('1','nll-hr-val','nll-mn-val')">OK</button></div></div><input type="hidden" id="nll-hr-val" value="8"><input type="hidden" id="nll-mn-val" value="0"></div>
+            <select id="nll-hr" style="display:none"></select>
+            <select id="nll-mn" style="display:none"></select>
           </div>
         </div>
-        <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px;margin-bottom:16px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:16px">
           <div class="nll-fg">
             <div class="nll-lbl">Cestující</div>
             <select class="nll-sel" id="nll-pax" onchange="nllCheckV()">
@@ -761,7 +780,6 @@
               <option value="2">2 kufry</option><option value="3">3 kufry</option><option value="4">4+ kufry</option>
             </select>
           </div>
-          <div></div>
         </div>
 
         <!-- Route info -->
