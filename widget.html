@@ -2458,7 +2458,7 @@ window.nllStripePay=function(){
     (async function nllLoadSettings(){
     // Načti pricing data (landmarks, vzdálenostní ceník, zóny)
     if(window.nllLoadPricingData) {
-      await window.nllLoadPricingData(NLL_SB_URL, NLL_SB_KEY);
+      await window.nllLoadPricingData('https://pqmoyykyshmtiapnowxc.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxbW95eWt5c2htdGlhcG5vd3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxNTYyMDUsImV4cCI6MjA5MzczMjIwNX0.jDhdSwH09to0eJvDoGTeUHiSjV_vnWhgEK7Pt1_R7PA');
     }
     try {
       var res = await fetch(NLL_SB_URL+'/rest/v1/tenant_settings?select=vehicles,favorite_locations,surcharge_night,surcharge_night_enabled,surcharge_night_type,surcharge_weekend,surcharge_weekend_enabled,surcharge_weekend_type,surcharge_holiday,surcharge_holiday_enabled,surcharge_holiday_type,surcharge_bike,surcharge_bike_type,surcharge_ski,surcharge_ski_type,min_price,discounts&id=eq.768a3345-9118-421b-a162-2508a3b462dd&limit=1', {
