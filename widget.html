@@ -1511,7 +1511,9 @@
   var NLL_SB_URL='https://pqmoyykyshmtiapnowxc.supabase.co';
   var NLL_SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxbW95eWt5c2htdGlhcG5vd3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxNTYyMDUsImV4cCI6MjA5MzczMjIwNX0.jDhdSwH09to0eJvDoGTeUHiSjV_vnWhgEK7Pt1_R7PA';
   function nllSaveOrder(data){return fetch(NLL_SB_URL+'/rest/v1/orders',{method:'POST',headers:{'apikey':NLL_SB_KEY,'Authorization':'Bearer '+NLL_SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});}
-  var nllStep=1,nllVeh={n:'Economy Sedan',p:790,id:'economy_sedan'},nllTrip='ow',nllPuType=null;
+  var nllStep=1,nllTrip='ow',nllPuType=null;
+  window.nllVeh={n:'Economy Sedan',p:790,id:'economy_sedan'};
+  var nllVeh=window.nllVeh;
   window.nllCurrentKm=null;
   window.nllCurrentKm=null; var nllCurrentDuration=null,nllLastPriceResult=null;
   var nllSeats={infant:0,baby:0,booster:0};
