@@ -2410,12 +2410,12 @@ window.nllStripePay=function(){
       var d1 = await r1.json();
       if(d1&&d1.length){
         var cfg=d1[0];
-        if(cfg.vehicles) NLL_CFG.vehicles=cfg.vehicles.filter(function(v){return v.active;});
-        if(cfg.min_price) NLL_CFG.min_price=cfg.min_price;
-        if(cfg.pricing_zones) NLL_CFG.pricing_zones=cfg.pricing_zones;
-        if(cfg.zone_matrix) NLL_CFG.zone_matrix=cfg.zone_matrix;
-        if(cfg.discounts) NLL_CFG.discounts=cfg.discounts;
-        NLL_CFG.surcharges={
+        if(cfg.vehicles) window.NLL_CFG.vehicles=cfg.vehicles.filter(function(v){return v.active;});
+        if(cfg.min_price) window.NLL_CFG.min_price=cfg.min_price;
+        if(cfg.pricing_zones) window.NLL_CFG.pricing_zones=cfg.pricing_zones;
+        if(cfg.zone_matrix) window.NLL_CFG.zone_matrix=cfg.zone_matrix;
+        if(cfg.discounts) window.NLL_CFG.discounts=cfg.discounts;
+        window.NLL_CFG.surcharges={
           night:   {enabled:cfg.surcharge_night_enabled||false,   type:cfg.surcharge_night_type||'fixed',   value:cfg.surcharge_night||0},
           weekend: {enabled:cfg.surcharge_weekend_enabled||false, type:cfg.surcharge_weekend_type||'fixed', value:cfg.surcharge_weekend||0},
           holiday: {enabled:cfg.surcharge_holiday_enabled||false, type:cfg.surcharge_holiday_type||'fixed', value:cfg.surcharge_holiday||0},
@@ -2425,15 +2425,15 @@ window.nllStripePay=function(){
       }
       var r2=await fetch(sbUrl+'/rest/v1/distance_pricing?select=*&order=km_from.asc',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
       var d2=await r2.json();
-      if(d2&&d2.length) NLL_CFG.distance_rows=d2;
+      if(d2&&d2.length) window.NLL_CFG.distance_rows=d2;
       var r3=await fetch(sbUrl+'/rest/v1/landmarks?select=*&is_active=eq.true&order=sort_order.asc',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
       var d3=await r3.json();
-      if(d3&&d3.length) NLL_CFG.landmarks=d3;
+      if(d3&&d3.length) window.NLL_CFG.landmarks=d3;
 
       // Nacti zony a matici z vlastnich tabulek
       var r4=await fetch(sbUrl+'/rest/v1/pricing_zones?select=*&is_active=eq.true&order=sort_order.asc',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
       var d4=await r4.json();
-      if(d4&&d4.length) NLL_CFG.pricing_zones=d4;
+      if(d4&&d4.length) window.NLL_CFG.pricing_zones=d4;
 
       var r5=await fetch(sbUrl+'/rest/v1/zone_matrix?select=*',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
       var d5=await r5.json();
@@ -2447,11 +2447,11 @@ window.nllStripePay=function(){
           matrix[f][t]=row.prices||{};
           if(row.is_symmetric) matrix[t][f]=row.prices||{};
         });
-        NLL_CFG.zone_matrix=matrix;
+        window.NLL_CFG.zone_matrix=matrix;
         console.log('[TaxiSaaS] Zone matrix loaded: '+Object.keys(matrix).length+' zones');
       }
-      console.log('[TaxiSaaS] Zones loaded: '+NLL_CFG.pricing_zones.length+' zones, matrix keys: '+Object.keys(NLL_CFG.zone_matrix).length);
-      console.log('[TaxiSaaS] Pricing loaded: vehicles='+NLL_CFG.vehicles.length+', landmarks='+NLL_CFG.landmarks.length+', distance_rows='+NLL_CFG.distance_rows.length);
+      console.log('[TaxiSaaS] Zones loaded: '+window.NLL_CFG.pricing_zones.length+' zones, matrix keys: '+Object.keys(window.NLL_CFG.zone_matrix).length);
+      console.log('[TaxiSaaS] Pricing loaded: vehicles='+window.NLL_CFG.vehicles.length+', landmarks='+window.NLL_CFG.landmarks.length+', distance_rows='+window.NLL_CFG.distance_rows.length);
     } catch(e){ console.warn('[TaxiSaaS] Pricing load error:',e); }
   };
 
@@ -2471,7 +2471,7 @@ window.nllStripePay=function(){
       /* Vozidla */
       if (cfg.vehicles && cfg.vehicles.length) {
         var activeV = cfg.vehicles.filter(function(v){ return v.active; });
-        NLL_CFG.vehicles = activeV;
+        window.NLL_CFG.vehicles = activeV;
         nllApplyVehicles(activeV);
       }
 
