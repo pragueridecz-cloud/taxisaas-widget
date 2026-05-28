@@ -1675,6 +1675,7 @@
         var leg=result.routes[0].legs[0];
         var km=leg.distance.value/1000;
         window.nllCurrentKm=km;
+        setTimeout(function(){ if(typeof nllUpdPrice==='function') nllUpdPrice(); }, 100);
         var distEl=document.getElementById('nll-ri-dist');
         var timeEl=document.getElementById('nll-ri-time');
         var typeEl=document.getElementById('nll-ri-type');
