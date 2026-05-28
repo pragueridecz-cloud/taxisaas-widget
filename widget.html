@@ -1701,7 +1701,7 @@
     if(timeEl)timeEl.textContent=r.time;
     if(typeEl)typeEl.textContent=r.type;
     var km=r.dist.match(/(\d+)/);
-    if(km)window.nllCurrentKm=parseInt(km[1]);
+    if(km){window.nllCurrentKm=parseInt(km[1]);setTimeout(function(){if(typeof nllUpdPrice==='function')nllUpdPrice();},100);}
   }
 
   /* ===== AUTOCOMPLETE LETŮ ===== */
