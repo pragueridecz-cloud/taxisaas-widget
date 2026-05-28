@@ -2985,7 +2985,7 @@ window.addEventListener('scroll',function(){
  * TaxiSaaS Pricing Engine v1.0
  */
 (function() {
-  var NLL_CFG = {
+  window.NLL_CFG = {
     vehicles: [], landmarks: [], zone_matrix: {}, pricing_zones: [],
     distance_rows: [], surcharges: {
       night:   { enabled: false, type: 'fixed', value: 0 },
@@ -3000,22 +3000,22 @@ window.addEventListener('scroll',function(){
 
 
   function findLandmark(address){
-    if(!address||!NLL_CFG.landmarks.length) return null;
+    if(!address||!window.NLL_CFG.landmarks.length) return null;
     var addr=address.toLowerCase().trim();
-    for(var i=0;i<NLL_CFG.landmarks.length;i++){
-      var lm=NLL_CFG.landmarks[i];
+    for(var i=0;i<window.NLL_CFG.landmarks.length;i++){
+      var lm=window.NLL_CFG.landmarks[i];
       if(addr.indexOf(lm.name.toLowerCase())>=0||(lm.address&&addr.indexOf(lm.address.toLowerCase())>=0)) return lm;
     }
     return null;
   }
 
   function findZoneByPostal(address){
-    if(!address||!NLL_CFG.pricing_zones.length) return null;
+    if(!address||!window.NLL_CFG.pricing_zones.length) return null;
     var m=address.match(/\b(\d{3}\s?\d{2})\b/);
     if(!m) return null;
     var postal=m[1].replace(/\s/g,'');
-    for(var i=0;i<NLL_CFG.pricing_zones.length;i++){
-      var zone=NLL_CFG.pricing_zones[i];
+    for(var i=0;i<window.NLL_CFG.pricing_zones.length;i++){
+      var zone=window.NLL_CFG.pricing_zones[i];
       if(!zone.postal_codes) continue;
       var codes=zone.postal_codes.split(',').map(function(c){return c.trim().replace(/\s/g,'');});
       if(codes.indexOf(postal)>=0) return zone;
@@ -3024,7 +3024,7 @@ window.addEventListener('scroll',function(){
   }
 
   function calcZonePrice(fromId,toId,vehicleId){
-    var m=NLL_CFG.zone_matrix;
+    var m=window.NLL_CFG.zone_matrix;
     if(!m||!m[fromId]||m[fromId][toId]===undefined) return null;
     var entry=m[fromId][toId];
     if(entry===null||entry===undefined) return null;
@@ -3036,7 +3036,7 @@ window.addEventListener('scroll',function(){
   }
 
   function calcDistancePrice(km,vehicleId,vehicle){
-    var rows=NLL_CFG.distance_rows;
+    var rows=window.NLL_CFG.distance_rows;
     if(!rows||!rows.length) return null;
     // Stupnovany tarif - BEZ zakladni ceny vozidla
     var total=0;
@@ -3069,7 +3069,7 @@ window.addEventListener('scroll',function(){
   }
 
   function calcSurcharges(base,date,extras){
-    var s=NLL_CFG.surcharges; var total=0;
+    var s=window.NLL_CFG.surcharges; var total=0;
     if(s.night&&s.night.enabled&&extras.hour!==undefined){var h=parseInt(extras.hour);if(h>=22||h<6)total+=applySurcharge(s.night,base);}
     if(s.weekend&&s.weekend.enabled&&date){var d=new Date(date);var dow=d.getDay();if(dow===0||dow===6)total+=applySurcharge(s.weekend,base);}
     if(s.holiday&&s.holiday.enabled&&extras.isHoliday)total+=applySurcharge(s.holiday,base);
@@ -3079,8 +3079,12 @@ window.addEventListener('scroll',function(){
   }
 
   window.nllCalculatePrice = async function(params){
-    var vehicle=NLL_CFG.vehicles.find(function(v){return v.id===params.vehicleId;});
-    if(!vehicle) return null;
+    console.log('[CALC] params:', JSON.stringify(params));
+    console.log('[CALC] window.NLL_CFG.vehicles:', window.NLL_CFG.vehicles.length, window.NLL_CFG.vehicles.map(function(v){return v.id;}));
+    console.log('[CALC] distance_rows:', window.NLL_CFG.distance_rows.length);
+    var vehicle=window.NLL_CFG.vehicles.find(function(v){return v.id===params.vehicleId;});
+    if(!vehicle){console.log('[CALC] vehicle NOT FOUND for id:', params.vehicleId); return null;}
+    console.log('[CALC] vehicle found:', vehicle.id, 'min_price:', vehicle.min_price);
     var basePrice=null; var pricingMethod='unknown';
 
     // 1. Pevná místa
@@ -3108,7 +3112,7 @@ window.addEventListener('scroll',function(){
     if(basePrice===null){basePrice=vehicle.price||0;pricingMethod='base';}
 
     console.log('[PRICE DEBUG] method='+pricingMethod+' base='+basePrice+' km='+(params.km||0)+' vehicle='+params.vehicleId);
-    console.log('[PRICE DEBUG] distance_rows='+NLL_CFG.distance_rows.length+' zones='+NLL_CFG.pricing_zones.length+' matrix_keys='+Object.keys(NLL_CFG.zone_matrix||{}).length);
+    console.log('[PRICE DEBUG] distance_rows='+window.NLL_CFG.distance_rows.length+' zones='+window.NLL_CFG.pricing_zones.length+' matrix_keys='+Object.keys(window.NLL_CFG.zone_matrix||{}).length);
 
     // Zpáteční
     if(params.isReturn) basePrice=basePrice*2;
@@ -3122,7 +3126,7 @@ window.addEventListener('scroll',function(){
 
     // Voucher
     var discountTotal=params.voucherDisc||0;
-    var finalPrice=Math.max(priceWithSurcharges-discountTotal, vehicle.min_price||NLL_CFG.min_price||0);
+    var finalPrice=Math.max(priceWithSurcharges-discountTotal, vehicle.min_price||window.NLL_CFG.min_price||0);
 
     return {base:basePrice,surcharges:surchargeTotal,discounts:discountTotal,total:Math.round(finalPrice),method:pricingMethod,vehicle:vehicle};
   };
@@ -3140,7 +3144,7 @@ window.addEventListener('scroll',function(){
     });
   };
 
-  window.NLL_CFG=NLL_CFG;
+  window.NLL_CFG=window.NLL_CFG;
   console.log('[TaxiSaaS] Pricing Engine v1.0 ready');
 })();
 </script>
