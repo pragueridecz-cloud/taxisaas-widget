@@ -1896,6 +1896,7 @@
           isHoliday: false,
         },
         voucherDisc: window.vData ? window.vData.disc : 0,
+        onlineDiscount: document.getElementById('nll-pay-o') && document.getElementById('nll-pay-o').classList.contains('sel') ? 0.10 : 0,
       }).then(function(result) {
         if (!result) { nllUpdPriceFallback(); return; }
         nllLastPriceResult = result;
@@ -1958,6 +1959,8 @@
   window.nllSelPay=function(t){
     document.getElementById('nll-pay-d').classList.toggle('sel',t==='d');
     document.getElementById('nll-pay-o').classList.toggle('sel',t==='o');
+    // Prepocitej cenu pri zmene platby (10% sleva za online)
+    if(typeof window.nllUpdPrice==='function') setTimeout(window.nllUpdPrice, 50);
     var btn=document.getElementById('nll-submit-btn');
     if(btn){
       if(t==='o'){btn.innerHTML='Zaplatit kartou <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>';}
@@ -3179,6 +3182,10 @@ window.addEventListener('scroll',function(){
 
     // Voucher
     var discountTotal=params.voucherDisc||0;
+    // 10% sleva za online platbu predem
+    if(params.onlineDiscount&&params.onlineDiscount>0){
+      discountTotal+=Math.round(priceWithSurcharges*params.onlineDiscount);
+    }
     var finalPrice=Math.max(priceWithSurcharges-discountTotal, vehicle.min_price||window.NLL_CFG.min_price||0);
 
     return {base:basePrice,surcharges:surchargeTotal,discounts:discountTotal,total:Math.round(finalPrice),method:pricingMethod,vehicle:vehicle};
