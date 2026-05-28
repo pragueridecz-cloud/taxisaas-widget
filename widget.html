@@ -2970,6 +2970,27 @@ window.addEventListener('scroll',function(){
       var r3=await fetch(sbUrl+'/rest/v1/landmarks?select=*&is_active=eq.true&order=sort_order.asc',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
       var d3=await r3.json();
       if(d3&&d3.length) NLL_CFG.landmarks=d3;
+
+      // Nacti zony a matici z vlastnich tabulek
+      var r4=await fetch(sbUrl+'/rest/v1/pricing_zones?select=*&is_active=eq.true&order=sort_order.asc',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
+      var d4=await r4.json();
+      if(d4&&d4.length) NLL_CFG.pricing_zones=d4;
+
+      var r5=await fetch(sbUrl+'/rest/v1/zone_matrix?select=*',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
+      var d5=await r5.json();
+      if(d5&&d5.length){
+        // Preved matici na slovnik {fromId: {toId: prices}}
+        var matrix={};
+        d5.forEach(function(row){
+          var f=row.from_zone_id, t=row.to_zone_id;
+          if(!matrix[f]) matrix[f]={};
+          if(!matrix[t]) matrix[t]={};
+          matrix[f][t]=row.prices;
+          if(row.is_symmetric) matrix[t][f]=row.prices;
+        });
+        NLL_CFG.zone_matrix=matrix;
+      }
+      console.log('[TaxiSaaS] Zones loaded: '+NLL_CFG.pricing_zones.length+' zones, matrix keys: '+Object.keys(NLL_CFG.zone_matrix).length);
       console.log('[TaxiSaaS] Pricing loaded: vehicles='+NLL_CFG.vehicles.length+', landmarks='+NLL_CFG.landmarks.length+', distance_rows='+NLL_CFG.distance_rows.length);
     } catch(e){ console.warn('[TaxiSaaS] Pricing load error:',e); }
   };
