@@ -2059,6 +2059,7 @@ window.nllStripePay=function(){
         var dropoff=document.getElementById('nll-do')?document.getElementById('nll-do').value:'';
         var date=document.getElementById('nll-date')?document.getElementById('nll-date').value:'';
         var hour=document.getElementById('nll-hr')?parseInt(document.getElementById('nll-hr').value)||0:0;
+        if(typeof nllUpdPrice==='function') nllUpdPrice();
         document.querySelectorAll('.nll-vc').forEach(function(vcEl){
           var vid=vcEl.id.replace('nll-vc-','');
           if(!vid||!window.nllCurrentKm) return;
