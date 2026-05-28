@@ -177,7 +177,7 @@
 
 /* Autocomplete dropdown */
 .nll-ac-dd{
-  position:absolute;top:calc(100% + 3px);left:0;right:0;
+  position:fixed;
   background:#fff;border:1.5px solid var(--navy-mid);
   border-radius:6px;z-index:9999;display:none;
   box-shadow:0 12px 32px rgba(0,32,91,.18);
@@ -1707,6 +1707,15 @@
   }
 
   /* ===== AUTOCOMPLETE LETŮ ===== */
+  function nllAcPos(){
+    var inp=document.getElementById('nll-ac-inp');
+    var dd=document.getElementById('nll-ac-dd');
+    if(!inp||!dd) return;
+    var r=inp.getBoundingClientRect();
+    dd.style.top=(r.bottom+2)+'px';
+    dd.style.left=r.left+'px';
+    dd.style.width=r.width+'px';
+  }
   window.nllAcSearch=function(val){
     clearTimeout(nllAcTimer);
     var clear=document.getElementById('nll-ac-clear');
