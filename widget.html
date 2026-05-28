@@ -2545,7 +2545,7 @@ function gpIcon(ic){return '<svg width="14" height="14" viewBox="0 0 24 24" fill
 function gpPos(inp,id){
   var d=document.getElementById(id);if(!d)return;
   var r=inp.getBoundingClientRect();
-  d.style.top=(r.bottom+2)+'px';
+  d.style.top=(r.bottom+6)+'px';
   var rbox=inp.closest('.nll-rbox');
   if(rbox){
     var rb=rbox.getBoundingClientRect();
