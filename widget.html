@@ -1871,11 +1871,12 @@
     var hour = document.getElementById('nll-hr') ? parseInt(document.getElementById('nll-hr').value)||0 : 0;
 
     // Pokud máme pricing engine a km — použij ho
-    if (window.nllCalculatePrice && nllVeh.id && (window.nllCurrentKm || pickup)) {
+    var _veh = window.nllVeh || nllVeh;
+    if (window.nllCalculatePrice && _veh.id && (window.nllCurrentKm || pickup)) {
       window.nllCalculatePrice({
         pickup: pickup,
         dropoff: dropoff,
-        vehicleId: nllVeh.id,
+        vehicleId: _veh.id,
         km: window.nllCurrentKm,
         date: date,
         hour: hour,
