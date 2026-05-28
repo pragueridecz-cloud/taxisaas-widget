@@ -1890,16 +1890,9 @@
         var ps = nllFormatPrice(total);
         ['nll-price','nll-price2'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=ps;});
         // Aktualizuj ceny na kartach vozidel
-        var vcMap = {
-          'nll-vc-es': 'economy_sedan',
-          'nll-vc-ps': 'premium_sedan',
-          'nll-vc-ev': 'economy_van',
-          'nll-vc-pv': 'premium_van'
-        };
-        Object.keys(vcMap).forEach(function(vcId) {
-          var vcEl = document.getElementById(vcId);
-          if (!vcEl) return;
-          var vid = vcMap[vcId];
+        document.querySelectorAll('.nll-vc').forEach(function(vcEl) {
+          var vid = vcEl.id.replace('nll-vc-', '');
+          if (!vid) return;
           window.nllCalculatePrice({
             pickup: pickup, dropoff: dropoff, vehicleId: vid,
             km: window.nllCurrentKm, date: date, hour: hour,
@@ -1911,6 +1904,7 @@
             var priceEl = vcEl.querySelector('.nll-vc-price');
             if (priceEl) priceEl.textContent = nllFormatPrice(r.total);
           });
+        });
         });
         ['nll-stripe-amount','nll-stripe-btn-amt'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=ps;});
         // Zobraz způsob výpočtu
