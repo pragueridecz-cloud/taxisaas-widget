@@ -3007,7 +3007,8 @@ window.addEventListener('scroll',function(){
   function calcDistancePrice(km,vehicleId,vehicle){
     var rows=NLL_CFG.distance_rows;
     if(!rows||!rows.length) return null;
-    var total=vehicle.price||0;
+    // Stupnovany tarif - BEZ zakladni ceny vozidla
+    var total=0;
     var remaining=km;
     var sorted=rows.slice().sort(function(a,b){return a.km_from-b.km_from;});
     for(var i=0;i<sorted.length;i++){
@@ -3025,7 +3026,10 @@ window.addEventListener('scroll',function(){
       var lastRate=(last.prices&&last.prices[vehicleId])?last.prices[vehicleId]:0;
       total+=remaining*lastRate;
     }
-    return total;
+    // Zaokrouhli na desitky a aplikuj minimalni cenu
+    total=Math.round(total/10)*10;
+    var minPrice=vehicle.min_price||790;
+    return Math.max(total,minPrice);
   }
 
   function applySurcharge(s,base){
