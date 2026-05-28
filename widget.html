@@ -2546,8 +2546,16 @@ function gpPos(inp,id){
   var d=document.getElementById(id);if(!d)return;
   var r=inp.getBoundingClientRect();
   d.style.top=(r.bottom+2)+'px';
-  d.style.left=r.left+'px';
-  d.style.width=r.width+'px';
+  var rbox=inp.closest('.nll-rbox');
+  if(rbox){
+    var rb=rbox.getBoundingClientRect();
+    d.style.left=rb.left+'px';
+    d.style.width=rb.width+'px';
+  } else {
+    d.style.left=r.left+'px';
+    d.style.width=r.width+'px';
+  }
+  gpActiveInp=inp;gpActiveId=id;
 }
 function gpMakeItem(inpId,name,sub,ic,type,dropId,q,placeId){
   var main=name;
