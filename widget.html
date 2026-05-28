@@ -2459,6 +2459,21 @@ window.nllStripePay=function(){
   /* INIT */
   var today=new Date().toISOString().split('T')[0];
 
+  // Auto-detekce predvolby podle IP
+  (function(){
+    fetch('https://ipapi.co/json/')
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if(!d||!d.country_calling_code) return;
+        var prefix=d.country_calling_code;
+        var sel=document.getElementById('nll-phone-prefix');
+        if(!sel) return;
+        for(var i=0;i<sel.options.length;i++){
+          if(sel.options[i].value===prefix){sel.selectedIndex=i;break;}
+        }
+      }).catch(function(){});
+  })();
+
   /* Načti nastavení ze Supabase */
   window.nllLoadPricingData = async function(sbUrl, sbKey) {
     try {
