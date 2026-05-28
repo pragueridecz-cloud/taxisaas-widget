@@ -2404,7 +2404,58 @@ window.nllStripePay=function(){
   var today=new Date().toISOString().split('T')[0];
 
   /* Načti nastavení ze Supabase */
-  (async function nllLoadSettings(){
+  window.nllLoadPricingData = async function(sbUrl, sbKey) {
+    try {
+      var r1 = await fetch(sbUrl+'/rest/v1/tenant_settings?select=*&limit=1',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
+      var d1 = await r1.json();
+      if(d1&&d1.length){
+        var cfg=d1[0];
+        if(cfg.vehicles) NLL_CFG.vehicles=cfg.vehicles.filter(function(v){return v.active;});
+        if(cfg.min_price) NLL_CFG.min_price=cfg.min_price;
+        if(cfg.pricing_zones) NLL_CFG.pricing_zones=cfg.pricing_zones;
+        if(cfg.zone_matrix) NLL_CFG.zone_matrix=cfg.zone_matrix;
+        if(cfg.discounts) NLL_CFG.discounts=cfg.discounts;
+        NLL_CFG.surcharges={
+          night:   {enabled:cfg.surcharge_night_enabled||false,   type:cfg.surcharge_night_type||'fixed',   value:cfg.surcharge_night||0},
+          weekend: {enabled:cfg.surcharge_weekend_enabled||false, type:cfg.surcharge_weekend_type||'fixed', value:cfg.surcharge_weekend||0},
+          holiday: {enabled:cfg.surcharge_holiday_enabled||false, type:cfg.surcharge_holiday_type||'fixed', value:cfg.surcharge_holiday||0},
+          bike:    {enabled:true, type:cfg.surcharge_bike_type||'fixed', value:cfg.surcharge_bike||200},
+          ski:     {enabled:true, type:cfg.surcharge_ski_type||'fixed',  value:cfg.surcharge_ski||100},
+        };
+      }
+      var r2=await fetch(sbUrl+'/rest/v1/distance_pricing?select=*&order=km_from.asc',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
+      var d2=await r2.json();
+      if(d2&&d2.length) NLL_CFG.distance_rows=d2;
+      var r3=await fetch(sbUrl+'/rest/v1/landmarks?select=*&is_active=eq.true&order=sort_order.asc',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
+      var d3=await r3.json();
+      if(d3&&d3.length) NLL_CFG.landmarks=d3;
+
+      // Nacti zony a matici z vlastnich tabulek
+      var r4=await fetch(sbUrl+'/rest/v1/pricing_zones?select=*&is_active=eq.true&order=sort_order.asc',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
+      var d4=await r4.json();
+      if(d4&&d4.length) NLL_CFG.pricing_zones=d4;
+
+      var r5=await fetch(sbUrl+'/rest/v1/zone_matrix?select=*',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
+      var d5=await r5.json();
+      if(d5&&d5.length){
+        var matrix={};
+        d5.forEach(function(row){
+          var f=row.from_zone_id, t=row.to_zone_id;
+          if(!matrix[f]) matrix[f]={};
+          if(!matrix[t]) matrix[t]={};
+          // Uloz cely prices objekt {economy_sedan:X, economy_van:Y...}
+          matrix[f][t]=row.prices||{};
+          if(row.is_symmetric) matrix[t][f]=row.prices||{};
+        });
+        NLL_CFG.zone_matrix=matrix;
+        console.log('[TaxiSaaS] Zone matrix loaded: '+Object.keys(matrix).length+' zones');
+      }
+      console.log('[TaxiSaaS] Zones loaded: '+NLL_CFG.pricing_zones.length+' zones, matrix keys: '+Object.keys(NLL_CFG.zone_matrix).length);
+      console.log('[TaxiSaaS] Pricing loaded: vehicles='+NLL_CFG.vehicles.length+', landmarks='+NLL_CFG.landmarks.length+', distance_rows='+NLL_CFG.distance_rows.length);
+    } catch(e){ console.warn('[TaxiSaaS] Pricing load error:',e); }
+  };
+
+    (async function nllLoadSettings(){
     // Načti pricing data (landmarks, vzdálenostní ceník, zóny)
     if(window.nllLoadPricingData) {
       await window.nllLoadPricingData(NLL_SB_URL, NLL_SB_KEY);
@@ -2945,56 +2996,7 @@ window.addEventListener('scroll',function(){
     discounts: [], min_price: 200,
   };
 
-  window.nllLoadPricingData = async function(sbUrl, sbKey) {
-    try {
-      var r1 = await fetch(sbUrl+'/rest/v1/tenant_settings?select=*&limit=1',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
-      var d1 = await r1.json();
-      if(d1&&d1.length){
-        var cfg=d1[0];
-        if(cfg.vehicles) NLL_CFG.vehicles=cfg.vehicles.filter(function(v){return v.active;});
-        if(cfg.min_price) NLL_CFG.min_price=cfg.min_price;
-        if(cfg.pricing_zones) NLL_CFG.pricing_zones=cfg.pricing_zones;
-        if(cfg.zone_matrix) NLL_CFG.zone_matrix=cfg.zone_matrix;
-        if(cfg.discounts) NLL_CFG.discounts=cfg.discounts;
-        NLL_CFG.surcharges={
-          night:   {enabled:cfg.surcharge_night_enabled||false,   type:cfg.surcharge_night_type||'fixed',   value:cfg.surcharge_night||0},
-          weekend: {enabled:cfg.surcharge_weekend_enabled||false, type:cfg.surcharge_weekend_type||'fixed', value:cfg.surcharge_weekend||0},
-          holiday: {enabled:cfg.surcharge_holiday_enabled||false, type:cfg.surcharge_holiday_type||'fixed', value:cfg.surcharge_holiday||0},
-          bike:    {enabled:true, type:cfg.surcharge_bike_type||'fixed', value:cfg.surcharge_bike||200},
-          ski:     {enabled:true, type:cfg.surcharge_ski_type||'fixed',  value:cfg.surcharge_ski||100},
-        };
-      }
-      var r2=await fetch(sbUrl+'/rest/v1/distance_pricing?select=*&order=km_from.asc',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
-      var d2=await r2.json();
-      if(d2&&d2.length) NLL_CFG.distance_rows=d2;
-      var r3=await fetch(sbUrl+'/rest/v1/landmarks?select=*&is_active=eq.true&order=sort_order.asc',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
-      var d3=await r3.json();
-      if(d3&&d3.length) NLL_CFG.landmarks=d3;
 
-      // Nacti zony a matici z vlastnich tabulek
-      var r4=await fetch(sbUrl+'/rest/v1/pricing_zones?select=*&is_active=eq.true&order=sort_order.asc',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
-      var d4=await r4.json();
-      if(d4&&d4.length) NLL_CFG.pricing_zones=d4;
-
-      var r5=await fetch(sbUrl+'/rest/v1/zone_matrix?select=*',{headers:{'apikey':sbKey,'Authorization':'Bearer '+sbKey}});
-      var d5=await r5.json();
-      if(d5&&d5.length){
-        var matrix={};
-        d5.forEach(function(row){
-          var f=row.from_zone_id, t=row.to_zone_id;
-          if(!matrix[f]) matrix[f]={};
-          if(!matrix[t]) matrix[t]={};
-          // Uloz cely prices objekt {economy_sedan:X, economy_van:Y...}
-          matrix[f][t]=row.prices||{};
-          if(row.is_symmetric) matrix[t][f]=row.prices||{};
-        });
-        NLL_CFG.zone_matrix=matrix;
-        console.log('[TaxiSaaS] Zone matrix loaded: '+Object.keys(matrix).length+' zones');
-      }
-      console.log('[TaxiSaaS] Zones loaded: '+NLL_CFG.pricing_zones.length+' zones, matrix keys: '+Object.keys(NLL_CFG.zone_matrix).length);
-      console.log('[TaxiSaaS] Pricing loaded: vehicles='+NLL_CFG.vehicles.length+', landmarks='+NLL_CFG.landmarks.length+', distance_rows='+NLL_CFG.distance_rows.length);
-    } catch(e){ console.warn('[TaxiSaaS] Pricing load error:',e); }
-  };
 
   function findLandmark(address){
     if(!address||!NLL_CFG.landmarks.length) return null;
@@ -3103,6 +3105,9 @@ window.addEventListener('scroll',function(){
 
     // Fallback
     if(basePrice===null){basePrice=vehicle.price||0;pricingMethod='base';}
+
+    console.log('[PRICE DEBUG] method='+pricingMethod+' base='+basePrice+' km='+(params.km||0)+' vehicle='+params.vehicleId);
+    console.log('[PRICE DEBUG] distance_rows='+NLL_CFG.distance_rows.length+' zones='+NLL_CFG.pricing_zones.length+' matrix_keys='+Object.keys(NLL_CFG.zone_matrix||{}).length);
 
     // Zpáteční
     if(params.isReturn) basePrice=basePrice*2;
