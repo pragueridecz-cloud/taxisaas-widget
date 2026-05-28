@@ -1862,7 +1862,7 @@
     el.classList.add('sel');nllVeh={n:name,p:price,id:el.id.replace('nll-vc-','')};nllUpdPrice();
   };
 
-  function nllUpdPrice(){
+  window.nllUpdPrice=function nllUpdPrice(){
     var pickup = document.getElementById('nll-pu') ? document.getElementById('nll-pu').value : '';
     var dropoff = document.getElementById('nll-do') ? document.getElementById('nll-do').value : '';
     var date = document.getElementById('nll-date') ? document.getElementById('nll-date').value : '';
