@@ -1964,7 +1964,14 @@
     inp.value=v;
   };
 
-  window.nllStripePay=function(){
+  window.nllOpenStripe=function(){
+  if(!window.NLL_STRIPE_PK){
+    alert('Platba kartou není dostupná. Kontaktujte nás pro platbu převodem.');
+    return;
+  }
+  document.getElementById('nll-stripe-overlay') && (document.getElementById('nll-stripe-overlay').classList.add('show'));
+};
+window.nllStripePay=function(){
     var num=document.getElementById('nll-card-num').value.replace(/\s/g,'');
     var exp=document.getElementById('nll-card-exp').value;
     var cvc=document.getElementById('nll-card-cvc').value;
@@ -2433,6 +2440,27 @@
       /* Google Maps klíč */
       if (cfg.google_maps_key) {
         GP_KEY = cfg.google_maps_key;
+      }
+
+      /* Stripe veřejný klíč */
+      if (cfg.stripe_public_key) {
+        window.NLL_STRIPE_PK = cfg.stripe_public_key;
+        // Načti Stripe.js pokud ještě není
+        if (!window.Stripe && !document.getElementById('nll-stripe-js')) {
+          var s = document.createElement('script');
+          s.id = 'nll-stripe-js';
+          s.src = 'https://js.stripe.com/v3/';
+          s.async = true;
+          s.onload = function() {
+            if (window.Stripe && window.NLL_STRIPE_PK) {
+              window._stripe = window.Stripe(window.NLL_STRIPE_PK);
+              console.log('[Stripe] Initialized with key from Supabase');
+            }
+          };
+          document.head.appendChild(s);
+        } else if (window.Stripe) {
+          window._stripe = window.Stripe(window.NLL_STRIPE_PK);
+        }
       }
 
       /* Příplatky */
