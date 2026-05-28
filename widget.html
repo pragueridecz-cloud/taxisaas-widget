@@ -8,37 +8,12 @@
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --navy:#00205B;--navy-mid:#075aaa;--navy-light:#1a6ec0;
-  --red:#FF6B00;--white:#fff;--off:#F4F6FA;
+  --red:#C8102E;--white:#fff;--off:#F4F6FA;
   --muted:#4a5f7a;--border:#d0dae8;--borderl:#e8eef6;
   --gold:#C9A84C;--green:#27ae60;
 }
 .nll-w{width:100%;background:#fff;border-radius:8px;box-shadow:0 32px 80px rgba(0,32,91,.18);overflow:visible;font-family:'Montserrat',sans-serif}
 .nll-w *{box-sizing:border-box;font-family:'Montserrat',sans-serif}
-
-.nll-inp-wrap{position:relative;display:flex;align-items:center;width:100%}
-.nll-inp-wrap .nll-rinp,.nll-inp-wrap .nll-inp{padding-right:32px!important;width:100%;flex:1}
-.nll-inp-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;line-height:1;padding:0;display:none;opacity:.6}
-.nll-inp-clear:hover{opacity:1}
-.nll-inp-clear.show{display:block}
-
-/* ===== TIME PICKER ===== */
-.nll-tp-wrap{position:relative}
-.nll-tp-btn{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--borderl);border-radius:5px;padding:10px 13px;color:var(--navy);font-size:13px;font-weight:700;width:100%;cursor:pointer;font-family:'Montserrat',sans-serif;text-align:left;outline:none;transition:border-color .2s}
-.nll-tp-btn:focus,.nll-tp-btn:hover{border-color:var(--navy-mid)}
-.nll-tp-panel{position:fixed;background:#fff;border:1.5px solid var(--borderl);border-radius:10px;box-shadow:0 8px 32px rgba(0,32,91,.16);z-index:99999;display:none;min-width:180px}
-.nll-tp-panel.open{display:block}
-.nll-tp-cols{display:flex}
-.nll-tp-col{flex:1;max-height:200px;overflow-y:auto;scrollbar-width:thin;border-right:1px solid var(--borderl)}
-.nll-tp-col:last-child{border-right:none}
-.nll-tp-col::-webkit-scrollbar{width:3px}
-.nll-tp-col::-webkit-scrollbar-thumb{background:var(--borderl);border-radius:2px}
-.nll-tp-col-hdr{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;padding:8px;text-align:center;position:sticky;top:0;background:#fff;border-bottom:1px solid var(--borderl)}
-.nll-tp-item{font-size:13px;font-weight:600;color:var(--navy);padding:7px 16px;cursor:pointer;text-align:center;transition:background .1s}
-.nll-tp-item:hover{background:rgba(7,90,170,.06)}
-.nll-tp-item.sel{background:var(--navy);color:#fff}
-.nll-tp-footer{padding:8px}
-.nll-tp-ok{width:100%;padding:8px;background:var(--navy);color:#fff;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif}
-.nll-tp-ok:hover{background:var(--navy-mid)}
 
 /* TOP */
 .nll-top{background:var(--navy);border-radius:8px 8px 0 0;padding:16px 32px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
@@ -104,7 +79,7 @@
 .nll-ddf svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.5;flex-shrink:0}
 
 /* DATUM + ČAS — nový blok */
-.nll-dtg{display:grid;gap:10px;margin-bottom:16px}
+.nll-dtg{display:grid;gap:10px;margin-bottom:16px;overflow:hidden}
 .nll-dtg.cols4{grid-template-columns:1.3fr 0.7fr 0.65fr 0.9fr}
 .nll-dtg.cols3{grid-template-columns:1fr 1fr 1fr}
 .nll-fg{display:flex;flex-direction:column;gap:5px}
@@ -722,25 +697,25 @@
         <div class="nll-rbox" style="position:relative">
           <div class="nll-rrow">
             <div class="nll-rdot"></div>
-            <div class="nll-inp-wrap"><input class="nll-rinp" id="nll-pu" placeholder="Místo vyzvednutí..." autocomplete="off" oninput="gpInput(this,'gp-pu')" onfocus="gpFocus(this,'gp-pu')" onblur="setTimeout(function(){gpHide('gp-pu')},200)"><button class="nll-inp-clear" id="nll-clr-nll-pu" onclick="nllClearInp('nll-pu','gp-pu')" tabindex="-1">&#215;</button></div>
+            <input class="nll-rinp" id="nll-pu" placeholder="Místo vyzvednutí..." autocomplete="off" oninput="gpInput(this,'gp-pu')" onfocus="gpFocus(this,'gp-pu')" onblur="setTimeout(function(){gpHide('gp-pu')},200)">
             <div class="nll-gp-drop" id="gp-pu"></div>
           </div>
           <!-- Zastávka 1 -->
           <div class="nll-rrow" id="nll-stop1-row" style="display:none">
             <div style="width:11px;height:11px;border-radius:3px;background:var(--gold);flex-shrink:0"></div>
-            <div class="nll-inp-wrap"><input class="nll-rinp" id="nll-stop1" placeholder="Zastávka 1..." autocomplete="off" oninput="gpInput(this,'gp-stop1')" onfocus="gpFocus(this,'gp-stop1')" onblur="setTimeout(function(){gpHide('gp-stop1')},200)"><button class="nll-inp-clear" id="nll-clr-nll-stop1" onclick="nllClearInp('nll-stop1','gp-stop1')" tabindex="-1">&#215;</button></div><span style="font-size:10px;color:var(--muted);font-weight:700;margin-left:6px;flex-shrink:0">ČEKÁNÍ V DESTINACI:</span><span style="display:inline-flex;align-items:center;border:1px solid var(--borderl);border-radius:5px;overflow:hidden;margin-left:4px;flex-shrink:0"><select id="nll-stop1-wait-h" onchange="nllUpdPrice()" style="font-size:11px;border:none;border-right:1px solid var(--borderl);padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">0h</option><option value="1">1h</option><option value="2">2h</option><option value="3">3h</option><option value="4">4h</option><option value="5">5h</option><option value="6">6h</option></select><span style="font-size:11px;color:var(--muted);padding:0 2px;font-weight:700">:</span><select id="nll-stop1-wait-m" onchange="nllUpdPrice()" style="font-size:11px;border:none;padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">00</option><option value="0.25">15</option><option value="0.5">30</option><option value="0.75">45</option></select></span>
+            <input class="nll-rinp" id="nll-stop1" placeholder="Zastávka 1..." autocomplete="off" oninput="gpInput(this,'gp-stop1')" onfocus="gpFocus(this,'gp-stop1')" onblur="setTimeout(function(){gpHide('gp-stop1')},200)"><span style="font-size:10px;color:var(--muted);font-weight:700;margin-left:6px;flex-shrink:0">ČEKÁNÍ V DESTINACI:</span><span style="display:inline-flex;align-items:center;border:1px solid var(--borderl);border-radius:5px;overflow:hidden;margin-left:4px;flex-shrink:0"><select id="nll-stop1-wait-h" onchange="nllUpdPrice()" style="font-size:11px;border:none;border-right:1px solid var(--borderl);padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">0h</option><option value="1">1h</option><option value="2">2h</option><option value="3">3h</option><option value="4">4h</option><option value="5">5h</option><option value="6">6h</option></select><span style="font-size:11px;color:var(--muted);padding:0 2px;font-weight:700">:</span><select id="nll-stop1-wait-m" onchange="nllUpdPrice()" style="font-size:11px;border:none;padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">00</option><option value="0.25">15</option><option value="0.5">30</option><option value="0.75">45</option></select></span>
             <button onclick="nllRemoveStop(1)" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px;flex-shrink:0">&#215;</button>
             <div class="nll-gp-drop" id="gp-stop1"></div>
           </div>
           <div class="nll-rrow" id="nll-stop2-row" style="display:none">
             <div style="width:11px;height:11px;border-radius:3px;background:var(--gold);flex-shrink:0"></div>
-            <div class="nll-inp-wrap"><input class="nll-rinp" id="nll-stop2" placeholder="Zastávka 2..." autocomplete="off" oninput="gpInput(this,'gp-stop2')" onfocus="gpFocus(this,'gp-stop2')" onblur="setTimeout(function(){gpHide('gp-stop2')},200)"><button class="nll-inp-clear" id="nll-clr-nll-stop2" onclick="nllClearInp('nll-stop2','gp-stop2')" tabindex="-1">&#215;</button></div><span style="font-size:10px;color:var(--muted);font-weight:700;margin-left:6px;flex-shrink:0">ČEKÁNÍ V DESTINACI:</span><span style="display:inline-flex;align-items:center;border:1px solid var(--borderl);border-radius:5px;overflow:hidden;margin-left:4px;flex-shrink:0"><select id="nll-stop2-wait-h" onchange="nllUpdPrice()" style="font-size:11px;border:none;border-right:1px solid var(--borderl);padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">0h</option><option value="1">1h</option><option value="2">2h</option><option value="3">3h</option><option value="4">4h</option><option value="5">5h</option><option value="6">6h</option></select><span style="font-size:11px;color:var(--muted);padding:0 2px;font-weight:700">:</span><select id="nll-stop2-wait-m" onchange="nllUpdPrice()" style="font-size:11px;border:none;padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">00</option><option value="0.25">15</option><option value="0.5">30</option><option value="0.75">45</option></select></span>
+            <input class="nll-rinp" id="nll-stop2" placeholder="Zastávka 2..." autocomplete="off" oninput="gpInput(this,'gp-stop2')" onfocus="gpFocus(this,'gp-stop2')" onblur="setTimeout(function(){gpHide('gp-stop2')},200)"><span style="font-size:10px;color:var(--muted);font-weight:700;margin-left:6px;flex-shrink:0">ČEKÁNÍ V DESTINACI:</span><span style="display:inline-flex;align-items:center;border:1px solid var(--borderl);border-radius:5px;overflow:hidden;margin-left:4px;flex-shrink:0"><select id="nll-stop2-wait-h" onchange="nllUpdPrice()" style="font-size:11px;border:none;border-right:1px solid var(--borderl);padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">0h</option><option value="1">1h</option><option value="2">2h</option><option value="3">3h</option><option value="4">4h</option><option value="5">5h</option><option value="6">6h</option></select><span style="font-size:11px;color:var(--muted);padding:0 2px;font-weight:700">:</span><select id="nll-stop2-wait-m" onchange="nllUpdPrice()" style="font-size:11px;border:none;padding:2px 3px;color:var(--muted);background:#fff;cursor:pointer;font-family:Montserrat,sans-serif"><option value="0">00</option><option value="0.25">15</option><option value="0.5">30</option><option value="0.75">45</option></select></span>
             <button onclick="nllRemoveStop(2)" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:0 4px;flex-shrink:0">&#215;</button>
             <div class="nll-gp-drop" id="gp-stop2"></div>
           </div>
           <div class="nll-rrow">
             <div class="nll-rdot dest"></div>
-            <div class="nll-inp-wrap"><input class="nll-rinp" id="nll-do" placeholder="Cíl cesty..." autocomplete="off" oninput="gpInput(this,'gp-do')" onfocus="gpFocus(this,'gp-do')" onblur="setTimeout(function(){gpHide('gp-do')},200)"><button class="nll-inp-clear" id="nll-clr-nll-do" onclick="nllClearInp('nll-do','gp-do')" tabindex="-1">&#215;</button></div>
+            <input class="nll-rinp" id="nll-do" placeholder="Cíl cesty..." autocomplete="off" oninput="gpInput(this,'gp-do')" onfocus="gpFocus(this,'gp-do')" onblur="setTimeout(function(){gpHide('gp-do')},200)">
             <div class="nll-gp-drop" id="gp-do"></div>
           </div>
           <div style="padding:8px 12px;border-top:1px solid var(--borderl)">
@@ -751,47 +726,38 @@
           </div>
         </div>
 
-        <!-- Datum + cas + cestujici grid -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;border:1.5px solid var(--borderl);border-radius:8px;overflow:visible;margin-bottom:16px">
-          <div style="padding:12px 16px;border-right:1px solid var(--borderl);border-bottom:1px solid var(--borderl)">
-            <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);margin-bottom:6px">DATUM JÍZDY</div>
-            <input type="date" id="nll-date" style="border:none;outline:none;font-size:15px;font-weight:700;color:var(--navy);font-family:Montserrat,sans-serif;width:100%;background:transparent;cursor:pointer;padding:0">
+        <!-- Datum + ČAS v jednom poli -->
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px;margin-bottom:6px">
+          <div class="nll-fg">
+            <div class="nll-lbl">Datum jízdy</div>
+            <input class="nll-inp" type="date" id="nll-date" style="min-width:0;padding:10px 8px;width:100%">
           </div>
-          <div style="padding:12px 16px;border-bottom:1px solid var(--borderl);overflow:visible;position:relative">
-            <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);margin-bottom:6px">ČAS ODJEZDU</div>
-            <div class="nll-tp-wrap" style="position:static">
-              <button type="button" onclick="nllTpToggle('1')" id="nll-tp-1-btn" style="border:none;background:transparent;padding:0;cursor:pointer;font-size:15px;font-weight:700;color:var(--navy);font-family:Montserrat,sans-serif;display:flex;align-items:center;gap:8px">
-                <span>08:00</span>
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.4"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              </button>
-              <div class="nll-tp-panel" id="nll-tp-1-panel">
-                <div class="nll-tp-cols">
-                  <div class="nll-tp-col" id="nll-tp-1-h"><div class="nll-tp-col-hdr">HOD</div></div>
-                  <div class="nll-tp-col" id="nll-tp-1-m"><div class="nll-tp-col-hdr">MIN</div></div>
-                </div>
-                <div class="nll-tp-footer"><button class="nll-tp-ok" onclick="nllTpConfirm('1','nll-hr-val','nll-mn-val')">OK</button></div>
-              </div>
-              <input type="hidden" id="nll-hr-val" value="8">
-              <input type="hidden" id="nll-mn-val" value="0">
-            </div>
-            <select id="nll-hr" style="display:none"></select>
-            <select id="nll-mn" style="display:none"></select>
+          <div class="nll-fg">
+            <div class="nll-lbl">Hodina</div>
+            <select class="nll-sel" id="nll-hr" style="min-width:0"></select>
           </div>
-          <div style="padding:12px 16px;border-right:1px solid var(--borderl)">
-            <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);margin-bottom:6px">CESTUJÍCÍ</div>
-            <select id="nll-pax" onchange="nllCheckV()" style="border:none;outline:none;font-size:15px;font-weight:700;color:var(--navy);font-family:Montserrat,sans-serif;width:100%;background:transparent;cursor:pointer;padding:0;-webkit-appearance:none">
-              <option value="1">1 osoba</option><option value="2">2 osoby</option>
-              <option value="3">3 osoby</option><option value="4">4 osoby</option>
-              <option value="5">5–6 osob</option><option value="7">7+ osob</option>
+          <div class="nll-fg">
+            <div class="nll-lbl">Minuta</div>
+            <select class="nll-sel" id="nll-mn" style="min-width:0"></select>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px;margin-bottom:16px">
+          <div class="nll-fg">
+            <div class="nll-lbl">Cestující</div>
+            <select class="nll-sel" id="nll-pax" onchange="nllCheckV()">
+              <option value="1">1 os.</option><option value="2">2 os.</option>
+              <option value="3">3 os.</option><option value="4">4 os.</option>
+              <option value="5">5–6 os.</option><option value="7">7+ os.</option>
             </select>
           </div>
-          <div style="padding:12px 16px">
-            <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);margin-bottom:6px">ZAVAZADLA</div>
-            <select id="nll-lug" onchange="nllCheckV()" style="border:none;outline:none;font-size:15px;font-weight:700;color:var(--navy);font-family:Montserrat,sans-serif;width:100%;background:transparent;cursor:pointer;padding:0;-webkit-appearance:none">
+          <div class="nll-fg">
+            <div class="nll-lbl">Zavazadla</div>
+            <select class="nll-sel" id="nll-lug" onchange="nllCheckV()">
               <option value="0">Bez zavazadel</option><option value="1">1 kufr</option>
               <option value="2">2 kufry</option><option value="3">3 kufry</option><option value="4">4+ kufry</option>
             </select>
           </div>
+          <div></div>
         </div>
 
         <!-- Route info -->
@@ -1204,16 +1170,18 @@
       </div>
 
       <!-- Místo + čas vyzvednutí -->
-      <div class="nll-dtg" style="grid-template-columns:1.4fr 1fr;margin-bottom:10px;overflow:visible">
-        <div class="nll-fg" style="overflow:visible"><div class="nll-lbl">Místo vyzvednutí</div><div style="position:relative;overflow:visible"><div class="nll-inp-wrap"><input class="nll-inp" id="nll-hpu" placeholder="Adresa..." autocomplete="off" oninput="gpInput(this,'gp-hpu')" onfocus="gpFocus(this,'gp-hpu')" onblur="setTimeout(function(){gpHide('gp-hpu')},200)"><button class="nll-inp-clear" id="nll-clr-nll-hpu" onclick="nllClearInp('nll-hpu','gp-hpu')" tabindex="-1">&#215;</button></div><div class="nll-gp-drop" id="gp-hpu"></div></div></div>
+      <div class="nll-dtg" style="grid-template-columns:1.4fr 1fr;margin-bottom:10px">
+        <div class="nll-fg"><div class="nll-lbl">Místo vyzvednutí</div><div style="position:relative"><input class="nll-inp" id="nll-hpu" placeholder="Adresa..." autocomplete="off" oninput="gpInput(this,'gp-hpu')" onfocus="gpFocus(this,'gp-hpu')" onblur="setTimeout(function(){gpHide('gp-hpu')},200)"><div class="nll-gp-drop" id="gp-hpu"></div></div></div>
         <div class="nll-fg"><div class="nll-lbl">Datum</div><input class="nll-inp" type="date" id="nll-hdate"></div>
       </div>
-      <div style="margin-bottom:16px">
+      <div class="nll-dtg" style="grid-template-columns:0.7fr 0.65fr;margin-bottom:16px">
         <div class="nll-fg">
-          <div class="nll-lbl">Čas odjezdu</div>
-          <div class="nll-tp-wrap"><button type="button" class="nll-tp-btn" id="nll-tp-h-btn" onclick="nllTpToggle('h')"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="opacity:.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>08:00</span></button><div class="nll-tp-panel" id="nll-tp-h-panel"><div class="nll-tp-cols"><div class="nll-tp-col" id="nll-tp-h-h"><div class="nll-tp-col-hdr">HOD</div></div><div class="nll-tp-col" id="nll-tp-h-m"><div class="nll-tp-col-hdr">MIN</div></div></div><div class="nll-tp-footer"><button class="nll-tp-ok" onclick="nllTpConfirmH()">OK</button></div></div></div>
-          <select id="nll-hhr" style="display:none"></select>
-          <select id="nll-hmn" style="display:none"></select>
+          <div class="nll-lbl">Hodina</div>
+          <select class="nll-sel" id="nll-hhr"></select>
+        </div>
+        <div class="nll-fg">
+          <div class="nll-lbl">Minuta</div>
+          <select class="nll-sel" id="nll-hmn"></select>
         </div>
       </div>
 
@@ -1234,7 +1202,7 @@
         <div class="nll-er-other" id="nll-er-other-field">
           <div class="nll-fg" style="margin-top:10px">
             <div class="nll-lbl">Adresa ukončení jízdy</div>
-            <div style="position:relative"><div class="nll-inp-wrap"><input class="nll-inp" id="nll-hend" placeholder="Kam vás zavést na konci jízdy?" autocomplete="off" oninput="gpInput(this,'gp-hend')" onfocus="gpFocus(this,'gp-hend')" onblur="setTimeout(function(){gpHide('gp-hend')},200)"><button class="nll-inp-clear" id="nll-clr-nll-hend" onclick="nllClearInp('nll-hend','gp-hend')" tabindex="-1">&#215;</button></div><div class="nll-gp-drop" id="gp-hend"></div></div>
+            <div style="position:relative"><input class="nll-inp" id="nll-hend" placeholder="Kam vás zavést na konci jízdy?" autocomplete="off" oninput="gpInput(this,'gp-hend')" onfocus="gpFocus(this,'gp-hend')" onblur="setTimeout(function(){gpHide('gp-hend')},200)"><div class="nll-gp-drop" id="gp-hend"></div></div>
           </div>
         </div>
       </div>
@@ -2575,25 +2543,13 @@ function gpSVG(ic){
   return '<path d="M3 17h18M3 7h18M5 17V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10"/><circle cx="8" cy="17" r="1" fill="currentColor"/><circle cx="16" cy="17" r="1" fill="currentColor"/>';
 }
 function gpIcon(ic){return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#075aaa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px">'+gpSVG(ic)+'</svg>';}
-var gpActiveInp=null,gpActiveId=null;
 function gpPos(inp,id){
   var d=document.getElementById(id);if(!d)return;
   var r=inp.getBoundingClientRect();
   d.style.top=(r.bottom+2)+'px';
   d.style.left=r.left+'px';
   d.style.width=r.width+'px';
-  gpActiveInp=inp;gpActiveId=id;
 }
-window.addEventListener('scroll',function(){
-  if(gpActiveInp&&gpActiveId){
-    var d=document.getElementById(gpActiveId);
-    if(d&&d.classList.contains('open')){
-      var r=gpActiveInp.getBoundingClientRect();
-      d.style.top=(r.bottom+2)+'px';
-      d.style.left=r.left+'px';
-    }
-  }
-},true);
 function gpMakeItem(inpId,name,sub,ic,type,dropId,q,placeId){
   var main=name;
   if(q){var i=name.toLowerCase().indexOf(q.toLowerCase());if(i>=0)main=name.slice(0,i)+'<b>'+name.slice(i,i+q.length)+'</b>'+name.slice(i+q.length);}
@@ -2606,7 +2562,7 @@ function gpMakeItem(inpId,name,sub,ic,type,dropId,q,placeId){
 function gpShowDefs(inp,id,q){
   var drop=document.getElementById(id);if(!drop)return;
   var key=id==='gp-pu'?'pu':'do';
-  var inpId=id.replace('gp-','nll-');
+  var inpId=id==='gp-pu'?'nll-pu':'nll-do';
   var items=q?GP_DEF[key].filter(function(d){return d.n.toLowerCase().indexOf(q.toLowerCase())>=0;}):GP_DEF[key];
   if(!items.length&&q){drop.classList.remove('open');return;}
   drop.innerHTML='';
@@ -2659,8 +2615,6 @@ async function gpFetchStop(inp,id,q){
 window.gpHide=function(id){var d=document.getElementById(id);if(d)d.classList.remove('open');};
 window.gpInput=function(inp,id){
   gpPos(inp,id);
-  var clr=document.getElementById('nll-clr-'+inp.id);
-  if(clr){clr.classList.toggle('show',inp.value.length>0);}
   var q=inp.value.trim();
   if(q.length<2){gpShowDefs(inp,id,'');return;}
   gpShowDefs(inp,id,q);
@@ -2670,7 +2624,6 @@ window.gpInput=function(inp,id){
 window.gpPick=function(inpId,val,type,dropId,placeId){
   var el=document.getElementById(inpId);if(el)el.value=val;
   gpHide(dropId);
-  var clr=document.getElementById('nll-clr-'+inpId);if(clr)clr.classList.add('show');
   if(type&&inpId==='nll-pu'){
     window.nllPuType=type;
     nllUpdateTransportField();
@@ -2696,10 +2649,6 @@ window.gpPick=function(inpId,val,type,dropId,placeId){
   var pu=document.getElementById('nll-pu');
   var doV=document.getElementById('nll-do');
   if(pu&&doV&&pu.value.trim()&&doV.value.trim()) setTimeout(nllCalcRoute,200);
-  // Pro hodinový pronájem - zavři dropdown a nic dalšího
-  if(inpId==='nll-hpu'||inpId==='nll-hend'){
-    gpHide(dropId);
-  }
 };
 
 function nllUpdateTransportField(){
@@ -2721,7 +2670,7 @@ function nllUpdateTransportField(){
 }
 async function gpFetch(inp,id,q){
   if(!gpReady||!window.google){gpShowDefs(inp,id,q);return;}
-  var inpId=id.replace('gp-','nll-');
+  var inpId=id==='gp-pu'?'nll-pu':'nll-do';
   var drop=document.getElementById(id);if(!drop)return;
 
   // Oblíbené lokace ze Supabase (landmarks)
@@ -2848,18 +2797,6 @@ function vUpdPrice(){
     return Math.round(total * (nllVeh.hourly_rate || nllVeh.p || 0));
   }
 
-
-  window.nllClearInp = function(inpId, dropId) {
-    var el = document.getElementById(inpId);
-    if (el) { el.value = ''; el.focus(); }
-    if (dropId) gpHide(dropId);
-    var btn = document.getElementById('nll-clr-'+inpId);
-    if (btn) btn.classList.remove('show');
-    if (inpId === 'nll-pu') { window.nllPuType = null; }
-    var ri = document.getElementById('nll-route-info');
-    if (ri) ri.classList.remove('show');
-  };
-
   window.nllSwapAddresses = function() {
     var pu = document.getElementById('nll-pu');
     var doEl = document.getElementById('nll-do');
@@ -2930,6 +2867,20 @@ function vUpdPrice(){
   }
 
 })();
+
+window.addEventListener('scroll',function(){
+  document.querySelectorAll('.nll-gp-drop.open').forEach(function(d){
+    var inpId=d.id.replace('gp-','nll-');
+    var inp=document.getElementById(inpId);
+    if(inp){
+      var r=inp.getBoundingClientRect();
+      d.style.top=(r.bottom+2)+'px';
+      d.style.left=r.left+'px';
+      d.style.width=r.width+'px';
+    }
+  });
+},true);
+
 </script>
 
 <!-- TaxiSaaS Pricing Engine -->
@@ -3110,75 +3061,4 @@ function vUpdPrice(){
   window.NLL_CFG=NLL_CFG;
   console.log('[TaxiSaaS] Pricing Engine v1.0 ready');
 })();
-</script>
-<script>
-window._nllTp={};
-window.nllTpToggle=function(tid){
-  var tp=window._nllTp;
-  if(!tp[tid]){
-    var h=new Date().getHours()+1;if(h>23)h=8;
-    tp[tid]={h:h,m:0};
-    function pad(n){return String(n).padStart(2,'0');}
-    var hC=document.getElementById('nll-tp-'+tid+'-h');
-    var mC=document.getElementById('nll-tp-'+tid+'-m');
-    if(hC){
-      var hH=hC.querySelector('.nll-tp-col-hdr');hC.innerHTML='';if(hH)hC.appendChild(hH);
-      for(var i=0;i<24;i++){
-        var e=document.createElement('div');e.className='nll-tp-item'+(i===tp[tid].h?' sel':'');e.textContent=pad(i);
-        (function(hh){e.onclick=function(){tp[tid].h=hh;hC.querySelectorAll('.nll-tp-item').forEach(function(x){x.classList.remove('sel');});this.classList.add('sel');nllTpUpdateBtn(tid);};})(i);
-        hC.appendChild(e);
-      }
-    }
-    if(mC){
-      var mH=mC.querySelector('.nll-tp-col-hdr');mC.innerHTML='';if(mH)mC.appendChild(mH);
-      for(var m=0;m<60;m+=5){
-        var e=document.createElement('div');e.className='nll-tp-item'+(m===0?' sel':'');e.textContent=pad(m);
-        (function(mm2){e.onclick=function(){tp[tid].m=mm2;mC.querySelectorAll('.nll-tp-item').forEach(function(x){x.classList.remove('sel');});this.classList.add('sel');nllTpUpdateBtn(tid);};})(m);
-        mC.appendChild(e);
-      }
-    }
-    setTimeout(function(){var sel=hC&&hC.querySelector('.sel');if(sel)sel.scrollIntoView({block:'center'});},50);
-  }
-  var panel=document.getElementById('nll-tp-'+tid+'-panel');
-  if(!panel)return;
-  var isOpen=panel.classList.contains('open');
-  document.querySelectorAll('.nll-tp-panel.open').forEach(function(p){p.classList.remove('open');});
-  if(!isOpen){
-    panel.classList.add('open');
-    var btn=document.getElementById('nll-tp-'+tid+'-btn');
-    if(btn){var r=btn.getBoundingClientRect();panel.style.top=(r.bottom+4)+'px';panel.style.left=r.left+'px';panel.style.width=r.width+'px';}
-  }
-};
-window.nllTpUpdateBtn=function(tid){
-  var s=window._nllTp[tid];if(!s)return;
-  function pad(n){return String(n).padStart(2,'0');}
-  var btn=document.getElementById('nll-tp-'+tid+'-btn');
-  if(btn){var sp=btn.querySelector('span');if(sp)sp.textContent=pad(s.h)+':'+pad(s.m);}
-};
-window.nllTpConfirmH=function(){
-  var s=window._nllTp['h'];if(!s)return;
-  function pad(n){return String(n).padStart(2,'0');}
-  var hr=document.getElementById('nll-hhr');var mn=document.getElementById('nll-hmn');
-  if(hr)hr.value=s.h;if(mn)mn.value=s.m;
-  nllTpUpdateBtn('h');
-  var panel=document.getElementById('nll-tp-h-panel');
-  if(panel)panel.classList.remove('open');
-};
-window.nllTpConfirm=function(tid,hrId,mnId){
-  var s=window._nllTp[tid];if(!s)return;
-  function pad(n){return String(n).padStart(2,'0');}
-  var hf=document.getElementById(hrId);var mf=document.getElementById(mnId);
-  if(hf)hf.value=s.h;if(mf)mf.value=s.m;
-  nllTpUpdateBtn(tid);
-  var panel=document.getElementById('nll-tp-'+tid+'-panel');
-  if(panel)panel.classList.remove('open');
-  var hr=document.getElementById('nll-hr');var mn=document.getElementById('nll-mn');
-  if(hr)hr.value=s.h;if(mn)mn.value=s.m;
-};
-document.addEventListener('click',function(e){
-  document.querySelectorAll('.nll-tp-panel.open').forEach(function(p){
-    var btn=document.getElementById(p.id.replace('-panel','-btn'));
-    if(btn&&!btn.contains(e.target)&&!p.contains(e.target))p.classList.remove('open');
-  });
-});
 </script>
