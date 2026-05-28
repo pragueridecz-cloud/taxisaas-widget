@@ -2471,6 +2471,7 @@ window.nllStripePay=function(){
       /* Vozidla */
       if (cfg.vehicles && cfg.vehicles.length) {
         var activeV = cfg.vehicles.filter(function(v){ return v.active; });
+        NLL_CFG.vehicles = activeV;
         nllApplyVehicles(activeV);
       }
 
