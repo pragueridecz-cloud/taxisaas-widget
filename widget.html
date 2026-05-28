@@ -1861,7 +1861,7 @@
   window.nllSelV=function(el,name,price){
     if(!el||el.classList.contains('dis'))return;
     document.querySelectorAll('.nll-vc').forEach(function(c){c.classList.remove('sel')});
-    el.classList.add('sel');nllVeh={n:name,p:price,id:el.id.replace('nll-vc-','')};nllUpdPrice();
+    el.classList.add('sel');nllVeh={n:name,p:price,id:el.id.replace('nll-vc-','')};window.nllVeh=nllVeh;window.nllUpdPrice();
   };
 
   window.nllUpdPrice=function nllUpdPrice(){
