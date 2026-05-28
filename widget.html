@@ -2052,6 +2052,28 @@ window.nllStripePay=function(){
   /* ===== KROKY ===== */
   window.nllGoStep=function(n){
     if(n===2&&!nllV1())return;
+    if(n===2){
+      // Aktualizuj ceny na kartach pri prechodu na krok 2
+      setTimeout(function(){
+        var pickup=document.getElementById('nll-pu')?document.getElementById('nll-pu').value:'';
+        var dropoff=document.getElementById('nll-do')?document.getElementById('nll-do').value:'';
+        var date=document.getElementById('nll-date')?document.getElementById('nll-date').value:'';
+        var hour=document.getElementById('nll-hr')?parseInt(document.getElementById('nll-hr').value)||0:0;
+        document.querySelectorAll('.nll-vc').forEach(function(vcEl){
+          var vid=vcEl.id.replace('nll-vc-','');
+          if(!vid||!window.nllCurrentKm) return;
+          window.nllCalculatePrice({
+            pickup:pickup,dropoff:dropoff,vehicleId:vid,
+            km:window.nllCurrentKm,date:date,hour:hour,
+            isReturn:false,extras:{bikes:0,skis:0,isHoliday:false},voucherDisc:0
+          }).then(function(r){
+            if(!r) return;
+            var priceEl=vcEl.querySelector('.nll-vc-price');
+            if(priceEl) priceEl.textContent=nllFormatPrice(r.total);
+          });
+        });
+      }, 200);
+    }
     if(n===3){if(!nllV2())return;console.log('[STEP3] calling nllShowTBox, puType=',nllPuType);nllShowTBox();}
     if(n===4&&!nllV3())return;
     for(var i=1;i<=5;i++){
