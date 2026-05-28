@@ -2548,11 +2548,11 @@ function gpPos(inp,id){
   var rbox=inp.closest('.nll-rbox');
   if(rbox){
     var rb=rbox.getBoundingClientRect();
-    d.style.top=(r.bottom+8)+'px';
+    d.style.top=(r.bottom+16)+'px';
     d.style.left=rb.left+'px';
     d.style.width=rb.width+'px';
   } else {
-    d.style.top=(r.bottom+8)+'px';
+    d.style.top=(r.bottom+16)+'px';
     d.style.left=r.left+'px';
     d.style.width=r.width+'px';
   }
@@ -2882,7 +2882,7 @@ window.addEventListener('scroll',function(){
     var inp=document.getElementById(inpId);
     if(inp){
       var r=inp.getBoundingClientRect();
-      d.style.top=(r.bottom+8)+'px';
+      d.style.top=(r.bottom+16)+'px';
       d.style.left=r.left+'px';
       d.style.width=r.width+'px';
     }
