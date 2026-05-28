@@ -2074,7 +2074,7 @@ window.nllStripePay=function(){
         });
       }, 200);
     }
-    if(n===3){if(!nllV2())return;console.log('[STEP3] calling nllShowTBox, puType=',nllPuType);nllShowTBox();}
+    if(n===3){if(!nllV2())return;console.log('[STEP3] calling nllShowTBox, puType=',nllPuType);nllShowTBox();setTimeout(function(){if(typeof nllUpdPrice==='function')nllUpdPrice();},100);}
     if(n===4&&!nllV3())return;
     for(var i=1;i<=5;i++){
       var sn=document.getElementById('nll-sn'+i),sl=document.getElementById('nll-sl'+i),ln=document.getElementById('nll-wl'+i);
