@@ -3259,5 +3259,8 @@ document.addEventListener('click',function(e){
     var drop=document.getElementById('nll-prefix-drop');
     if(drop) drop.classList.remove('open');
   }
-});
+},true);
+document.getElementById('nll-prefix-drop') && document.getElementById('nll-prefix-drop').addEventListener('scroll',function(e){
+  e.stopPropagation();
+},true);
 </script>
