@@ -3235,4 +3235,29 @@ window.addEventListener('scroll',function(){
   window.NLL_CFG=window.NLL_CFG;
   console.log('[TaxiSaaS] Pricing Engine v1.0 ready');
 })();
+
+window.nllPickPrefix=function(code,prefix){
+  var txt=document.getElementById('nll-prefix-txt');
+  var inp=document.getElementById('nll-phone-prefix');
+  var drop=document.getElementById('nll-prefix-drop');
+  if(txt) txt.textContent=code+' '+prefix;
+  if(inp) inp.value=prefix;
+  if(drop) drop.classList.remove('open');
+};
+window.nllTogglePrefix=function(){
+  var drop=document.getElementById('nll-prefix-drop');
+  var btn=document.getElementById('nll-prefix-btn');
+  if(!drop||!btn) return;
+  var r=btn.getBoundingClientRect();
+  drop.style.top=(r.bottom+2)+'px';
+  drop.style.left=r.left+'px';
+  drop.style.width='200px';
+  drop.classList.toggle('open');
+};
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#nll-prefix-btn')&&!e.target.closest('#nll-prefix-drop')){
+    var drop=document.getElementById('nll-prefix-drop');
+    if(drop) drop.classList.remove('open');
+  }
+});
 </script>
