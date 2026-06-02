@@ -1691,16 +1691,16 @@
     if(typeof nllSlCalc === 'function') nllSlCalc();
   };
 
-  /* ===== SUPABASE ===== */
+  /* ===== SUPABASE =====
+     Anon key je záměrně veřejný – navržen pro použití v prohlížeči.
+     Bezpečnost zajišťuje Row Level Security (RLS) v Supabase.
+     Klíč lze rotovat v Supabase Dashboard → Settings → API.
+  */
   var NLL_SB_URL='https://pqmoyykyshmtiapnowxc.supabase.co';
   var NLL_SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxbW95eWt5c2htdGlhcG5vd3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxNTYyMDUsImV4cCI6MjA5MzczMjIwNX0.jDhdSwH09to0eJvDoGTeUHiSjV_vnWhgEK7Pt1_R7PA';
   function nllSaveOrder(data){return fetch(NLL_SB_URL+'/rest/v1/orders',{method:'POST',headers:{'apikey':NLL_SB_KEY,'Authorization':'Bearer '+NLL_SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});}
 
-  var NLL_SB_URL='https://pqmoyykyshmtiapnowxc.supabase.co';
-  var NLL_SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxbW95eWt5c2htdGlhcG5vd3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxNTYyMDUsImV4cCI6MjA5MzczMjIwNX0.jDhdSwH09to0eJvDoGTeUHiSjV_vnWhgEK7Pt1_R7PA';
-  function nllSaveOrder(data){return fetch(NLL_SB_URL+'/rest/v1/orders',{method:'POST',headers:{'apikey':NLL_SB_KEY,'Authorization':'Bearer '+NLL_SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});}
-  var nllStep=1,nllTrip='ow',nllPuType=null;
-  window.nllVeh={n:'Economy Sedan',p:790,id:'economy_sedan'};
+    window.nllVeh={n:'Economy Sedan',p:790,id:'economy_sedan'};
   var nllVeh=window.nllVeh;
   window.nllCurrentKm=null;
   window.nllCurrentKm=null; var nllCurrentDuration=null,nllLastPriceResult=null;
@@ -2857,7 +2857,7 @@ window.nllStripePay=function(){
   window.addEventListener('resize',function(){var inp=document.getElementById('nll-sl-input');if(inp)nllSlUpdate(parseInt(inp.value));});
 
 /* ===== GOOGLE PLACES ===== */
-var GP_KEY='AIzaSyAgl9xkJoahOyxLWTjRLrPEXxYfqTXyH7k'; /* přepsáno ze Supabase */
+var GP_KEY=''; /* Google Maps key se načítá ze Supabase tenant_settings */
 var gpReady=false,gpLoading=false,gpSession=null,gpTimer={};
 var GP_DEF={
   pu:[
