@@ -3421,7 +3421,16 @@ function nllSendHeight(){
   var h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
   window.parent.postMessage({type:'nll-height',height:h},'*');
 }
-var nllResizeObs = new ResizeObserver(function(){ nllSendHeight(); });
+function nllSendHeightDelayed(){
+  nllSendHeight();
+  setTimeout(nllSendHeight, 100);
+  setTimeout(nllSendHeight, 300);
+  setTimeout(nllSendHeight, 600);
+}
+var nllResizeObs = new ResizeObserver(function(){ nllSendHeightDelayed(); });
 nllResizeObs.observe(document.body);
+/* Zachyť také změny v potomcích (mapa, dropdowny) */
+var nllMutObs = new MutationObserver(function(){ nllSendHeightDelayed(); });
+nllMutObs.observe(document.body, {childList:true, subtree:true, attributes:true});
 nllSendHeight();
 </script>
