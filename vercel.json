@@ -1,0 +1,31 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "*.js",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/widget",
+      "dest": "/widget.html"
+    },
+    {
+      "src": "/pricing-engine.js",
+      "dest": "/pricing-engine.js"
+    },
+    {
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET",
+        "Cache-Control": "public, max-age=3600"
+      },
+      "src": "/(.*)"
+    }
+  ]
+}
