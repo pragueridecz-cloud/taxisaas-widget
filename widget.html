@@ -3431,6 +3431,8 @@ function nllSendHeightDelayed(){
 }
 var nllResizeObs = new ResizeObserver(function(){ nllSendHeightDelayed(); });
 nllResizeObs.observe(document.querySelector('.nll-w') || document.body);
+/* Záloha — interval každou sekundu */
+setInterval(nllSendHeight, 1000);
 var nllMutObs = new MutationObserver(function(){ nllSendHeightDelayed(); });
 nllMutObs.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['style','class']});
 nllSendHeight();
