@@ -2307,6 +2307,9 @@ window.nllStripePay=function(){
   /* ===== KROKY ===== */
   window.nllGoStep=function(n){
     if(n===2&&!nllV1())return;
+    /* Scroll widget i parent stranku nahoru pri kazdem prechodu */
+    window.scrollTo(0,0);
+    window.parent.postMessage({type:'nll-scroll-top'},'*');
     if(n===2){
       // Aktualizuj ceny na kartach pri prechodu na krok 2
       setTimeout(function(){
