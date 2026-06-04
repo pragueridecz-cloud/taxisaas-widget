@@ -3418,19 +3418,25 @@ document.getElementById('nll-prefix-drop') && document.getElementById('nll-prefi
 
 /* ===== AUTO-RESIZE: posílá výšku parent stránce ===== */
 function nllSendHeight(){
-  var h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+  var widget = document.querySelector('.nll-w');
+  var h;
+  if(widget){
+    var rect = widget.getBoundingClientRect();
+    h = Math.ceil(rect.bottom + window.scrollY) + 40;
+  } else {
+    h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight) + 40;
+  }
   window.parent.postMessage({type:'nll-height',height:h},'*');
 }
 function nllSendHeightDelayed(){
   nllSendHeight();
-  setTimeout(nllSendHeight, 100);
-  setTimeout(nllSendHeight, 300);
-  setTimeout(nllSendHeight, 600);
+  setTimeout(nllSendHeight,150);
+  setTimeout(nllSendHeight,400);
+  setTimeout(nllSendHeight,800);
 }
 var nllResizeObs = new ResizeObserver(function(){ nllSendHeightDelayed(); });
-nllResizeObs.observe(document.body);
-/* Zachyť také změny v potomcích (mapa, dropdowny) */
+nllResizeObs.observe(document.querySelector('.nll-w') || document.body);
 var nllMutObs = new MutationObserver(function(){ nllSendHeightDelayed(); });
-nllMutObs.observe(document.body, {childList:true, subtree:true, attributes:true});
+nllMutObs.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['style','class']});
 nllSendHeight();
 </script>
