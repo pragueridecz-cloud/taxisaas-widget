@@ -2765,6 +2765,9 @@ window.nllStripePay=function(){
     } catch(e){ console.warn('[TaxiSaaS] Pricing load error:',e); }
   };
 
+    /* Zajisti ze NLL_CFG existuje pred jakymkoliv volanim */
+    if(!window.NLL_CFG) window.NLL_CFG={vehicles:[],landmarks:[],zone_matrix:{},pricing_zones:[],distance_rows:[],surcharges:{night:{enabled:false,type:'fixed',value:0},weekend:{enabled:false,type:'fixed',value:0},holiday:{enabled:false,type:'fixed',value:0},bike:{enabled:true,type:'fixed',value:200},ski:{enabled:true,type:'fixed',value:100}},discounts:[],min_price:200};
+
     (async function nllLoadSettings(){
     // Načti pricing data (landmarks, vzdálenostní ceník, zóny)
     if(window.nllLoadPricingData) {
