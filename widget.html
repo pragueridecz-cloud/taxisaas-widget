@@ -23,6 +23,10 @@
 .nll-top-div{width:1px;height:28px;background:rgba(255,255,255,.14)}
 .nll-top-note{font-size:11px;color:rgba(255,255,255,.32);font-weight:500;margin-left:auto;display:flex;align-items:center;gap:6px}
 .nll-top-note svg{width:13px;height:13px;stroke:rgba(255,255,255,.4);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nll-top-cur{margin-left:auto;display:flex;gap:5px;align-items:center}
+.nll-top-cur-btn{padding:3px 9px;border-radius:4px;border:1.5px solid rgba(255,255,255,.3);background:transparent;color:rgba(255,255,255,.6);font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.5px}
+.nll-top-cur-btn:hover{border-color:#fff;color:#fff}
+.nll-top-cur-btn.active{background:#fff;border-color:#fff;color:var(--navy)}
 
 /* TABS */
 .nll-tabs{display:flex;border-bottom:1px solid var(--borderl)}
@@ -638,10 +642,10 @@
       <div class="nll-top-label" id="nll-top-label-el">Online rezervace</div>
       <div class="nll-top-title" id="nll-top-title-el">Zjistěte cenu — <span>okamžitě</span></div>
     </div>
-    <div class="nll-top-div"></div>
-    <div class="nll-top-note">
-      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      <span id="nll-top-note-txt">Pevná cena · bez registrace</span>
+    <div class="nll-top-cur">
+      <button class="nll-top-cur-btn active" data-cur="CZK" onclick="nllSetCurrency('CZK')">CZK</button>
+      <button class="nll-top-cur-btn" data-cur="EUR" onclick="nllSetCurrency('EUR')">EUR</button>
+      <button class="nll-top-cur-btn" data-cur="USD" onclick="nllSetCurrency('USD')">USD</button>
     </div>
   </div>
 
@@ -654,15 +658,6 @@
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
       Hodinový pronájem
     </div>
-  </div>
-
-  <!-- Přepínač měn + jazyk indikátor -->
-  <div class="nll-currency-bar">
-    <div class="nll-lang-badge" id="nll-lang-badge">CS</div>
-    <span class="nll-cur-label" id="nll-cur-label">Měna:</span>
-    <button class="nll-cur-btn active" data-cur="CZK" onclick="nllSetCurrency('CZK')">CZK</button>
-    <button class="nll-cur-btn" data-cur="EUR" onclick="nllSetCurrency('EUR')">EUR</button>
-    <button class="nll-cur-btn" data-cur="USD" onclick="nllSetCurrency('USD')">USD</button>
   </div>
 
   <div class="nll-steps" id="nll-steps">
@@ -1683,7 +1678,7 @@
 
   window.nllSetCurrency = function(cur){
     NLL_CURRENCY = cur;
-    document.querySelectorAll('.nll-cur-btn').forEach(function(b){
+    document.querySelectorAll('.nll-top-cur-btn').forEach(function(b){
       b.classList.toggle('active', b.getAttribute('data-cur') === cur);
     });
     nllUpdPrice();
