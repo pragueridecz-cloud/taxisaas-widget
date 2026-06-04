@@ -649,7 +649,12 @@ html,body{background:#1E3A8A}
 .nll-vdc{font-size:12px;font-weight:700;color:#27ae60;letter-spacing:1px}
 .nll-vdv{font-size:14px;font-weight:800;color:#27ae60}
 
+/* INLINE TOAST (náhrada za alert) */
+.nll-toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#e74c3c;color:#fff;font-size:13px;font-weight:600;padding:10px 20px;border-radius:8px;z-index:999999;box-shadow:0 4px 16px rgba(0,0,0,.25);opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center}
+.nll-toast.show{opacity:1}
 </style>
+
+<div class="nll-toast" id="nll-toast"></div>
 
 <!-- STRIPE CHECKOUT OVERLAY -->
 <div class="nll-stripe-overlay" id="nll-stripe-overlay">
@@ -1747,6 +1752,14 @@ html,body{background:#1E3A8A}
      Bezpečnost zajišťuje Row Level Security (RLS) v Supabase.
      Klíč lze rotovat v Supabase Dashboard → Settings → API.
   */
+  /* Inline toast — náhrada za nllAlert() (blokovaný v cross-origin iframe) */
+  function nllAlert(msg){
+    var t=document.getElementById('nll-toast');
+    if(!t)return;
+    t.textContent=msg;t.classList.add('show');
+    setTimeout(function(){t.classList.remove('show');},3000);
+  }
+
   var NLL_SB_URL='https://pqmoyykyshmtiapnowxc.supabase.co';
   var NLL_SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxbW95eWt5c2htdGlhcG5vd3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxNTYyMDUsImV4cCI6MjA5MzczMjIwNX0.jDhdSwH09to0eJvDoGTeUHiSjV_vnWhgEK7Pt1_R7PA';
   function nllSaveOrder(data){return fetch(NLL_SB_URL+'/rest/v1/orders',{method:'POST',headers:{'apikey':NLL_SB_KEY,'Authorization':'Bearer '+NLL_SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});}
@@ -2239,7 +2252,7 @@ html,body{background:#1E3A8A}
 
   window.nllOpenStripe=function(){
   if(!window.NLL_STRIPE_PK){
-    alert('Platba kartou není dostupná. Kontaktujte nás pro platbu převodem.');
+    nllAlert('Platba kartou není dostupná. Kontaktujte nás pro platbu převodem.');
     return;
   }
   document.getElementById('nll-stripe-overlay') && (document.getElementById('nll-stripe-overlay').classList.add('show'));
@@ -2248,9 +2261,9 @@ window.nllStripePay=function(){
     var num=document.getElementById('nll-card-num').value.replace(/\s/g,'');
     var exp=document.getElementById('nll-card-exp').value;
     var cvc=document.getElementById('nll-card-cvc').value;
-    if(num.length<16){alert('Zadejte platné číslo karty');return;}
-    if(exp.length<5){alert('Zadejte platnost karty');return;}
-    if(cvc.length<3){alert('Zadejte CVC kód');return;}
+    if(num.length<16){nllAlert('Zadejte platné číslo karty');return;}
+    if(exp.length<5){nllAlert('Zadejte platnost karty');return;}
+    if(cvc.length<3){nllAlert('Zadejte CVC kód');return;}
 
     /* Simulace Stripe platby — v produkci nahradit:
      * 1. Backend vytvoří PaymentIntent: POST /create-payment-intent
@@ -2347,17 +2360,17 @@ window.nllStripePay=function(){
   };
 
   window.nllV1=function(){
-    if(!document.getElementById('nll-pu').value.trim()){alert(window.NLL_VAL?window.NLL_VAL.pickup:'Zadejte místo vyzvednutí');return false;}
-    if(!document.getElementById('nll-do').value.trim()){alert(window.NLL_VAL?window.NLL_VAL.dropoff:'Zadejte cíl cesty');return false;}
-    if(!document.getElementById('nll-date').value){alert(window.NLL_VAL?window.NLL_VAL.date:'Vyberte datum');return false;}
+    if(!document.getElementById('nll-pu').value.trim()){nllAlert(window.NLL_VAL?window.NLL_VAL.pickup:'Zadejte místo vyzvednutí');return false;}
+    if(!document.getElementById('nll-do').value.trim()){nllAlert(window.NLL_VAL?window.NLL_VAL.dropoff:'Zadejte cíl cesty');return false;}
+    if(!document.getElementById('nll-date').value){nllAlert(window.NLL_VAL?window.NLL_VAL.date:'Vyberte datum');return false;}
     return true;
   }
   window.nllV2=function(){return true;}
   window.nllV3=function(){
-    if(!document.getElementById('nll-name').value.trim()){alert(window.NLL_VAL?window.NLL_VAL.name:'Zadejte jméno');return false;}
-    if(!document.getElementById('nll-phone').value.trim()){alert(window.NLL_VAL?window.NLL_VAL.phone:'Zadejte telefon');return false;}
+    if(!document.getElementById('nll-name').value.trim()){nllAlert(window.NLL_VAL?window.NLL_VAL.name:'Zadejte jméno');return false;}
+    if(!document.getElementById('nll-phone').value.trim()){nllAlert(window.NLL_VAL?window.NLL_VAL.phone:'Zadejte telefon');return false;}
     var e=document.getElementById('nll-email');
-    if(!e||!e.value.includes('@')){alert(window.NLL_VAL?window.NLL_VAL.email:'Zadejte platný e-mail');return false;}
+    if(!e||!e.value.includes('@')){nllAlert(window.NLL_VAL?window.NLL_VAL.email:'Zadejte platný e-mail');return false;}
     return true;
   }
 
@@ -2370,9 +2383,9 @@ window.nllStripePay=function(){
     document.getElementById('nll-er-other-field').classList.toggle('show',type==='other');
   };
   window.nllSubmitH=function(){
-    if(!document.getElementById('nll-hpu').value.trim()){alert('Zadejte místo vyzvednutí');return;}
-    if(!document.getElementById('nll-hdate').value){alert('Vyberte datum');return;}
-    alert('Poptávka hodinového pronájmu odeslána!\nOzveme se vám do 30 minut.');
+    if(!document.getElementById('nll-hpu').value.trim()){nllAlert('Zadejte místo vyzvednutí');return;}
+    if(!document.getElementById('nll-hdate').value){nllAlert('Vyberte datum');return;}
+    nllAlert('Poptávka hodinového pronájmu odeslána!\nOzveme se vám do 30 minut.');
   };
 
   /* ===== ČAS — selecty po 5 minutách ===== */
