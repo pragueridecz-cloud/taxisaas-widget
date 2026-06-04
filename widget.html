@@ -538,12 +538,21 @@
   .nll-tick.major .nll-tick-lbl{font-size:9px}
 }
 
-/* RESPONZIVITA */
+/* ===== RESPONZIVITA ===== */
+
+/* Tablet (768px) */
 @media(max-width:768px){
-  .nll-body{padding:18px 18px 22px}
-  .nll-steps{padding:12px 18px}
-  .nll-top{padding:12px 18px}
+  .nll-body{padding:18px 16px 24px}
+  .nll-steps{padding:12px 16px}
+  .nll-top{padding:12px 16px;gap:10px}
   .nll-top-div,.nll-top-note{display:none}
+  .nll-top-cur{gap:4px}
+  .nll-top-cur-btn{padding:3px 7px;font-size:10px}
+  .nll-top-label{font-size:9px}
+  .nll-top-title{font-size:14px}
+  .nll-tabs{overflow-x:auto;scrollbar-width:none}
+  .nll-tabs::-webkit-scrollbar{display:none}
+  .nll-tab{padding:13px 18px;font-size:11px;white-space:nowrap}
   .nll-dtg.cols4,.nll-dtg.cols3{grid-template-columns:1fr 1fr}
   .nll-vg-grid{grid-template-columns:1fr 1fr}
   .nll-wrow{grid-template-columns:1fr}
@@ -552,19 +561,65 @@
   .nll-seats-grid{grid-template-columns:1fr 1fr 1fr}
   .nll-hpg{grid-template-columns:1fr 1fr 1fr}
   .nll-stripe-row{grid-template-columns:1fr}
+  .nll-inp,.nll-sel,.nll-wi{padding:13px 13px;font-size:14px;min-height:48px}
+  .nll-btn{padding:14px 18px}
+  .nll-btn-n{font-size:13px}
 }
+
+/* Mobil (560px) */
 @media(max-width:560px){
+  .nll-body{padding:16px 14px 20px}
+  .nll-steps{padding:10px 14px}
   .nll-wsl{display:none}
-  .nll-vg-grid{grid-template-columns:1fr}
-  .nll-vc-photo{height:110px}
-  .nll-tab{padding:12px 14px;font-size:11px}
+  .nll-wsn{width:28px;height:28px;font-size:11px}
+  .nll-vg-grid{grid-template-columns:1fr 1fr}
+  .nll-vc-photo{height:100px}
+  .nll-vc-info{padding:10px 11px}
+  .nll-vc-name{font-size:12px}
+  .nll-vc-price{font-size:14px}
+  .nll-tab{padding:12px 14px;font-size:11px;gap:5px}
+  .nll-tab svg{width:13px;height:13px}
   .nll-tgrid{grid-template-columns:1fr}
   .nll-seats-grid{grid-template-columns:1fr 1fr}
-  .nll-tbtn{padding:8px 14px;font-size:11px}
+  .nll-tbtn{padding:10px 16px;font-size:11px}
+  .nll-dtg.cols4,.nll-dtg.cols3{grid-template-columns:1fr 1fr}
+  .nll-rbox{margin-bottom:14px}
+  .nll-rinp{font-size:14px}
+  .nll-rdot{width:10px;height:10px}
+  .nll-rrow{padding:12px 14px;gap:12px}
+  .nll-pb-p{font-size:24px}
+  .nll-pb{padding:14px 16px}
+  .nll-currency-bar{padding:8px 14px}
+  .nll-cur-label{display:none}
+  .nll-hvc-grid{grid-template-columns:1fr 1fr}
+  .nll-brow{flex-direction:column-reverse}
+  .nll-btn-b{text-align:center;justify-content:center}
 }
+
+/* Malý mobil (420px) */
+@media(max-width:420px){
+  .nll-body{padding:14px 12px 18px}
+  .nll-top{padding:10px 14px}
+  .nll-top-title{font-size:13px}
+  .nll-top-cur-btn{padding:2px 6px;font-size:9px}
+  .nll-vg-grid{grid-template-columns:1fr}
+  .nll-vc-photo{height:120px}
+  .nll-dtg.cols4{grid-template-columns:1fr 1fr}
+  .nll-dtg.cols3{grid-template-columns:1fr 1fr}
+  .nll-seats-grid{grid-template-columns:1fr 1fr}
+  .nll-hpg{grid-template-columns:1fr 1fr}
+  .nll-inp,.nll-sel,.nll-wi{font-size:16px} /* prevent zoom on iOS */
+  .nll-rinp{font-size:16px} /* prevent zoom on iOS */
+  .nll-toggle{width:100%}
+  .nll-tbtn{flex:1;justify-content:center}
+}
+
+/* Velmi malý (380px) */
 @media(max-width:380px){
   .nll-seats-grid{grid-template-columns:1fr}
   .nll-hpg{grid-template-columns:1fr}
+  .nll-tab{padding:11px 10px;font-size:10px}
+  .nll-dtg.cols4,.nll-dtg.cols3{grid-template-columns:1fr 1fr}
 }
 
 /* === GOOGLE PLACES === */
