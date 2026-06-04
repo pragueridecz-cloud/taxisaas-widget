@@ -3414,13 +3414,7 @@ document.getElementById('nll-prefix-drop') && document.getElementById('nll-prefi
 /* ===== AUTO-RESIZE: posílá výšku parent stránce ===== */
 function nllSendHeight(){
   var widget = document.querySelector('.nll-w');
-  var h;
-  if(widget){
-    var rect = widget.getBoundingClientRect();
-    h = Math.ceil(rect.bottom + window.scrollY) + 40;
-  } else {
-    h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight) + 40;
-  }
+  var h = widget ? widget.offsetHeight : document.body.offsetHeight;
   window.parent.postMessage({type:'nll-height',height:h},'*');
 }
 function nllSendHeightDelayed(){
