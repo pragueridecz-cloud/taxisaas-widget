@@ -12,7 +12,7 @@
   --muted:#4a5f7a;--border:#d0dae8;--borderl:#e8eef6;
   --gold:#F97316;--green:#27ae60;
 }
-.nll-w{width:100%;background:#fff;border-radius:8px;box-shadow:0 32px 80px rgba(0,32,91,.18);overflow:visible;font-family:'Montserrat',sans-serif;display:inline-block;vertical-align:top}
+.nll-w{width:100%;background:#fff;border-radius:8px;box-shadow:0 32px 80px rgba(0,32,91,.18);overflow:visible;font-family:'Montserrat',sans-serif}
 .nll-w *{box-sizing:border-box;font-family:'Montserrat',sans-serif}
 
 /* TOP */
@@ -3469,8 +3469,12 @@ document.getElementById('nll-prefix-drop') && document.getElementById('nll-prefi
 
 /* ===== AUTO-RESIZE: posílá výšku parent stránce ===== */
 function nllSendHeight(){
-  var widget = document.querySelector('.nll-w');
-  var h = widget ? widget.offsetHeight : document.body.offsetHeight;
+  var h = Math.max(
+    document.body.scrollHeight,
+    document.body.offsetHeight,
+    document.documentElement.scrollHeight,
+    document.documentElement.offsetHeight
+  );
   window.parent.postMessage({type:'nll-height',height:h},'*');
 }
 function nllSendHeightDelayed(){
@@ -3481,8 +3485,8 @@ function nllSendHeightDelayed(){
 }
 var nllResizeObs = new ResizeObserver(function(){ nllSendHeightDelayed(); });
 nllResizeObs.observe(document.querySelector('.nll-w') || document.body);
-/* Záloha — interval každou sekundu */
-setInterval(nllSendHeight, 1000);
+/* Záloha — interval každých 500ms */
+setInterval(nllSendHeight, 500);
 var nllMutObs = new MutationObserver(function(){ nllSendHeightDelayed(); });
 nllMutObs.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['style','class']});
 nllSendHeight();
