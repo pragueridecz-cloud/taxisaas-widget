@@ -2857,6 +2857,7 @@ window.nllStripePay=function(){
 
   function nllApplyVehicles(vehicles) {
     /* Přepiš vozidla v transfer widgetu — rozdělí na sedan/van skupiny */
+    if (!vehicles || !vehicles.length) return; /* Nič nepřepisovat pokud prázdné */
     var container = document.querySelector('.nll-vcg');
     if (!container) return;
     container.innerHTML = '';
