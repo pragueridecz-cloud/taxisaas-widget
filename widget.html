@@ -2783,7 +2783,10 @@ window.nllStripePay=function(){
     } catch(e){ console.warn('[TaxiSaaS] Pricing load error:',e); }
   };
 
-    /* Zajisti ze NLL_CFG existuje pred jakymkoliv volanim */
+    /* Stripe publishable key */
+  window.NLL_STRIPE_PK = 'pk_test_51TdwinRyaX05fUnltQF1j4EjfVCJhuwQy5jv3LRuj5l1ot0y9UfILcw3zAKaMeNwcvpvLiKzAmq33ijp0tyIxfqF009OZKeSNO';
+
+  /* Zajisti ze NLL_CFG existuje pred jakymkoliv volanim */
     if(!window.NLL_CFG) window.NLL_CFG={vehicles:[],landmarks:[],zone_matrix:{},pricing_zones:[],distance_rows:[],surcharges:{night:{enabled:false,type:'fixed',value:0},weekend:{enabled:false,type:'fixed',value:0},holiday:{enabled:false,type:'fixed',value:0},bike:{enabled:true,type:'fixed',value:200},ski:{enabled:true,type:'fixed',value:100}},discounts:[],min_price:200};
 
     (async function nllLoadSettings(){
