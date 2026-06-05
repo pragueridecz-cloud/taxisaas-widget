@@ -2783,10 +2783,7 @@ window.nllStripePay=function(){
     } catch(e){ console.warn('[TaxiSaaS] Pricing load error:',e); }
   };
 
-    /* Stripe publishable key */
-  window.NLL_STRIPE_PK = 'pk_test_51TdwinRyaX05fUnltQF1j4EjfVCJhuwQy5jv3LRuj5l1ot0y9UfILcw3zAKaMeNwcvpvLiKzAmq33ijp0tyIxfqF009OZKeSNO';
-
-  /* Zajisti ze NLL_CFG existuje pred jakymkoliv volanim */
+    /* Zajisti ze NLL_CFG existuje pred jakymkoliv volanim */
     if(!window.NLL_CFG) window.NLL_CFG={vehicles:[],landmarks:[],zone_matrix:{},pricing_zones:[],distance_rows:[],surcharges:{night:{enabled:false,type:'fixed',value:0},weekend:{enabled:false,type:'fixed',value:0},holiday:{enabled:false,type:'fixed',value:0},bike:{enabled:true,type:'fixed',value:200},ski:{enabled:true,type:'fixed',value:100}},discounts:[],min_price:200};
 
     (async function nllLoadSettings(){
@@ -2795,7 +2792,7 @@ window.nllStripePay=function(){
       await window.nllLoadPricingData('https://pqmoyykyshmtiapnowxc.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxbW95eWt5c2htdGlhcG5vd3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxNTYyMDUsImV4cCI6MjA5MzczMjIwNX0.jDhdSwH09to0eJvDoGTeUHiSjV_vnWhgEK7Pt1_R7PA');
     }
     try {
-      var res = await fetch(NLL_SB_URL+'/rest/v1/tenant_settings?select=vehicles,favorite_locations,surcharge_night,surcharge_night_enabled,surcharge_night_type,surcharge_weekend,surcharge_weekend_enabled,surcharge_weekend_type,surcharge_holiday,surcharge_holiday_enabled,surcharge_holiday_type,surcharge_bike,surcharge_bike_type,surcharge_ski,surcharge_ski_type,min_price,discounts&id=eq.768a3345-9118-421b-a162-2508a3b462dd&limit=1', {
+      var res = await fetch(NLL_SB_URL+'/rest/v1/tenant_settings?select=vehicles,favorite_locations,surcharge_night,surcharge_night_enabled,surcharge_night_type,surcharge_weekend,surcharge_weekend_enabled,surcharge_weekend_type,surcharge_holiday,surcharge_holiday_enabled,surcharge_holiday_type,surcharge_bike,surcharge_bike_type,surcharge_ski,surcharge_ski_type,min_price,discounts,google_maps_key,stripe_public_key&id=eq.768a3345-9118-421b-a162-2508a3b462dd&limit=1', {
         headers: { 'apikey': NLL_SB_KEY, 'Authorization': 'Bearer '+NLL_SB_KEY }
       });
       var data = await res.json();
@@ -2933,7 +2930,7 @@ window.nllStripePay=function(){
   window.addEventListener('resize',function(){var inp=document.getElementById('nll-sl-input');if(inp)nllSlUpdate(parseInt(inp.value));});
 
 /* ===== GOOGLE PLACES ===== */
-var GP_KEY='AIzaSyAgl9xkJoahOyxLWTjRLrPEXxYfqTXyH7k';
+var GP_KEY='';
 var gpReady=false,gpLoading=false,gpSession=null,gpTimer={};
 var GP_DEF={
   pu:[
