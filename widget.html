@@ -30,10 +30,10 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
 .nll-top-cur-btn.active{background:#fff;border-color:#fff;color:var(--navy)}
 
 /* TABS */
-.nll-tabs{display:flex;border-bottom:1px solid var(--borderl)}
-.nll-tab{padding:14px 26px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:3px solid transparent;display:flex;align-items:center;gap:8px;transition:all .2s;letter-spacing:.3px;white-space:nowrap;user-select:none}
-.nll-tab:hover{color:var(--navy)}
-.nll-tab.active{color:var(--navy);border-bottom-color:var(--navy)}
+.nll-tabs{display:flex;padding:12px 16px;gap:8px}
+.nll-tab{flex:1;padding:11px 16px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;letter-spacing:.3px;white-space:nowrap;user-select:none;border-radius:8px;border:2px solid var(--borderl);background:#fff}
+.nll-tab:hover{color:var(--navy);border-color:var(--navy)}
+.nll-tab.active{color:#fff;background:#F97316;border-color:#F97316}
 .nll-tab svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 
 /* STEPS */
@@ -2242,6 +2242,15 @@ window.nllStripePay=function(){
     document.getElementById('nll-p'+nllStep).classList.remove('show');
     nllStep=n;
     document.getElementById('nll-p'+n).classList.add('show');
+    // Hide inactive tab when leaving step 1, restore both when returning
+    var tabR=document.getElementById('nll-tab-r'),tabH=document.getElementById('nll-tab-h');
+    if(n>1){
+      if(tabR)tabR.style.display=tabR.classList.contains('active')?'flex':'none';
+      if(tabH)tabH.style.display=tabH.classList.contains('active')?'flex':'none';
+    } else {
+      if(tabR)tabR.style.display='';
+      if(tabH)tabH.style.display='';
+    }
     if(n===5&&nllMapInstance&&window.google&&window.google.maps){
       setTimeout(function(){
         google.maps.event.trigger(nllMapInstance,'resize');
