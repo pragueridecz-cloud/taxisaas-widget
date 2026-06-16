@@ -884,7 +884,7 @@ html,body{background:transparent;margin:0;padding:0}
               <div class="nll-vtype-price" id="nll-vtype-price-sedan">od 790 Kč</div>
               <div class="nll-vtype-vat">Cena vč. DPH a poplatků</div>
               <div class="nll-vtype-sep"></div>
-              <label class="nll-vsub sel" id="nll-vc-es" onclick="nllSelVSub(this,'Economy Sedan',790,'economy_sedan')">
+              <label class="nll-vsub sel" id="nll-vc-es" onclick="nllSelVSub(this,'Economy Sedan',790,'economy_sedan',event)">
                 <input type="radio" name="nllveh" checked>
                 <div class="nll-vsub-radio"></div>
                 <div class="nll-vsub-info">
@@ -893,7 +893,7 @@ html,body{background:transparent;margin:0;padding:0}
                 </div>
                 <div class="nll-vsub-price">790 Kč</div>
               </label>
-              <label class="nll-vsub" id="nll-vc-ps" onclick="nllSelVSub(this,'Premium Sedan',1190,'premium_sedan')">
+              <label class="nll-vsub" id="nll-vc-ps" onclick="nllSelVSub(this,'Premium Sedan',1190,'premium_sedan',event)">
                 <input type="radio" name="nllveh">
                 <div class="nll-vsub-radio"></div>
                 <div class="nll-vsub-info">
@@ -916,7 +916,7 @@ html,body{background:transparent;margin:0;padding:0}
               <div class="nll-vtype-price" id="nll-vtype-price-van">od 1 290 Kč</div>
               <div class="nll-vtype-vat">Cena vč. DPH a poplatků</div>
               <div class="nll-vtype-sep"></div>
-              <label class="nll-vsub" id="nll-vc-ev" onclick="nllSelVSub(this,'Economy Van',1290,'economy_van')">
+              <label class="nll-vsub" id="nll-vc-ev" onclick="nllSelVSub(this,'Economy Van',1290,'economy_van',event)">
                 <input type="radio" name="nllveh">
                 <div class="nll-vsub-radio"></div>
                 <div class="nll-vsub-info">
@@ -925,7 +925,7 @@ html,body{background:transparent;margin:0;padding:0}
                 </div>
                 <div class="nll-vsub-price">1 290 Kč</div>
               </label>
-              <label class="nll-vsub" id="nll-vc-pv" onclick="nllSelVSub(this,'Premium Van',1690,'premium_van')">
+              <label class="nll-vsub" id="nll-vc-pv" onclick="nllSelVSub(this,'Premium Van',1690,'premium_van',event)">
                 <input type="radio" name="nllveh">
                 <div class="nll-vsub-radio"></div>
                 <div class="nll-vsub-info">
@@ -1946,7 +1946,8 @@ html,body{background:transparent;margin:0;padding:0}
     } else {if(n)n.classList.remove('show');}
   };
 
-  window.nllSelVSub=function(subEl,name,price,vid){
+  window.nllSelVSub=function(subEl,name,price,vid,e){
+    if(e&&e.stopPropagation)e.stopPropagation();
     if(!subEl)return;
     document.querySelectorAll('.nll-vsub').forEach(function(s){s.classList.remove('sel');});
     subEl.classList.add('sel');
@@ -2767,7 +2768,7 @@ window.nllStripePay=function(){
       var col = document.createElement('div');
       col.className = 'nll-vtype' + (isFirst ? ' sel' : '');
       col.id = 'nll-vtype-' + typeId;
-      col.onclick = function(){ nllSelVType(col); };
+      col.onclick = function(e){ nllSelVType(col, e); };
 
       var minPrice = groupVehicles.reduce(function(m,v){ return Math.min(m, v.price||0); }, Infinity);
       var maxPax   = groupVehicles.reduce(function(m,v){ return Math.max(m, v.capacity_pax||0); }, 0);
@@ -2797,13 +2798,10 @@ window.nllStripePay=function(){
           + '<div class="nll-vsub-desc">'+(v.description||'')+'</div></div>'
           + '<div class="nll-vsub-price">'+nllFormatPrice(v.price)+'</div>';
         sub.onclick = (function(s, vv){ return function(e){
-          e.stopPropagation();
-          nllSelVSub(s, vv.name, vv.price, vv.id);
+          nllSelVSub(s, vv.name, vv.price, vv.id, e);
         }; })(sub, v);
         col.querySelector('.nll-vtype-body').appendChild(sub);
       });
-
-      col.querySelector('.nll-vtype-body').innerHTML += '</div>'; // close body — actually body is a div, innerHTML appending works fine
       return col;
     }
 
