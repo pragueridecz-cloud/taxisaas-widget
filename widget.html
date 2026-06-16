@@ -1953,7 +1953,11 @@ html,body{background:transparent;margin:0;padding:0}
     subEl.classList.add('sel');
     document.querySelectorAll('.nll-vtype').forEach(function(t){t.classList.remove('sel');});
     var typeEl=subEl.closest('.nll-vtype');
-    if(typeEl)typeEl.classList.add('sel');
+    if(typeEl){
+      typeEl.classList.add('sel');
+      var photo=subEl.getAttribute('data-photo');
+      if(photo){var img=typeEl.querySelector('.nll-vtype-img img');if(img)img.src=photo;}
+    }
     nllVeh={n:name,p:price,id:vid||subEl.id.replace('nll-vc-','')};window.nllVeh=nllVeh;
     if(typeof nllUpdPrice==='function')nllUpdPrice();
   };
@@ -2792,6 +2796,7 @@ window.nllStripePay=function(){
         var sub = document.createElement('label');
         sub.className = 'nll-vsub' + (isSel ? ' sel' : '');
         sub.id = 'nll-vc-' + v.id;
+        if(v.photo_url) sub.setAttribute('data-photo', v.photo_url);
         sub.innerHTML = '<input type="radio" name="nllveh"' + (isSel ? ' checked' : '') + '>'
           + '<div class="nll-vsub-radio"></div>'
           + '<div class="nll-vsub-info"><div class="nll-vsub-name">'+v.name+'</div>'
