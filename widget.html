@@ -3414,4 +3414,22 @@ setInterval(nllSendHeight, 500);
 var nllMutObs = new MutationObserver(function(){ nllSendHeightDelayed(); });
 nllMutObs.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['style','class']});
 nllSendHeight();
+
+/* Forward wheel events to parent — iframe scroll doesn't propagate natively */
+document.addEventListener('wheel', function(e) {
+  /* If a scrollable element inside the widget can handle this scroll, let it */
+  var el = e.target;
+  while (el && el !== document.body) {
+    var style = window.getComputedStyle(el);
+    var ov = style.overflowY;
+    if (ov === 'auto' || ov === 'scroll') {
+      var canScroll = e.deltaY > 0
+        ? el.scrollTop + el.clientHeight < el.scrollHeight - 1
+        : el.scrollTop > 0;
+      if (canScroll) return;
+    }
+    el = el.parentElement;
+  }
+  try { window.parent.postMessage({type:'nll-wheel',delta:e.deltaY},'*'); } catch(ex){}
+}, {passive:true});
 </script>
