@@ -2246,7 +2246,15 @@ window.nllStripePay=function(){
         if(nllDirectionsRenderer){var dir=nllDirectionsRenderer.getDirections();if(dir&&dir.routes[0]){nllMapInstance.fitBounds(dir.routes[0].bounds);}}
       },200);
     }
+    setTimeout(function(){nllPostHeight(n);},300);
   };
+  function nllPostHeight(step){
+    try{
+      var h=document.documentElement.scrollHeight||document.body.scrollHeight;
+      window.parent.postMessage({type:'nll-step',step:step||nllStep,height:h},'*');
+    }catch(e){}
+  }
+  window.addEventListener('load',function(){setTimeout(function(){nllPostHeight(1);},400);});
 
   window.nllV1=function(){
     if(!document.getElementById('nll-pu').value.trim()){nllAlert(window.NLL_VAL?window.NLL_VAL.pickup:'Zadejte místo vyzvednutí');return false;}
