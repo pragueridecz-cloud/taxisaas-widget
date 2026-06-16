@@ -873,7 +873,7 @@ html,body{background:transparent;margin:0;padding:0}
         <div class="nll-notice" id="nll-notice"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span id="nll-ntxt"></span></div>
         <div class="nll-vtype-grid nll-vcg">
           <!-- Sedan -->
-          <div class="nll-vtype sel" id="nll-vtype-sedan" onclick="nllSelVType(this)">
+          <div class="nll-vtype sel" id="nll-vtype-sedan" onclick="nllSelVType(this,event)">
             <div class="nll-vtype-hdr">
               <div class="nll-vtype-chk"></div>
               Sedan
@@ -884,7 +884,7 @@ html,body{background:transparent;margin:0;padding:0}
               <div class="nll-vtype-price" id="nll-vtype-price-sedan">od 790 Kč</div>
               <div class="nll-vtype-vat">Cena vč. DPH a poplatků</div>
               <div class="nll-vtype-sep"></div>
-              <label class="nll-vsub sel" id="nll-vc-es" onclick="event.stopPropagation();nllSelVSub(this,'Economy Sedan',790,'economy_sedan')">
+              <label class="nll-vsub sel" id="nll-vc-es" onclick="nllSelVSub(this,'Economy Sedan',790,'economy_sedan')">
                 <input type="radio" name="nllveh" checked>
                 <div class="nll-vsub-radio"></div>
                 <div class="nll-vsub-info">
@@ -893,7 +893,7 @@ html,body{background:transparent;margin:0;padding:0}
                 </div>
                 <div class="nll-vsub-price">790 Kč</div>
               </label>
-              <label class="nll-vsub" id="nll-vc-ps" onclick="event.stopPropagation();nllSelVSub(this,'Premium Sedan',1190,'premium_sedan')">
+              <label class="nll-vsub" id="nll-vc-ps" onclick="nllSelVSub(this,'Premium Sedan',1190,'premium_sedan')">
                 <input type="radio" name="nllveh">
                 <div class="nll-vsub-radio"></div>
                 <div class="nll-vsub-info">
@@ -905,7 +905,7 @@ html,body{background:transparent;margin:0;padding:0}
             </div>
           </div>
           <!-- Van -->
-          <div class="nll-vtype" id="nll-vtype-van" onclick="nllSelVType(this)">
+          <div class="nll-vtype" id="nll-vtype-van" onclick="nllSelVType(this,event)">
             <div class="nll-vtype-hdr">
               <div class="nll-vtype-chk"></div>
               Minivan
@@ -916,7 +916,7 @@ html,body{background:transparent;margin:0;padding:0}
               <div class="nll-vtype-price" id="nll-vtype-price-van">od 1 290 Kč</div>
               <div class="nll-vtype-vat">Cena vč. DPH a poplatků</div>
               <div class="nll-vtype-sep"></div>
-              <label class="nll-vsub" id="nll-vc-ev" onclick="event.stopPropagation();nllSelVSub(this,'Economy Van',1290,'economy_van')">
+              <label class="nll-vsub" id="nll-vc-ev" onclick="nllSelVSub(this,'Economy Van',1290,'economy_van')">
                 <input type="radio" name="nllveh">
                 <div class="nll-vsub-radio"></div>
                 <div class="nll-vsub-info">
@@ -925,7 +925,7 @@ html,body{background:transparent;margin:0;padding:0}
                 </div>
                 <div class="nll-vsub-price">1 290 Kč</div>
               </label>
-              <label class="nll-vsub" id="nll-vc-pv" onclick="event.stopPropagation();nllSelVSub(this,'Premium Van',1690,'premium_van')">
+              <label class="nll-vsub" id="nll-vc-pv" onclick="nllSelVSub(this,'Premium Van',1690,'premium_van')">
                 <input type="radio" name="nllveh">
                 <div class="nll-vsub-radio"></div>
                 <div class="nll-vsub-info">
@@ -1956,7 +1956,8 @@ html,body{background:transparent;margin:0;padding:0}
     nllVeh={n:name,p:price,id:vid||subEl.id.replace('nll-vc-','')};window.nllVeh=nllVeh;
     if(typeof nllUpdPrice==='function')nllUpdPrice();
   };
-  window.nllSelVType=function(typeEl){
+  window.nllSelVType=function(typeEl,ev){
+    if(ev){var t=ev.target;while(t&&t!==typeEl){if(t.classList&&t.classList.contains('nll-vsub'))return;t=t.parentElement;}}
     var firstSub=typeEl.querySelector('.nll-vsub');
     if(firstSub)firstSub.click();
   };
