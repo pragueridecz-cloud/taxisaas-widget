@@ -159,8 +159,8 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
 
 /* CENA BOX */
 .nll-pb{background:var(--navy);border-radius:6px;padding:16px 20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
-.nll-pb-l{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.48)}
-.nll-pb-n{font-size:10px;color:rgba(255,255,255,.28);margin-top:3px;font-weight:500}
+.nll-pb-l{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#fff}
+.nll-pb-n{font-size:10px;color:rgba(255,255,255,.75);margin-top:3px;font-weight:500}
 .nll-pb-p{font-size:28px;font-weight:800;color:#fff;letter-spacing:-1px}
 .nll-pb-b{font-size:10px;font-weight:700;background:var(--red);color:#fff;padding:2px 9px;border-radius:3px;margin-top:4px;display:none}
 
@@ -330,7 +330,7 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
 .nll-suc-pay svg{width:15px;height:15px;stroke:var(--green);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
 
 /* HODINOVÝ */
-.nll-hinfo{background:var(--off);border:1px solid var(--borderl);border-left:3px solid var(--navy);border-radius:6px;padding:14px 18px;margin-bottom:16px;font-size:13px;color:var(--muted);line-height:1.7}
+.nll-hinfo{background:var(--off);border:1px solid var(--borderl);border-left:3px solid var(--navy);border-radius:6px;padding:7px 12px;margin-bottom:14px;font-size:11px;color:var(--muted);line-height:1.5}
 .nll-hinfo strong{color:var(--navy)}
 .nll-hpg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
 .nll-hpi{border:2px solid var(--borderl);border-radius:6px;padding:14px 8px;text-align:center;cursor:pointer;transition:all .2s}
@@ -509,7 +509,7 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
 }
 
 /* Ticky */
-.nll-slider-ticks{display:flex;justify-content:space-between;padding:0;margin-top:4px}
+.nll-slider-ticks{display:flex;justify-content:space-between;padding:0 13px;margin-top:4px}
 .nll-tick{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:2px 0}
 .nll-tick-line{width:1px;height:7px;background:var(--borderl);transition:background .15s}
 .nll-tick.major .nll-tick-line{height:11px;background:var(--border)}
@@ -882,8 +882,6 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
             <div class="nll-vtype-body">
               <div class="nll-vtype-img"><img src="" alt="Sedan" onerror="this.style.display='none'"></div>
               <div class="nll-vtype-pax">1–4 cestujících</div>
-              <div class="nll-vtype-price" id="nll-vtype-price-sedan">od 790 Kč</div>
-              <div class="nll-vtype-vat">Cena vč. DPH a poplatků</div>
               <div class="nll-vtype-sep"></div>
               <label class="nll-vsub sel" id="nll-vc-es" onclick="nllSelVSub(this,'Economy Sedan',790,'economy_sedan',event)">
                 <input type="radio" name="nllveh" checked>
@@ -892,7 +890,6 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
                   <div class="nll-vsub-name">Economy Sedan</div>
                   <div class="nll-vsub-desc">Škoda Superb nebo podobný</div>
                 </div>
-                <div class="nll-vsub-price">790 Kč</div>
               </label>
               <label class="nll-vsub" id="nll-vc-ps" onclick="nllSelVSub(this,'Premium Sedan',1190,'premium_sedan',event)">
                 <input type="radio" name="nllveh">
@@ -901,7 +898,6 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
                   <div class="nll-vsub-name">Premium Sedan</div>
                   <div class="nll-vsub-desc">Mercedes C-Class nebo podobný</div>
                 </div>
-                <div class="nll-vsub-price">1 190 Kč</div>
               </label>
             </div>
           </div>
@@ -914,8 +910,6 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
             <div class="nll-vtype-body">
               <div class="nll-vtype-img"><img src="" alt="Minivan" onerror="this.style.display='none'"></div>
               <div class="nll-vtype-pax">5–8 cestujících</div>
-              <div class="nll-vtype-price" id="nll-vtype-price-van">od 1 290 Kč</div>
-              <div class="nll-vtype-vat">Cena vč. DPH a poplatků</div>
               <div class="nll-vtype-sep"></div>
               <label class="nll-vsub" id="nll-vc-ev" onclick="nllSelVSub(this,'Economy Van',1290,'economy_van',event)">
                 <input type="radio" name="nllveh">
@@ -924,7 +918,6 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
                   <div class="nll-vsub-name">Economy Van</div>
                   <div class="nll-vsub-desc">Ford Transit nebo podobný</div>
                 </div>
-                <div class="nll-vsub-price">1 290 Kč</div>
               </label>
               <label class="nll-vsub" id="nll-vc-pv" onclick="nllSelVSub(this,'Premium Van',1690,'premium_van',event)">
                 <input type="radio" name="nllveh">
@@ -933,7 +926,6 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
                   <div class="nll-vsub-name">Premium Van</div>
                   <div class="nll-vsub-desc">Mercedes V-Class nebo podobný</div>
                 </div>
-                <div class="nll-vsub-price">1 690 Kč</div>
               </label>
             </div>
           </div>
@@ -1001,13 +993,14 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
               </div>
             </div>
             <div class="nll-wf" style="margin-bottom:12px"><div class="nll-wl" id="nll-lbl-email">E-mailová adresa</div><input class="nll-wi" id="nll-email" placeholder="vas@email.cz"></div>
+            <div class="nll-wf" style="margin-bottom:0"><div class="nll-wl" id="nll-lbl-note">Poznámka pro řidiče</div><textarea class="nll-textarea" id="nll-note" placeholder="Zvláštní požadavky, přání, informace pro řidiče..."></textarea></div>
           </div>
 
           <!-- PRAVÝ SLOUPEC: Další požadavky -->
           <div>
             <div class="nll-cp-stitle" id="nll-extras-title-lbl">Další požadavky</div>
-            <div class="nll-extras-body open" id="nll-extras-body" style="display:block">
-              <div class="nll-seats-title" id="nll-seats-title">Dětské sedačky</div>
+            <div class="nll-extras-body open" id="nll-extras-body" style="display:block;padding:0;border:none;border-radius:0;background:transparent">
+              <div class="nll-wl" id="nll-seats-title" style="margin-bottom:5px">Dětské sedačky</div>
               <div class="nll-seats-grid">
                 <div class="nll-seat" id="nll-seat-infant">
                   <div class="nll-seat-ico"><svg viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 1 3 3v1a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M5 20v-4a7 7 0 0 1 14 0v4"/><path d="M8 20h8"/></svg></div>
@@ -1028,7 +1021,7 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
                   <div class="nll-counter"><button class="nll-cnt-btn" onclick="nllSeatCnt('booster',-1)">−</button><span class="nll-cnt-val" id="nll-cnt-booster">0</span><button class="nll-cnt-btn" onclick="nllSeatCnt('booster',1)">+</button></div>
                 </div>
               </div>
-              <div class="nll-seats-title" id="nll-bulky-title" style="margin-top:4px">Objemná zavazadla</div>
+              <div class="nll-wl" id="nll-bulky-title" style="margin-top:16px;margin-bottom:10px">Objemná zavazadla</div>
               <div class="nll-bulky-grid">
                 <div class="nll-bulky-item" id="nll-bulky-bike">
                   <div class="nll-bulky-header"><div class="nll-bulky-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/><path d="M15 6a1 1 0 0 0 0-2h-1l-5 9H4"/><path d="m12 6 5 11"/></svg></div>
@@ -1054,8 +1047,6 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
                   <div class="nll-bulky-desc-wrap"><input class="nll-wi nll-bulky-desc" id="nll-other-desc" placeholder="Popište zavazadlo (rozměry, typ...)" oninput="nllOtherDesc(this.value)"></div>
                 </div>
               </div>
-              <div class="nll-note-title" id="nll-lbl-note">Poznámka pro řidiče</div>
-              <textarea class="nll-textarea" id="nll-note" placeholder="Zvláštní požadavky, přání, informace pro řidiče..."></textarea>
             </div>
           </div>
 
@@ -1181,20 +1172,15 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
 
       <!-- SLIDER DÉLKY PRONÁJMU -->
       <div class="nll-slider-section">
-
-        <!-- Výsledek nahoře -->
         <div class="nll-slider-result">
           <div>
             <div class="nll-slider-hours" id="nll-sl-display">2<span>hod</span></div>
             <div class="nll-slider-mins" id="nll-sl-mins">= 120 minut</div>
           </div>
           <div class="nll-slider-price-wrap">
-            <div class="nll-slider-rate-lbl">Sazba za hodinu</div>
-            <div class="nll-slider-rate" id="nll-sl-rate">790 Kč</div>
+            <div class="nll-slider-rate-lbl">Délka pronájmu</div>
           </div>
         </div>
-
-        <!-- Track -->
         <div class="nll-slider-track-wrap">
           <div class="nll-slider-fill" id="nll-sl-fill"></div>
           <input type="range" class="nll-slider-input" id="nll-sl-input"
@@ -1202,57 +1188,24 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
             oninput="nllSlUpdate(this.value)"
             onchange="nllSlUpdate(this.value)">
         </div>
-
-        <!-- Ticky -->
         <div class="nll-slider-ticks" id="nll-sl-ticks"></div>
-
-        <!-- Výběr vozidla pro hodinový -->
-        <div class="nll-lbl" style="margin:20px 0 10px">Vozidlo</div>
-        <div class="nll-hvc-grid nll-hvcg">
-          <div class="nll-hvc sel" onclick="nllSlSelVeh(this,790,'Economy Sedan')">
-            <div class="nll-hvc-name">Economy Sedan</div>
-            <div class="nll-hvc-rate">790 Kč/hod</div>
-          </div>
-          <div class="nll-hvc" onclick="nllSlSelVeh(this,1190,'Premium Sedan')">
-            <div class="nll-hvc-name">Premium Sedan</div>
-            <div class="nll-hvc-rate">1 190 Kč/hod</div>
-          </div>
-          <div class="nll-hvc" onclick="nllSlSelVeh(this,1290,'Economy Van')">
-            <div class="nll-hvc-name">Economy Van</div>
-            <div class="nll-hvc-rate">1 290 Kč/hod</div>
-          </div>
-          <div class="nll-hvc" onclick="nllSlSelVeh(this,1690,'Premium Van')">
-            <div class="nll-hvc-name">Premium Van</div>
-            <div class="nll-hvc-rate">1 690 Kč/hod</div>
-          </div>
-        </div>
-
-        <!-- Cena breakdown -->
-        <div class="nll-sl-calc">
-          <span><strong id="nll-sl-ch">2 hod</strong> × <strong id="nll-sl-cr">790 Kč</strong>/hod</span>
-          <strong id="nll-sl-ct">= 1 580 Kč</strong>
-        </div>
-
       </div>
 
-      <!-- Místo + čas vyzvednutí -->
-      <div class="nll-dtg" style="grid-template-columns:1.4fr 1fr;margin-bottom:10px">
-        <div class="nll-fg"><div class="nll-lbl">Místo vyzvednutí</div><div style="position:relative"><input class="nll-inp" id="nll-hpu" placeholder="Adresa..." autocomplete="off" oninput="gpInput(this,'gp-hpu')" onfocus="gpFocus(this,'gp-hpu')" onblur="setTimeout(function(){gpHide('gp-hpu')},400)"><div class="nll-gp-drop" id="gp-hpu"></div></div></div>
-        <div class="nll-fg"><div class="nll-lbl">Datum</div><input class="nll-inp" type="date" id="nll-hdate"></div>
+      <!-- Místo vyzvednutí -->
+      <div class="nll-fg" style="margin-bottom:6px;margin-top:16px">
+        <div class="nll-lbl">Místo vyzvednutí</div>
+        <div style="position:relative"><input class="nll-inp" id="nll-hpu" placeholder="Adresa..." autocomplete="off" oninput="gpInput(this,'gp-hpu')" onfocus="gpFocus(this,'gp-hpu')" onblur="setTimeout(function(){gpHide('gp-hpu')},400)"><div class="nll-gp-drop" id="gp-hpu"></div></div>
       </div>
-      <div class="nll-dtg" style="grid-template-columns:0.7fr 0.65fr;margin-bottom:16px">
-        <div class="nll-fg">
-          <div class="nll-lbl">Hodina</div>
-          <select class="nll-sel" id="nll-hhr"></select>
-        </div>
-        <div class="nll-fg">
-          <div class="nll-lbl">Minuta</div>
-          <select class="nll-sel" id="nll-hmn"></select>
-        </div>
+
+      <!-- Datum + čas -->
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px;margin-bottom:16px">
+        <div class="nll-fg"><div class="nll-lbl">Datum jízdy</div><input class="nll-inp" type="date" id="nll-hdate" style="min-width:0;padding:10px 8px;width:100%"></div>
+        <div class="nll-fg"><div class="nll-lbl">Hodina</div><select class="nll-sel" id="nll-hhr" style="min-width:0"></select></div>
+        <div class="nll-fg"><div class="nll-lbl">Minuta</div><select class="nll-sel" id="nll-hmn" style="min-width:0"></select></div>
       </div>
 
       <!-- Konec jízdy -->
-      <div class="nll-endride">
+      <div class="nll-endride" style="margin-top:16px">
         <div class="nll-lbl" id="nll-endride-label" style="margin-bottom:8px">Konec jízdy — místo ukončení</div>
         <div class="nll-endride-toggle">
           <button class="nll-er-btn active" id="nll-er-same" onclick="nllSetEndride('same')">
@@ -1273,12 +1226,8 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
         </div>
       </div>
 
-      <div class="nll-pb">
-        <div><div class="nll-pb-l">Odhadovaná cena</div><div class="nll-pb-n">Economy Sedan · bez příplatků</div></div>
-        <div class="nll-pb-p" id="nll-hprice">1 580 Kč</div>
-      </div>
-      <div class="nll-brow"><div style="flex:1"></div>
-        <button class="nll-btn nll-btn-n" onclick="nllSubmitH()">Nezávazně poptat<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
+      <div class="nll-brow" style="margin-top:16px"><div style="flex:1"></div>
+        <button class="nll-btn nll-btn-n" onclick="nllGoHourlyStep2()">Vybrat vozidlo<svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></button>
       </div>
     </div>
 
@@ -1330,7 +1279,7 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
       bike_name: 'Kolo', ski_name: 'Lyže / Snowboard',
       other_name: 'Jiné objemné zavazadlo', other_price: 'Možný příplatek dle dohody',
       other_ph: 'Popište zavazadlo — rozměry, typ, váha...',
-      tooltip_other: '<span id="nll-tooltip-text">Poplatek za nestandardní nebo velmi objemné zavazadlo bude stanoven individuálně a účtován dodatečně po domluvě s řidičem.</span>',
+      tooltip_other: 'Poplatek za nestandardní nebo velmi objemné zavazadlo bude stanoven individuálně a účtován dodatečně po domluvě s řidičem.',
       only_van: 'Pouze pro Minivan',
       note_ph: 'Zvláštní požadavky, přání, informace pro řidiče...',
       pay_driver: 'Hotově / Kartou řidiči', pay_driver_sub: 'Platba při jízdě',
@@ -1620,7 +1569,9 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
     document.getElementById('nll-tab-h').classList.toggle('active',t==='h');
     document.getElementById('nll-mode-r').classList.toggle('show',t==='r');
     document.getElementById('nll-mode-h').classList.toggle('show',t==='h');
-    document.getElementById('nll-steps').style.display=t==='r'?'flex':'none';
+    document.getElementById('nll-steps').style.display='flex';
+    // Reset step indicator to step 1 when switching tabs
+    if(t==='h'){for(var _i=1;_i<=5;_i++){var _sn=document.getElementById('nll-sn'+_i),_sl=document.getElementById('nll-sl'+_i),_ln=document.getElementById('nll-wl'+_i);if(_sn)_sn.className='nll-wsn'+(_i===1?' active':'');if(_sl)_sl.className='nll-wsl'+(_i===1?' active':'');if(_ln)_ln.className='nll-wline';}}
   };
 
   /* ===== PŘEPÍNAČ ===== */
@@ -1955,7 +1906,8 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
       if(photo){var img=typeEl.querySelector('.nll-vtype-img img');if(img)img.src=photo;}
     }
     nllVeh={n:name,p:price,id:vid||subEl.id.replace('nll-vc-','')};window.nllVeh=nllVeh;
-    if(typeof nllUpdPrice==='function')nllUpdPrice();
+    if(window.nllIsHourly&&typeof nllUpdHourlyPrices==='function')nllUpdHourlyPrices();
+    else if(typeof nllUpdPrice==='function')nllUpdPrice();
   };
   window.nllSelVType=function(typeEl,ev){
     if(ev){var t=ev.target;while(t&&t!==typeEl){if(t.classList&&t.classList.contains('nll-vsub'))return;t=t.parentElement;}}
@@ -1998,22 +1950,6 @@ html,body{background:transparent;margin:0;padding:0;overflow:hidden;min-height:0
         var total = result.total;
         var ps = nllFormatPrice(total);
         ['nll-price','nll-price2'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=ps;});
-        // Aktualizuj ceny na kartach vozidel
-        document.querySelectorAll('.nll-vc').forEach(function(vcEl) {
-          var vid = vcEl.id.replace('nll-vc-', '');
-          if (!vid) return;
-          window.nllCalculatePrice({
-            pickup: pickup, dropoff: dropoff, vehicleId: vid,
-            km: window.nllCurrentKm, date: date, hour: hour,
-            isReturn: nllTrip === 'rt',
-            extras: { bikes: 0, skis: 0, isHoliday: false },
-            voucherDisc: 0
-          }).then(function(r) {
-            if (!r) return;
-            var priceEl = vcEl.querySelector('.nll-vc-price');
-            if (priceEl) priceEl.textContent = nllFormatPrice(r.total);
-          });
-        });
         ['nll-stripe-amount','nll-stripe-btn-amt'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=ps;});
         // Zobraz způsob výpočtu
         var methodEl = document.getElementById('nll-price-method');
@@ -2230,7 +2166,7 @@ window.nllStripePay=function(){
         });
       }, 200);
     }
-    if(n===3){if(!nllV2())return;nllShowTBox();setTimeout(function(){if(typeof nllUpdPrice==='function')nllUpdPrice();},100);}
+    if(n===3){if(!nllV2())return;if(!window.nllIsHourly){nllShowTBox();setTimeout(function(){if(typeof nllUpdPrice==='function')nllUpdPrice();},100);}else{setTimeout(function(){if(typeof nllUpdHourlyPrices==='function')nllUpdHourlyPrices();},100);}}
     if(n===4&&!nllV3())return;
     if(n===5&&!nllV4())return;
     for(var i=1;i<=5;i++){
@@ -2242,6 +2178,14 @@ window.nllStripePay=function(){
     document.getElementById('nll-p'+nllStep).classList.remove('show');
     nllStep=n;
     document.getElementById('nll-p'+n).classList.add('show');
+    // If going back to step 1 from hourly mode, restore hourly panel
+    if(n===1&&window.nllIsHourly){
+      window.nllIsHourly=false;
+      document.getElementById('nll-mode-r').classList.remove('show');
+      document.getElementById('nll-mode-h').classList.add('show');
+      document.getElementById('nll-tab-r').classList.remove('active');
+      document.getElementById('nll-tab-h').classList.add('active');
+    }
     // Hide inactive tab when leaving step 1, restore both when returning
     var tabR=document.getElementById('nll-tab-r'),tabH=document.getElementById('nll-tab-h');
     if(n>1){
@@ -2295,6 +2239,48 @@ window.nllStripePay=function(){
     if(!document.getElementById('nll-hpu').value.trim()){nllAlert('Zadejte místo vyzvednutí');return;}
     if(!document.getElementById('nll-hdate').value){nllAlert('Vyberte datum');return;}
     nllAlert('Poptávka hodinového pronájmu odeslána!\nOzveme se vám do 30 minut.');
+  };
+
+  var NLL_HOURLY_RATES={economy_sedan:790,premium_sedan:1190,economy_van:1290,premium_van:1690};
+
+  window.nllUpdHourlyPrices=function(){
+    var h=nllSlHours||2;
+    var veh=window.nllVeh||nllVeh;
+    var rate=NLL_HOURLY_RATES[veh.id]||790;
+    var ps=nllFormatPrice(rate*h);
+    ['nll-price','nll-price2'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=ps;});
+  };
+
+  window.nllGoHourlyStep2=function(){
+    if(!document.getElementById('nll-hpu').value.trim()){nllAlert('Zadejte místo vyzvednutí');return;}
+    if(!document.getElementById('nll-hdate').value){nllAlert('Vyberte datum');return;}
+    window.nllIsHourly=true;
+    // Hide hourly panel, show regular-ride container (which holds step panels)
+    document.getElementById('nll-mode-h').classList.remove('show');
+    document.getElementById('nll-mode-r').classList.add('show');
+    // Hide step 1, show step 2
+    var p1=document.getElementById('nll-p1');
+    var p2=document.getElementById('nll-p2');
+    if(p1) p1.classList.remove('show');
+    nllStep=2;
+    if(p2) p2.classList.add('show');
+    // Update step indicators
+    for(var i=1;i<=5;i++){
+      var sn=document.getElementById('nll-sn'+i);
+      var sl=document.getElementById('nll-sl'+i);
+      var ln=document.getElementById('nll-wl'+i);
+      if(sn) sn.className='nll-wsn'+(i<2?' done':i===2?' active':'');
+      if(sl) sl.className='nll-wsl'+(i===2?' active':'');
+      if(ln) ln.className='nll-wline'+(i<2?' done':'');
+    }
+    // Hide inactive tab (keep active one visible, hide the other)
+    var tabR=document.getElementById('nll-tab-r'),tabH=document.getElementById('nll-tab-h');
+    if(tabR) tabR.style.display=tabH&&tabH.classList.contains('active')?'none':'flex';
+    if(tabH) tabH.style.display=tabH&&tabH.classList.contains('active')?'flex':'none';
+    // Show hourly prices (hours × rate) on vehicle cards
+    nllUpdHourlyPrices();
+    window.parent.postMessage({type:'nll-step',step:2},'*');
+    setTimeout(function(){nllPostHeight(2);},300);
   };
 
   /* ===== ČAS — selecty po 5 minutách ===== */
@@ -2791,8 +2777,6 @@ window.nllStripePay=function(){
         + '<div class="nll-vtype-body">'
         + '<div class="nll-vtype-img">'+(photoUrl?'<img src="'+photoUrl+'" alt="'+title+'">':'')+'</div>'
         + '<div class="nll-vtype-pax">'+paxLabel+'</div>'
-        + '<div class="nll-vtype-price" id="nll-vtype-price-'+typeId+'">od '+nllFormatPrice(minPrice)+'</div>'
-        + '<div class="nll-vtype-vat">Cena vč. DPH a poplatků</div>'
         + '<div class="nll-vtype-sep"></div>';
 
       var firstInGroup = isFirst;
@@ -2808,7 +2792,7 @@ window.nllStripePay=function(){
           + '<div class="nll-vsub-radio"></div>'
           + '<div class="nll-vsub-info"><div class="nll-vsub-name">'+v.name+'</div>'
           + '<div class="nll-vsub-desc">'+(v.description||'')+'</div></div>'
-          + '<div class="nll-vsub-price">'+nllFormatPrice(v.price)+'</div>';
+          ;
         sub.onclick = (function(s, vv){ return function(e){
           nllSelVSub(s, vv.name, vv.price, vv.id, e);
         }; })(sub, v);
