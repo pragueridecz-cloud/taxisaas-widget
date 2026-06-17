@@ -2178,6 +2178,8 @@ window.nllStripePay=function(){
     document.getElementById('nll-p'+nllStep).classList.remove('show');
     nllStep=n;
     document.getElementById('nll-p'+n).classList.add('show');
+    // Notify parent immediately so overlay expands without delay
+    window.parent.postMessage({type:'nll-step',step:n},'*');
     // If going back to step 1 from hourly mode, restore hourly panel
     if(n===1&&window.nllIsHourly){
       window.nllIsHourly=false;
