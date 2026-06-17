@@ -3392,6 +3392,11 @@ function nllSendHeight(){
   var widget = document.querySelector('.nll-w');
   if(!widget) return;
   var h = Math.ceil(widget.getBoundingClientRect().height);
+  // Include any open fixed-position dropdowns that extend beyond widget bounds
+  document.querySelectorAll('.nll-gp-drop.open').forEach(function(dd){
+    var r = dd.getBoundingClientRect();
+    if(r.bottom + 20 > h) h = Math.ceil(r.bottom) + 20;
+  });
   if(h > 50) { window.parent.postMessage({type:'nll-height',height:h},'*'); window.top.postMessage({type:'nll-height',height:h},'*'); }
 }
 function nllSendHeightDelayed(){
