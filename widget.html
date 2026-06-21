@@ -380,7 +380,14 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
 /* ===== OBJEMNÁ ZAVAZADLA ===== */
 .nll-bulky-grid{
   display:grid;grid-template-columns:1fr 1fr;
-  gap:10px;margin-bottom:8px;
+  gap:8px;margin-bottom:8px;
+}
+@media(max-width:380px){
+  .nll-bulky-grid{gap:6px}
+  .nll-bulky-item{padding:10px 8px}
+  .nll-bulky-name{font-size:12px}
+  .nll-bulky-price{font-size:11px}
+  .nll-bulky-unavail{font-size:10px}
 }
 .nll-bulky-item{
   border:2px solid var(--borderl);border-radius:6px;
