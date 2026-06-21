@@ -644,7 +644,11 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
 
 /* Velmi malý (380px) */
 @media(max-width:380px){
-  .nll-seats-grid{grid-template-columns:1fr}
+  .nll-seats-grid{grid-template-columns:repeat(3,1fr);gap:6px}
+  .nll-seat{padding:8px 4px}
+  .nll-seat-ico{width:32px;height:32px;margin-bottom:5px}
+  .nll-seat-name{font-size:11px}
+  .nll-seat-age{font-size:9px}
   .nll-hpg{grid-template-columns:1fr}
   .nll-tab{padding:11px 10px;font-size:10px}
   .nll-dtg.cols4,.nll-dtg.cols3{grid-template-columns:1fr 1fr}
