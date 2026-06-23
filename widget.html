@@ -281,6 +281,12 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
 .nll-counter{display:flex;align-items:center;justify-content:center;gap:8px}
 .nll-counter-field{justify-content:space-between;border:1.5px solid var(--borderl);border-radius:8px;padding:7px 10px;background:#fff}
 .nll-counter-field .nll-cnt-val{flex:1;text-align:center;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nll-lug-drop{position:absolute;top:100%;left:0;right:0;margin-top:4px;background:#fff;border:1.5px solid var(--borderl);border-radius:8px;box-shadow:0 12px 32px rgba(0,32,91,.16);padding:6px 10px;z-index:50;display:none}
+.nll-lug-drop.open{display:block}
+.nll-lug-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0}
+.nll-lug-row+.nll-lug-row{border-top:1px solid var(--borderl)}
+.nll-lug-row-name{font-size:12px;font-weight:700;color:var(--navy)}
+.nll-lug-row-desc{font-size:10px;color:var(--muted)}
 .nll-cnt-btn{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--borderl);background:#fff;color:var(--navy);font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;transition:all .2s;flex-shrink:0}
 .nll-cnt-btn:hover{border-color:var(--navy);background:var(--navy);color:#fff}
 .nll-cnt-val{font-size:16px;font-weight:800;color:var(--navy);min-width:20px;text-align:center}
@@ -870,13 +876,30 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
               <button type="button" class="nll-cnt-btn" onclick="nllStepCnt('nll-pax',1,1,21)">+</button>
             </div>
           </div>
-          <div class="nll-fg">
+          <div class="nll-fg" style="position:relative">
             <div class="nll-lbl">Zavazadla</div>
             <input type="hidden" id="nll-lug" value="0">
-            <div class="nll-counter nll-counter-field">
-              <button type="button" class="nll-cnt-btn" onclick="nllStepCnt('nll-lug',-1,0,21)">−</button>
-              <span class="nll-cnt-val" id="nll-lug-disp">0</span>
-              <button type="button" class="nll-cnt-btn" onclick="nllStepCnt('nll-lug',1,0,21)">+</button>
+            <input type="hidden" id="nll-lug-small" value="0">
+            <input type="hidden" id="nll-lug-large" value="0">
+            <button type="button" class="nll-sel" id="nll-lug-toggle" onclick="nllToggleLugDrop(event)" style="text-align:left;display:flex;align-items:center;justify-content:space-between;cursor:pointer;width:100%">
+              <span id="nll-lug-disp">Bez zavazadel</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" style="stroke:var(--navy);fill:none;stroke-width:2;flex-shrink:0;margin-left:6px"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="nll-lug-drop" id="nll-lug-drop">
+              <div class="nll-lug-row">
+                <div class="nll-lug-row-label">
+                  <div class="nll-lug-row-name">Příruční zavazadlo</div>
+                  <div class="nll-lug-row-desc">malé, kabinové</div>
+                </div>
+                <div class="nll-counter"><button type="button" class="nll-cnt-btn" onclick="nllLugCnt('small',-1)">−</button><span class="nll-cnt-val" id="nll-cnt-lug-small">0</span><button type="button" class="nll-cnt-btn" onclick="nllLugCnt('small',1)">+</button></div>
+              </div>
+              <div class="nll-lug-row">
+                <div class="nll-lug-row-label">
+                  <div class="nll-lug-row-name">Velké zavazadlo</div>
+                  <div class="nll-lug-row-desc">kufr do kufru auta</div>
+                </div>
+                <div class="nll-counter"><button type="button" class="nll-cnt-btn" onclick="nllLugCnt('large',-1)">−</button><span class="nll-cnt-val" id="nll-cnt-lug-large">0</span><button type="button" class="nll-cnt-btn" onclick="nllLugCnt('large',1)">+</button></div>
+              </div>
             </div>
           </div>
         </div>
@@ -1942,16 +1965,52 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
     el.value=v;
     var disp=document.getElementById(id+'-disp');
     if(disp){
-      if(id==='nll-pax'){
-        disp.textContent=v+(v===1?' os.':' os.');
-      } else if(id==='nll-lug'){
-        disp.textContent=v===0?'Bez zavazadel':(v===1?'1 kufr':(v>=2&&v<=4?v+' kufry':v+' kufrů'));
+      disp.textContent=v+' os.';
+    }
+    nllCheckV();
+  };
+
+  window.nllLugCnt=function(type,delta){
+    var el=document.getElementById('nll-lug-'+type);
+    if(!el)return;
+    var v=(parseInt(el.value)||0)+delta;
+    if(v<0)v=0;
+    if(v>21)v=21;
+    el.value=v;
+    var cntDisp=document.getElementById('nll-cnt-lug-'+type);
+    if(cntDisp)cntDisp.textContent=v;
+    var small=parseInt(document.getElementById('nll-lug-small').value)||0;
+    var large=parseInt(document.getElementById('nll-lug-large').value)||0;
+    var total=small+large;
+    var totEl=document.getElementById('nll-lug');
+    if(totEl)totEl.value=total;
+    var dispTotal=document.getElementById('nll-lug-disp');
+    if(dispTotal){
+      if(total===0){
+        dispTotal.textContent='Bez zavazadel';
       } else {
-        disp.textContent=v;
+        var parts=[];
+        if(small>0)parts.push(small+'× příruční');
+        if(large>0)parts.push(large+'× velké');
+        dispTotal.textContent=parts.join(', ');
       }
     }
     nllCheckV();
   };
+
+  window.nllToggleLugDrop=function(e){
+    if(e&&e.stopPropagation)e.stopPropagation();
+    var d=document.getElementById('nll-lug-drop');
+    if(d)d.classList.toggle('open');
+  };
+
+  document.addEventListener('click',function(e){
+    var d=document.getElementById('nll-lug-drop');
+    var t=document.getElementById('nll-lug-toggle');
+    if(d&&d.classList.contains('open')&&!d.contains(e.target)&&t&&!t.contains(e.target)){
+      d.classList.remove('open');
+    }
+  });
 
 
   window.nllSelVSub=function(subEl,name,price,vid,e){
