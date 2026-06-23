@@ -2252,6 +2252,15 @@ window.nllStripePay=function(){
     if(!document.getElementById('nll-pu').value.trim()){nllAlert(window.NLL_VAL?window.NLL_VAL.pickup:'Zadejte místo vyzvednutí');return false;}
     if(!document.getElementById('nll-do').value.trim()){nllAlert(window.NLL_VAL?window.NLL_VAL.dropoff:'Zadejte cíl cesty');return false;}
     if(!document.getElementById('nll-date').value){nllAlert(window.NLL_VAL?window.NLL_VAL.date:'Vyberte datum');return false;}
+    var dEl=document.getElementById('nll-date'),hEl=document.getElementById('nll-hr'),mEl=document.getElementById('nll-mn');
+    var hh=hEl?parseInt(hEl.value)||0:0, mm=mEl?parseInt(mEl.value)||0:0;
+    var picked=new Date(dEl.value+'T00:00:00');
+    picked.setHours(hh,mm,0,0);
+    var minAllowed=new Date(Date.now()+6*60*60*1000);
+    if(picked.getTime()<minAllowed.getTime()){
+      nllAlert(window.NLL_VAL?window.NLL_VAL.minLead:'Rezervaci je nutné zadat minimálně 6 hodin předem');
+      return false;
+    }
     return true;
   }
   window.nllV2=function(){return true;}
@@ -2291,6 +2300,15 @@ window.nllStripePay=function(){
   window.nllGoHourlyStep2=function(){
     if(!document.getElementById('nll-hpu').value.trim()){nllAlert('Zadejte místo vyzvednutí');return;}
     if(!document.getElementById('nll-hdate').value){nllAlert('Vyberte datum');return;}
+    var hdEl=document.getElementById('nll-hdate'),hhEl=document.getElementById('nll-hhr'),hmEl=document.getElementById('nll-hmn');
+    var hhh=hhEl?parseInt(hhEl.value)||0:0, hmm=hmEl?parseInt(hmEl.value)||0:0;
+    var hPicked=new Date(hdEl.value+'T00:00:00');
+    hPicked.setHours(hhh,hmm,0,0);
+    var hMinAllowed=new Date(Date.now()+6*60*60*1000);
+    if(hPicked.getTime()<hMinAllowed.getTime()){
+      nllAlert('Rezervaci je nutné zadat minimálně 6 hodin předem');
+      return;
+    }
     window.nllIsHourly=true;
     // Hide hourly panel, show regular-ride container (which holds step panels)
     document.getElementById('nll-mode-h').classList.remove('show');
