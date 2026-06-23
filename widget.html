@@ -279,9 +279,9 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
 .nll-seat-name{font-size:11px;font-weight:700;color:var(--navy);margin-bottom:2px}
 .nll-seat-age{font-size:10px;color:var(--muted);font-weight:500;margin-bottom:10px;line-height:1.3}
 .nll-counter{display:flex;align-items:center;justify-content:center;gap:8px}
-.nll-counter-field{justify-content:space-between;border:1.5px solid var(--borderl);border-radius:8px;padding:7px 10px;background:#fff}
+.nll-counter-field{justify-content:space-between;border:1.5px solid var(--borderl);border-radius:8px;padding:7px 10px;background:#fff;min-height:42px;box-sizing:border-box}
 .nll-counter-field .nll-cnt-val{flex:1;text-align:center;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nll-lug-toggle{display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;width:100%;border:1.5px solid var(--borderl);border-radius:8px;padding:7px 10px;background:#fff;font-size:13px;font-weight:600;color:var(--navy);font-family:'Montserrat',sans-serif;box-sizing:border-box}
+.nll-lug-toggle{display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;width:100%;border:1.5px solid var(--borderl);border-radius:8px;padding:7px 10px;background:#fff;font-size:13px;font-weight:600;color:var(--navy);font-family:'Montserrat',sans-serif;box-sizing:border-box;min-height:42px}
 .nll-lug-toggle span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nll-lug-drop{position:absolute;top:100%;left:0;right:0;margin-top:4px;background:#fff;border:1.5px solid var(--borderl);border-radius:8px;box-shadow:0 12px 32px rgba(0,32,91,.16);padding:6px 10px;z-index:50;display:none}
 .nll-lug-drop.open{display:block}
@@ -3535,11 +3535,13 @@ window.addEventListener('scroll',function(){
 function nllSendHeight(){
   var widget = document.querySelector('.nll-w');
   if(!widget) return;
-  var h = Math.ceil(widget.getBoundingClientRect().height);
-  // Include any open fixed-position dropdowns that extend beyond widget bounds
-  document.querySelectorAll('.nll-gp-drop.open').forEach(function(dd){
+  var rect = widget.getBoundingClientRect();
+  var h = Math.ceil(rect.height);
+  // Include any open dropdowns that extend beyond widget bounds (coords are viewport-relative, so offset by widget top)
+  document.querySelectorAll('.nll-gp-drop.open, .nll-lug-drop.open').forEach(function(dd){
     var r = dd.getBoundingClientRect();
-    if(r.bottom + 20 > h) h = Math.ceil(r.bottom) + 20;
+    var relBottom = r.bottom - rect.top;
+    if(relBottom + 20 > h) h = Math.ceil(relBottom) + 20;
   });
   if(h > 50) { window.parent.postMessage({type:'nll-height',height:h},'*'); window.top.postMessage({type:'nll-height',height:h},'*'); }
 }
