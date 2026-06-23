@@ -283,12 +283,12 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
 .nll-counter-field .nll-cnt-val{flex:1;text-align:center;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nll-lug-toggle{display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;width:100%;border:1.5px solid var(--borderl);border-radius:8px;padding:7px 10px;background:#fff;font-size:13px;font-weight:600;color:var(--navy);font-family:'Montserrat',sans-serif;box-sizing:border-box;min-height:42px}
 .nll-lug-toggle span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nll-lug-drop{position:fixed;margin-top:0;background:#fff;border:1.5px solid var(--borderl);border-radius:8px;box-shadow:0 12px 32px rgba(0,32,91,.22);padding:6px 10px;z-index:99999;display:none}
+.nll-lug-drop{position:fixed;margin-top:0;background:#fff;border:1.5px solid var(--borderl);border-radius:8px;box-shadow:0 12px 32px rgba(0,32,91,.22);padding:6px 10px;z-index:99999;display:none;min-width:260px}
 .nll-lug-drop.open{display:block}
 .nll-lug-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0}
 .nll-lug-row+.nll-lug-row{border-top:1px solid var(--borderl)}
-.nll-lug-row-name{font-size:12px;font-weight:700;color:var(--navy)}
-.nll-lug-row-desc{font-size:10px;color:var(--muted)}
+.nll-lug-row-name{font-size:12px;font-weight:700;color:var(--navy);white-space:nowrap}
+.nll-lug-row-desc{font-size:10px;color:var(--muted);white-space:nowrap}
 .nll-cnt-btn{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--borderl);background:#fff;color:var(--navy);font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;transition:all .2s;flex-shrink:0}
 .nll-cnt-btn:hover{border-color:var(--navy);background:var(--navy);color:#fff}
 .nll-cnt-val{font-size:16px;font-weight:800;color:var(--navy);min-width:20px;text-align:center}
@@ -898,7 +898,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
               <div class="nll-lug-row">
                 <div class="nll-lug-row-label">
                   <div class="nll-lug-row-name">Velké zavazadlo</div>
-                  <div class="nll-lug-row-desc">kufr do kufru auta</div>
+                  <div class="nll-lug-row-desc">do kufru auta</div>
                 </div>
                 <div class="nll-counter"><button type="button" class="nll-cnt-btn" onclick="nllLugCnt('large',-1)">−</button><span class="nll-cnt-val" id="nll-cnt-lug-large">0</span><button type="button" class="nll-cnt-btn" onclick="nllLugCnt('large',1)">+</button></div>
               </div>
