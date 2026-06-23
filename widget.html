@@ -2008,10 +2008,21 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
     var willOpen=!d.classList.contains('open');
     if(willOpen){
       var r=t.getBoundingClientRect();
-      d.style.top=(r.bottom+4)+'px';
       d.style.left=r.left+'px';
       d.style.width=r.width+'px';
+      // Measure dropdown height first (off-screen) to decide whether it fits below
+      d.style.visibility='hidden';
+      d.style.top='-9999px';
       d.classList.add('open');
+      var dh=d.offsetHeight;
+      var viewportH=document.documentElement.clientHeight||window.innerHeight;
+      var spaceBelow=viewportH-r.bottom;
+      if(spaceBelow<dh+8){
+        d.style.top=Math.max(4,r.top-dh-4)+'px';
+      } else {
+        d.style.top=(r.bottom+4)+'px';
+      }
+      d.style.visibility='visible';
     } else {
       d.classList.remove('open');
     }
