@@ -283,7 +283,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
 .nll-counter-field .nll-cnt-val{flex:1;text-align:center;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nll-lug-toggle{display:flex;align-items:center;justify-content:space-between;text-align:left;cursor:pointer;width:100%;border:1.5px solid var(--borderl);border-radius:8px;padding:7px 10px;background:#fff;font-size:13px;font-weight:600;color:var(--navy);font-family:'Montserrat',sans-serif;box-sizing:border-box;min-height:42px}
 .nll-lug-toggle span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nll-lug-drop{position:absolute;top:100%;left:0;right:0;margin-top:4px;background:#fff;border:1.5px solid var(--borderl);border-radius:8px;box-shadow:0 12px 32px rgba(0,32,91,.16);padding:6px 10px;z-index:50;display:none}
+.nll-lug-drop{position:fixed;margin-top:0;background:#fff;border:1.5px solid var(--borderl);border-radius:8px;box-shadow:0 12px 32px rgba(0,32,91,.22);padding:6px 10px;z-index:99999;display:none}
 .nll-lug-drop.open{display:block}
 .nll-lug-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0}
 .nll-lug-row+.nll-lug-row{border-top:1px solid var(--borderl)}
@@ -2003,9 +2003,17 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
   window.nllToggleLugDrop=function(e){
     if(e&&e.stopPropagation)e.stopPropagation();
     var d=document.getElementById('nll-lug-drop');
-    if(d){
-      d.classList.toggle('open');
-      nllSendHeightDelayed();
+    var t=document.getElementById('nll-lug-toggle');
+    if(!d||!t)return;
+    var willOpen=!d.classList.contains('open');
+    if(willOpen){
+      var r=t.getBoundingClientRect();
+      d.style.top=(r.bottom+4)+'px';
+      d.style.left=r.left+'px';
+      d.style.width=r.width+'px';
+      d.classList.add('open');
+    } else {
+      d.classList.remove('open');
     }
   };
 
@@ -2014,7 +2022,6 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
     var t=document.getElementById('nll-lug-toggle');
     if(d&&d.classList.contains('open')&&!d.contains(e.target)&&t&&!t.contains(e.target)){
       d.classList.remove('open');
-      nllSendHeightDelayed();
     }
   });
 
@@ -3538,7 +3545,7 @@ function nllSendHeight(){
   var rect = widget.getBoundingClientRect();
   var h = Math.ceil(rect.height);
   // Include any open dropdowns that extend beyond widget bounds (coords are viewport-relative, so offset by widget top)
-  document.querySelectorAll('.nll-gp-drop.open, .nll-lug-drop.open').forEach(function(dd){
+  document.querySelectorAll('.nll-gp-drop.open').forEach(function(dd){
     var r = dd.getBoundingClientRect();
     var relBottom = r.bottom - rect.top;
     if(relBottom + 20 > h) h = Math.ceil(relBottom) + 20;
