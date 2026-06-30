@@ -110,7 +110,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit{
   text-align:left;
   width:auto;
   position:relative;
-  left:-9px;
+  left:0;
   padding:0;
   margin:0;
 }
@@ -2269,7 +2269,16 @@ window.nllStripePay=function(){
       stripe_payment_id:nllPaidOnline?('sim_'+ref):null,
       locale:NLL_LOCALE
     };
-    nllSaveOrder(d).then(function(r){if(r.ok)console.log('✓ OK:',ref);else r.text().then(function(t){console.error('SB:',r.status,t);});}).catch(function(e){console.error('SB:',e);});
+    nllSaveOrder(d).then(function(r){
+      if(r.ok){
+        console.log('✓ OK:',ref);
+        // Push notifikace adminům – nová objednávka
+        fetch('https://taxisaas-admin.vercel.app/api/send-push',{
+          method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({title:'🆕 Nová objednávka',body:(d.pickup||'')+' → '+(d.dropoff||'')+' · '+ref,url:'/orders',tag:'new-order'})
+        }).catch(function(){});
+      } else r.text().then(function(t){console.error('SB:',r.status,t);});
+    }).catch(function(e){console.error('SB:',e);});
     document.getElementById('nll-ref').textContent=ref;
     var sp=document.getElementById('nll-suc-pay');if(sp)sp.classList.toggle('show',nllPaidOnline);
     if(sucDiv)sucDiv.style.display='block';
