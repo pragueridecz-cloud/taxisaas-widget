@@ -1598,6 +1598,8 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
 
   var NLL_SB_URL='https://pqmoyykyshmtiapnowxc.supabase.co';
   var NLL_SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxbW95eWt5c2htdGlhcG5vd3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxNTYyMDUsImV4cCI6MjA5MzczMjIwNX0.jDhdSwH09to0eJvDoGTeUHiSjV_vnWhgEK7Pt1_R7PA';
+  // Jazyk webu, na kterém je widget vložen — webová stránka přidá ?locale=en do src iframe (default cs)
+  var NLL_LOCALE=(function(){try{var p=new URLSearchParams(window.location.search);var v=p.get('locale');return v==='en'?'en':'cs';}catch(e){return 'cs';}})();
   function nllSaveOrder(data){return fetch(NLL_SB_URL+'/rest/v1/orders',{method:'POST',headers:{'apikey':NLL_SB_KEY,'Authorization':'Bearer '+NLL_SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});}
 
     window.nllVeh={n:'Economy Sedan',p:790,id:'economy_sedan'};
@@ -2264,7 +2266,8 @@ window.nllStripePay=function(){
       note:(function(){var v=document.getElementById('nll-note');return v&&v.value?v.value:null;})(),
       payment_method:document.getElementById('nll-pay-o').classList.contains('sel')?'online':'driver',
       payment_status:nllPaidOnline?'paid':'pending',
-      stripe_payment_id:nllPaidOnline?('sim_'+ref):null
+      stripe_payment_id:nllPaidOnline?('sim_'+ref):null,
+      locale:NLL_LOCALE
     };
     nllSaveOrder(d).then(function(r){if(r.ok)console.log('✓ OK:',ref);else r.text().then(function(t){console.error('SB:',r.status,t);});}).catch(function(e){console.error('SB:',e);});
     document.getElementById('nll-ref').textContent=ref;
