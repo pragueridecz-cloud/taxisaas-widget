@@ -1026,6 +1026,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
                 oninput="nllAcSearch(this.value)" onkeydown="nllAcKey(event)">
               <button class="nll-ac-clear" id="nll-ac-clear" onclick="nllAcClear()">✕</button>
               <div class="nll-ac-dd" id="nll-ac-dd"></div>
+              <div id="nll-flight-badge" style="display:none;margin-top:6px;"></div>
             </div>
             <div class="nll-tres" id="nll-tres">
               <div class="nll-tstat" id="nll-tstat"></div>
@@ -1609,26 +1610,62 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
   var nllSeats={infant:0,baby:0,booster:0};
   var nllPaidOnline=false;
   var nllAcTimer=null,nllAcSelected=null;
+  var NLL_FR24_PROXY='https://admin.naletistelevne.cz/api/flight-status';
 
-  /* ===== DEMO DATA — simulace letů (nahradit AeroDataBox API) =====
-   * Skutečné API volání:
-   * GET https://aerodatabox.p.rapidapi.com/flights/search/term?q={query}&limit=10
-   * Headers: X-RapidAPI-Key: VÁŠ_KLÍČ
-   */
-  var NLL_FLIGHTS=[
-    {num:'OK204',route:'Praha → Londýn Heathrow',dep:'06:15',arr:'08:20',late:false,delay:'Včas',terminal:'T2'},
-    {num:'OK212',route:'Praha → Amsterdam',dep:'07:45',arr:'09:30',late:false,delay:'Včas',terminal:'T2'},
-    {num:'OK301',route:'Praha → Paříž CDG',dep:'10:20',arr:'12:15',late:true,delay:'+28 min',terminal:'T2'},
-    {num:'FR1234',route:'Praha → Dublin',dep:'06:00',arr:'08:45',late:false,delay:'Včas',terminal:'T1'},
-    {num:'EK201',route:'Dubai → Praha',dep:'14:30',arr:'18:45',late:true,delay:'+45 min',terminal:'T2'},
-    {num:'LH1395',route:'Frankfurt → Praha',dep:'09:10',arr:'10:20',late:false,delay:'Včas',terminal:'T2'},
-    {num:'QS1001',route:'Praha → Barcelona',dep:'11:30',arr:'14:05',late:false,delay:'Včas',terminal:'T1'},
-    {num:'QS1002',route:'Praha → Milán',dep:'12:00',arr:'13:50',late:true,delay:'+15 min',terminal:'T1'},
-    {num:'W62345',route:'Varšava → Praha',dep:'15:20',arr:'16:10',late:false,delay:'Včas',terminal:'T1'},
-    {num:'BA852',route:'Londýn Heathrow → Praha',dep:'13:45',arr:'17:00',late:false,delay:'Včas',terminal:'T2'},
-    {num:'AF1082',route:'Paříž CDG → Praha',dep:'16:00',arr:'18:00',late:true,delay:'+22 min',terminal:'T2'},
-    {num:'TK1769',route:'Istanbul → Praha',dep:'08:30',arr:'11:20',late:false,delay:'Včas',terminal:'T2'},
-  ];
+  /* ===== FLIGHT LOOKUP via FR24 API ===== */
+  var NLL_FLIGHTS=[]; // fallback prázdný — používáme live API
+
+  /* Načte stav letu z FR24 a zobrazí v dropdownu */
+  function nllFetchFlight(q) {
+    if (!q || q.length < 2) { nllAcHide(); return; }
+    var dd = document.getElementById('nll-ac-dd');
+    if (dd) { dd.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:#94a3b8">Hledám let ' + q.toUpperCase() + '...</div>'; dd.classList.add('show'); }
+    fetch(NLL_FR24_PROXY + '?flight=' + encodeURIComponent(q))
+      .then(function(r){return r.json();})
+      .then(function(d){
+        if (!dd) return;
+        if (!d.found) {
+          dd.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:#ef4444">Let ' + q.toUpperCase() + ' nenalezen.</div>';
+          return;
+        }
+        var status = d.status === 'airborne' ? (d.eta_mins > 15 ? '⚠ Zpoždění ~' + d.eta_mins + ' min' : '✅ Ve vzduchu, včas') : '🕐 Naplánováno';
+        var eta = d.eta ? new Date(d.eta).toLocaleTimeString('cs-CZ',{hour:'2-digit',minute:'2-digit'}) : '';
+        var route = (d.origin && d.destination) ? d.origin + ' → ' + d.destination : '';
+        dd.innerHTML = '<div class="nll-ac-item" onclick="nllAcPick(\'' + d.flight + '\',\'' + route + '\',\'' + eta + '\')" style="padding:14px 16px;cursor:pointer;border-bottom:1px solid #f1f5f9">' +
+          '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">' +
+          '<span style="font-size:15px;font-weight:800;color:#00205B;letter-spacing:2px">' + d.flight + '</span>' +
+          '<span style="font-size:11px;color:' + (d.eta_mins > 15 ? '#f59e0b' : '#10b981') + ';font-weight:700">' + status + '</span>' +
+          '</div>' +
+          '<div style="font-size:12px;color:#64748b">' + route + (eta ? ' · Přistání ' + eta : '') + '</div>' +
+          '</div>';
+        dd.classList.add('show');
+        // Aktualizuj live badge pod polem
+        nllUpdateFlightBadge(d);
+      })
+      .catch(function(){ if (dd) { dd.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:#94a3b8">Chyba načítání.</div>'; } });
+  }
+
+  function nllUpdateFlightBadge(d) {
+    var badge = document.getElementById('nll-flight-badge');
+    if (!badge) return;
+    if (!d || !d.found) { badge.style.display='none'; return; }
+    var isLate = d.eta_mins > 15;
+    var color = isLate ? '#f59e0b' : '#10b981';
+    var bg = isLate ? 'rgba(245,158,11,.1)' : 'rgba(16,185,129,.1)';
+    var eta = d.eta ? new Date(d.eta).toLocaleTimeString('cs-CZ',{hour:'2-digit',minute:'2-digit'}) : '';
+    badge.style.display = 'block';
+    badge.style.background = bg;
+    badge.style.border = '1px solid ' + color + '40';
+    badge.style.borderRadius = '8px';
+    badge.style.padding = '8px 12px';
+    badge.style.marginTop = '6px';
+    badge.style.fontSize = '12px';
+    badge.style.color = color;
+    badge.style.fontWeight = '600';
+    badge.innerHTML = (isLate ? '⚠ Zpoždění ~' + d.eta_mins + ' min' : '✅ Let ve vzduchu, včas') +
+      (eta ? ' · Přistání ' + eta : '') +
+      ((d.origin && d.destination) ? ' · ' + d.origin + '→' + d.destination : '');
+  }
 
   /* ===== TABS ===== */
   window.nllSwitchTab=function(t){
@@ -1816,41 +1853,16 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
     document.getElementById('nll-tres').classList.remove('show');
     nllAcSelected=null;
     if(val.length<2){document.getElementById('nll-ac-dd').classList.remove('show');return;}
-    /* Zobraz loading */
-    var dd=document.getElementById('nll-ac-dd');
-    dd.innerHTML='<div class="nll-ac-loading">&#9203; Hledám lety...</div>';
-    dd.classList.add('show');
-    /* Simulace API delay */
-    nllAcTimer=setTimeout(function(){
-      var q=val.toUpperCase().replace(/\s/g,'');
-      var results=NLL_FLIGHTS.filter(function(f){
-        return f.num.startsWith(q)||f.route.toUpperCase().includes(q)||f.num.includes(q);
-      });
-      if(results.length===0){
-        dd.innerHTML='<div class="nll-ac-empty">Žádný let nenalezen pro "'+val+'"</div>';
-        return;
-      }
-      dd.innerHTML='';
-      results.slice(0,8).forEach(function(f,i){
-        var item=document.createElement('div');
-        item.className='nll-ac-item';
-        item.setAttribute('data-idx',i);
-        item.innerHTML='<div class="nll-ac-item-row">'
-          +'<div class="nll-ac-num">'+f.num+'</div>'
-          +'<div class="nll-ac-route">'+f.route+'</div>'
-          +'<div class="nll-ac-time">'+f.arr+'</div>'
-          +'<div class="nll-ac-badge '+(f.late?'delay':'ontime')+'">'+(f.late?f.delay:'Včas')+'</div>'
-          +'</div>';
-        item.addEventListener('mousedown',function(e){e.preventDefault();nllAcPick(f);});
-        dd.appendChild(item);
-      });
-    },400); /* Skutečné API: fetch('https://aerodatabox.p.rapidapi.com/...') */
+    nllAcTimer=setTimeout(function(){ nllFetchFlight(val.trim()); },500);
   };
 
   window.nllAcKey=function(e){
+    if(e.key==='Escape'){document.getElementById('nll-ac-dd').classList.remove('show');}
+  };
+
+  window.nllAcHide=function(){
     var dd=document.getElementById('nll-ac-dd');
-    var items=dd.querySelectorAll('.nll-ac-item');
-    if(e.key==='Escape'){dd.classList.remove('show');}
+    if(dd) dd.classList.remove('show');
   };
 
   window.nllAcClear=function(){
@@ -1858,20 +1870,24 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
     document.getElementById('nll-ac-dd').classList.remove('show');
     document.getElementById('nll-tres').classList.remove('show');
     document.getElementById('nll-ac-clear').classList.remove('show');
+    var badge=document.getElementById('nll-flight-badge');
+    if(badge) badge.style.display='none';
     nllAcSelected=null;
   };
 
-  function nllAcPick(f){
-    nllAcSelected=f;
-    document.getElementById('nll-ac-inp').value=f.num+' · '+f.route;
+  function nllAcPick(num, route, eta){
+    nllAcSelected={num:num, route:route, arr:eta};
+    document.getElementById('nll-ac-inp').value=num+(route?' · '+route:'');
     document.getElementById('nll-ac-dd').classList.remove('show');
-    /* Zobraz detail letu */
-    var col=f.late?'#c0392b':'#27ae60';
-    document.getElementById('nll-tstat').innerHTML='<span class="nll-tsdot" style="background:'+col+'"></span>'
-      +'<span style="color:'+col+'">'+(f.late?'Let má zpoždění':'Let přijede včas')+' · '+f.route+' · Terminál '+f.terminal+'</span>';
-    document.getElementById('nll-tv1').textContent=f.arr;
-    var a=document.getElementById('nll-tv2');a.textContent=f.late?nllAddMin(f.arr,parseInt(f.delay)):f.arr;
-    a.className='nll-tcval '+(f.late?'late':'ok');
+    if(eta){
+      document.getElementById('nll-tv1').textContent=eta;
+      document.getElementById('nll-tv2').textContent=eta;
+    }
+    if(route){
+      document.getElementById('nll-tstat').innerHTML='<span class="nll-tsdot" style="background:#10b981"></span>'
+        +'<span style="color:#10b981">'+num+' · '+route+(eta?' · Přistání '+eta:'')+'</span>';
+    }
+  }
     var d=document.getElementById('nll-tv3');d.textContent=f.late?f.delay:'Včas';
     d.className='nll-tcval '+(f.late?'late':'ok');
     document.getElementById('nll-tnote').textContent=f.late
