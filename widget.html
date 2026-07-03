@@ -1611,7 +1611,14 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
   var nllSeats={infant:0,baby:0,booster:0};
   var nllPaidOnline=false;
   var nllAcTimer=null,nllAcSelected=null;
-  var NLL_FR24_PROXY='https://naletistelevne.cz/api/flight-status';
+  // Proxy URL se předá jako ?proxy= parametr z rodičovské stránky (nebo fallback na produkci)
+  var NLL_FR24_PROXY=(function(){
+    try {
+      var p = new URLSearchParams(window.location.search).get('proxy');
+      if (p) return decodeURIComponent(p);
+    } catch(e){}
+    return 'https://naletistelevne.cz/api/flight-status';
+  })();
   var NLL_FLIGHTS=[];
 
   /* ===== FLIGHT SEARCH via FR24 API — partial search + exact lookup ===== */
