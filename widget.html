@@ -1900,14 +1900,6 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
         +'<span style="color:#10b981">'+num+' · '+route+(eta?' · Přistání '+eta:'')+'</span>';
     }
   }
-    var d=document.getElementById('nll-tv3');d.textContent=f.late?f.delay:'Včas';
-    d.className='nll-tcval '+(f.late?'late':'ok');
-    document.getElementById('nll-tnote').textContent=f.late
-      ?'Řidič bude automaticky upozorněn a přizpůsobí čas vyzvednutí. Nemusíte nic řešit.'
-      :'Let přijede včas. Řidič bude na místě v plánovaný čas příjezdu.';
-    document.getElementById('nll-tres').classList.add('show');
-  }
-
   function nllAddMin(time,min){
     if(isNaN(min)) return time;
     var p=time.split(':'),h=parseInt(p[0]),m=parseInt(p[1])+min;
