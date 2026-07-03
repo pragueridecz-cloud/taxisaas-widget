@@ -1024,7 +1024,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
             <div class="nll-ac-wrap">
               <div class="nll-ac-ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
               <input class="nll-ac-inp" id="nll-ac-inp" placeholder="Zadejte číslo letu, např. OK204..." autocomplete="off"
-                oninput="nllAcSearch(this.value)" onkeydown="nllAcKey(event)">
+                oninput="nllAcSearch(this.value)" onkeydown="nllAcKey(event)" onfocus="if(!this.value)nllShowAirportFlights()">
               <button class="nll-ac-clear" id="nll-ac-clear" onclick="nllAcClear()">✕</button>
               <div class="nll-ac-dd" id="nll-ac-dd"></div>
               <div id="nll-flight-badge" style="display:none;margin-top:6px;"></div>
@@ -1864,9 +1864,44 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
     if(clear) clear.classList.toggle('show',val.length>0);
     document.getElementById('nll-tres').classList.remove('show');
     nllAcSelected=null;
-    if(val.length<2){document.getElementById('nll-ac-dd').classList.remove('show');return;}
+    if(val.length<2){
+      // Pokud je prázdné pole, zkus načíst lety z letiště
+      nllShowAirportFlights();
+      return;
+    }
     nllAcTimer=setTimeout(function(){ nllFetchFlight(val.trim()); },500);
   };
+
+  /* Načte lety ze zvoleného letiště při kliknutí do pole */
+  function nllShowAirportFlights() {
+    var puVal = (document.getElementById('nll-pu')||{value:''}).value;
+    var doVal = (document.getElementById('nll-do')||{value:''}).value;
+    var airport = puVal || doVal;
+    if (!airport) return;
+    var dd = document.getElementById('nll-ac-dd');
+    if (!dd) return;
+    dd.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:#94a3b8">Načítám lety z letiště...</div>';
+    dd.classList.add('show');
+    fetch(NLL_FR24_PROXY + '?airport=' + encodeURIComponent(airport) + '&type=arrivals')
+      .then(function(r){return r.json();})
+      .then(function(data){
+        var results = data.results || [];
+        if (results.length === 0) {
+          dd.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:#94a3b8">Žádné příchozí lety nenalezeny</div>';
+          return;
+        }
+        // Header
+        dd.innerHTML = '<div style="padding:8px 16px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid #f1f5f9">Příchozí lety</div>';
+        nllRenderFlightDrop(results);
+        // Don't clear the header
+        var header = dd.firstChild;
+        var items = Array.from(dd.children).slice(1);
+        dd.innerHTML = '';
+        dd.appendChild(header);
+        items.forEach(function(item){ dd.appendChild(item); });
+      })
+      .catch(function(){ dd.classList.remove('show'); });
+  }
 
   window.nllAcKey=function(e){
     if(e.key==='Escape'){document.getElementById('nll-ac-dd').classList.remove('show');}
