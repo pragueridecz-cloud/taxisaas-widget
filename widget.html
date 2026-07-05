@@ -1826,6 +1826,9 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
         var leg=result.routes[0].legs[0];
         var km=leg.distance.value/1000;
         window.nllCurrentKm=km;
+        // Ulož koordináty pro detekci zón
+        window.nllPuLatLng={lat:leg.start_location.lat(),lng:leg.start_location.lng()};
+        window.nllDoLatLng={lat:leg.end_location.lat(),lng:leg.end_location.lng()};
         setTimeout(function(){ if(typeof nllUpdPrice==='function') nllUpdPrice(); }, 100);
         var distEl=document.getElementById('nll-ri-dist');
         var timeEl=document.getElementById('nll-ri-time');
@@ -2142,6 +2145,9 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
         dropoff: dropoff,
         vehicleId: _veh.id,
         km: window.nllCurrentKm,
+        distanceKm: window.nllCurrentKm,
+        puLatLng: window.nllPuLatLng || null,
+        doLatLng: window.nllDoLatLng || null,
         date: date,
         hour: hour,
         isReturn: nllTrip === 'rt',
@@ -3480,6 +3486,32 @@ window.addEventListener('scroll',function(){
     return null;
   }
 
+  // Point-in-polygon algoritmus (ray casting)
+  function pointInPolygon(lat, lng, polygon) {
+    if (!polygon || polygon.length < 3) return false;
+    var inside = false;
+    var n = polygon.length;
+    for (var i = 0, j = n - 1; i < n; j = i++) {
+      var xi = polygon[i].lat, yi = polygon[i].lng;
+      var xj = polygon[j].lat, yj = polygon[j].lng;
+      var intersect = ((yi > lng) !== (yj > lng)) && (lat < (xj - xi) * (lng - yi) / (yj - yi) + xi);
+      if (intersect) inside = !inside;
+    }
+    return inside;
+  }
+
+  function findZoneByPoint(lat, lng) {
+    var zones = window.NLL_CFG.pricing_zones;
+    if (!zones || !zones.length) return null;
+    for (var i = 0; i < zones.length; i++) {
+      var z = zones[i];
+      if (z.polygon && z.polygon.length >= 3) {
+        if (pointInPolygon(lat, lng, z.polygon)) return z;
+      }
+    }
+    return null;
+  }
+
   function findZoneByPostal(address){
     if(!address||!window.NLL_CFG.pricing_zones.length) return null;
     var m=address.match(/\b(\d{3}\s?\d{2})\b/);
@@ -3499,23 +3531,25 @@ window.addEventListener('scroll',function(){
     if(!m||!m[fromId]||m[fromId][toId]===undefined) return null;
     var entry=m[fromId][toId];
     if(entry===null||entry===undefined) return null;
-    // Nový formát: {vehicle: {min, km_included, per_km}}
-    if(typeof entry==='object'){
-      var vEntry=entry[vehicleId]||entry['economy_sedan'];
-      if(!vEntry) return null;
-      // Starý formát (jen číslo)
-      if(typeof vEntry==='number') return vEntry;
-      // Nový formát s km logikou
-      var minPrice=vEntry.min||0;
-      var kmInc=vEntry.km_included||0;
-      var perKm=vEntry.per_km||0;
-      if(distanceKm && distanceKm > kmInc && perKm > 0){
-        var extra=Math.round((distanceKm-kmInc)*perKm/10)*10;
-        return minPrice+extra;
-      }
-      return minPrice;
+    // Mapuj vehicleId na DB klíč
+    var slugMap={'Economy Sedan':'economy_sedan','Business Sedan':'business_sedan','Executive Sedan':'executive_sedan','Economy Van':'economy_van','Business Van':'business_van','Executive Van':'executive_van'};
+    // vehicleId může být slug nebo UUID — zkus oba
+    var vKey=vehicleId; // může být economy_sedan přímo
+    if(!entry[vKey]) {
+      // Zkus najít vehicle v NLL_CFG a získat jeho název
+      var veh=window.NLL_CFG.vehicles.find(function(v){return v.id===vehicleId;});
+      if(veh) vKey=slugMap[veh.name]||'economy_sedan';
     }
-    return entry||null;
+    var vEntry=entry[vKey]||entry['economy_sedan'];
+    if(!vEntry) return null;
+    if(typeof vEntry==='number') return vEntry;
+    var minPrice=vEntry.min||0;
+    var kmInc=vEntry.km_included||0;
+    var perKm=vEntry.per_km||0;
+    if(distanceKm && distanceKm > kmInc && perKm > 0){
+      return minPrice + Math.round((distanceKm-kmInc)*perKm/10)*10;
+    }
+    return minPrice;
   }
 
   function calcDistancePrice(km,vehicleId,vehicle){
@@ -3566,6 +3600,12 @@ window.addEventListener('scroll',function(){
     console.log('[CALC] window.NLL_CFG.vehicles:', window.NLL_CFG.vehicles.length, window.NLL_CFG.vehicles.map(function(v){return v.id;}));
     console.log('[CALC] distance_rows:', window.NLL_CFG.distance_rows.length);
     var vehicle=window.NLL_CFG.vehicles.find(function(v){return v.id===params.vehicleId;});
+    // Fallback: pokud id je slug (economy_sedan), hledej podle jména
+    if(!vehicle && params.vehicleId) {
+      var slugMap={'economy_sedan':'Economy Sedan','business_sedan':'Business Sedan','executive_sedan':'Executive Sedan','economy_van':'Economy Van','business_van':'Business Van','executive_van':'Executive Van'};
+      var vName=slugMap[params.vehicleId];
+      if(vName) vehicle=window.NLL_CFG.vehicles.find(function(v){return v.name===vName;});
+    }
     if(!vehicle){console.log('[CALC] vehicle NOT FOUND for id:', params.vehicleId); return null;}
     console.log('[CALC] vehicle found:', vehicle.id, 'min_price:', vehicle.min_price);
     var basePrice=null; var pricingMethod='unknown';
@@ -3578,11 +3618,22 @@ window.addEventListener('scroll',function(){
       if(zp!==null){basePrice=zp;pricingMethod='landmark';}
     }
 
-    // 2. Zóny PSČ
+    // 2. Detekce zóny přes GPS souřadnice (polygon)
+    if(basePrice===null&&params.puLatLng&&params.doLatLng){
+      var puZ=findZoneByPoint(params.puLatLng.lat, params.puLatLng.lng);
+      var doZ=findZoneByPoint(params.doLatLng.lat, params.doLatLng.lng);
+      console.log('[ZONE] pu zone:', puZ?puZ.name:'none', 'do zone:', doZ?doZ.name:'none');
+      if(puZ&&doZ){
+        var zp3=calcZonePrice(puZ.id,doZ.id,params.vehicleId,params.distanceKm);
+        if(zp3!==null){basePrice=zp3;pricingMethod='zone-polygon';}
+      }
+    }
+
+    // 3. Zóny PSČ (fallback)
     if(basePrice===null){
-      var puZ=findZoneByPostal(params.pickup);
-      var doZ=findZoneByPostal(params.dropoff);
-      if(puZ&&doZ){var zp2=calcZonePrice(puZ.id,doZ.id,params.vehicleId,params.distanceKm);if(zp2!==null){basePrice=zp2;pricingMethod='zone';}}
+      var puZ2=findZoneByPostal(params.pickup);
+      var doZ2=findZoneByPostal(params.dropoff);
+      if(puZ2&&doZ2){var zp2=calcZonePrice(puZ2.id,doZ2.id,params.vehicleId,params.distanceKm);if(zp2!==null){basePrice=zp2;pricingMethod='zone';}}
     }
 
     // 3. Vzdálenostní ceník
