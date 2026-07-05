@@ -3532,7 +3532,7 @@ window.addEventListener('scroll',function(){
     var entry=m[fromId][toId];
     if(entry===null||entry===undefined) return null;
     // Mapuj vehicleId na DB klíč
-    var slugMap={'Economy Sedan':'economy_sedan','Business Sedan':'business_sedan','Executive Sedan':'executive_sedan','Economy Van':'economy_van','Business Van':'business_van','Executive Van':'executive_van'};
+    var slugMap={'Economy Sedan':'economy_sedan','Business Sedan':'business_sedan','Executive Sedan':'executive_sedan','Economy Van':'economy_van','Business Van':'business_van','Executive Van':'executive_van','Premium Sedan':'business_sedan','Premium Minivan':'business_van','Premium Van':'business_van'};
     // vehicleId může být slug nebo UUID — zkus oba
     var vKey=vehicleId; // může být economy_sedan přímo
     if(!entry[vKey]) {
@@ -3602,7 +3602,7 @@ window.addEventListener('scroll',function(){
     var vehicle=window.NLL_CFG.vehicles.find(function(v){return v.id===params.vehicleId;});
     // Fallback: pokud id je slug (economy_sedan), hledej podle jména
     if(!vehicle && params.vehicleId) {
-      var slugMap={'economy_sedan':'Economy Sedan','business_sedan':'Business Sedan','executive_sedan':'Executive Sedan','economy_van':'Economy Van','business_van':'Business Van','executive_van':'Executive Van'};
+      var slugMap={'economy_sedan':'Economy Sedan','business_sedan':'Business Sedan','executive_sedan':'Executive Sedan','economy_van':'Economy Van','business_van':'Business Van','executive_van':'Executive Van','Premium Sedan':'Business Sedan','Premium Minivan':'Business Van'};
       var vName=slugMap[params.vehicleId];
       if(vName) vehicle=window.NLL_CFG.vehicles.find(function(v){return v.name===vName;});
     }
