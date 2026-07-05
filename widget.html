@@ -3494,14 +3494,26 @@ window.addEventListener('scroll',function(){
     return null;
   }
 
-  function calcZonePrice(fromId,toId,vehicleId){
+  function calcZonePrice(fromId,toId,vehicleId,distanceKm){
     var m=window.NLL_CFG.zone_matrix;
     if(!m||!m[fromId]||m[fromId][toId]===undefined) return null;
     var entry=m[fromId][toId];
     if(entry===null||entry===undefined) return null;
-    // entry muze byt cislo (stary format) nebo objekt {economy_sedan:X,...}
+    // Nový formát: {vehicle: {min, km_included, per_km}}
     if(typeof entry==='object'){
-      return entry[vehicleId]||entry['economy_sedan']||null;
+      var vEntry=entry[vehicleId]||entry['economy_sedan'];
+      if(!vEntry) return null;
+      // Starý formát (jen číslo)
+      if(typeof vEntry==='number') return vEntry;
+      // Nový formát s km logikou
+      var minPrice=vEntry.min||0;
+      var kmInc=vEntry.km_included||0;
+      var perKm=vEntry.per_km||0;
+      if(distanceKm && distanceKm > kmInc && perKm > 0){
+        var extra=Math.round((distanceKm-kmInc)*perKm/10)*10;
+        return minPrice+extra;
+      }
+      return minPrice;
     }
     return entry||null;
   }
@@ -3562,7 +3574,7 @@ window.addEventListener('scroll',function(){
     var puLM=findLandmark(params.pickup);
     var doLM=findLandmark(params.dropoff);
     if(puLM&&doLM){
-      var zp=calcZonePrice(puLM.zone_id||puLM.id, doLM.zone_id||doLM.id, params.vehicleId);
+      var zp=calcZonePrice(puLM.zone_id||puLM.id, doLM.zone_id||doLM.id, params.vehicleId, params.distanceKm);
       if(zp!==null){basePrice=zp;pricingMethod='landmark';}
     }
 
@@ -3570,7 +3582,7 @@ window.addEventListener('scroll',function(){
     if(basePrice===null){
       var puZ=findZoneByPostal(params.pickup);
       var doZ=findZoneByPostal(params.dropoff);
-      if(puZ&&doZ){var zp2=calcZonePrice(puZ.id,doZ.id,params.vehicleId);if(zp2!==null){basePrice=zp2;pricingMethod='zone';}}
+      if(puZ&&doZ){var zp2=calcZonePrice(puZ.id,doZ.id,params.vehicleId,params.distanceKm);if(zp2!==null){basePrice=zp2;pricingMethod='zone';}}
     }
 
     // 3. Vzdálenostní ceník
