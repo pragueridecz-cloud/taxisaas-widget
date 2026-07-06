@@ -2873,8 +2873,11 @@ window.nllStripePay=function(){
   window.nllLoadPricingData = async function(sbUrl, sbKey) {
     try {
       // Načti vše přes service-role proxy (obchází RLS)
-      var proxyUrl = (window.NLL_FR24_PROXY||'').replace('/api/flight-status','/api/pricing')
-                  || 'https://naletistelevne.cz/api/pricing';
+      var _proxyParam = new URLSearchParams(window.location.search).get('proxy');
+      var proxyUrl = _proxyParam
+        ? decodeURIComponent(_proxyParam).replace('/api/flight-status','/api/pricing')
+        : 'https://naletistelevne.cz/api/pricing';
+      console.log('[PRICING] proxy url:', proxyUrl);
       var r = await fetch(proxyUrl);
       var data = await r.json();
 
