@@ -1032,8 +1032,8 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
             <div class="nll-tres" id="nll-tres">
               <div class="nll-tstat" id="nll-tstat"></div>
               <div class="nll-tgrid">
-                <div class="nll-tcell"><div class="nll-tclbl">Plánovaný příjezd</div><div class="nll-tcval" id="nll-tv1">—</div></div>
-                <div class="nll-tcell"><div class="nll-tclbl">Reálný příjezd</div><div class="nll-tcval" id="nll-tv2">—</div></div>
+                <div class="nll-tcell"><div class="nll-tclbl" id="nll-tclbl1">Plánovaný příjezd</div><div class="nll-tcval" id="nll-tv1">—</div></div>
+                <div class="nll-tcell"><div class="nll-tclbl" id="nll-tclbl2">Reálný příjezd</div><div class="nll-tcval" id="nll-tv2">—</div></div>
                 <div class="nll-tcell"><div class="nll-tclbl">Zpoždění</div><div class="nll-tcval" id="nll-tv3">—</div></div>
               </div>
               <div class="nll-tnote" id="nll-tnote"></div>
@@ -1619,71 +1619,78 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
     } catch(e){}
     return 'https://naletistelevne.cz/api/flight-status';
   })();
-  var NLL_FLIGHTS=[];
+  // Rozpis letů (AeroDataBox) běží vedle live-trackingu (FR24) na stejné doméně
+  var NLL_SCHEDULE_PROXY = NLL_FR24_PROXY.replace(/\/flight-status(\?.*)?$/, '/flight-schedule');
 
-  /* ===== FLIGHT SEARCH via FR24 API — partial search + exact lookup ===== */
+  /* ===== FLIGHT SEARCH via AeroDataBox — rozpis letů pro zvolené letiště+datum ===== */
   function nllFetchFlight(q) {
+    if (!window.nllTransportDirection) { nllAcHide(); return; }
     if (!q || q.length < 2) { nllAcHide(); return; }
     var dd = document.getElementById('nll-ac-dd');
     if (dd) {
       dd.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:#94a3b8">Hledám lety...</div>';
       dd.classList.add('show');
     }
-    fetch(NLL_FR24_PROXY + '?search=' + encodeURIComponent(q.toUpperCase().replace(/\s/g,'')))
-      .then(function(r){return r.json();})
-      .then(function(data){
-        var results = data.results || [];
-        if (results.length === 0) {
-          // Fallback: přesný lookup
-          fetch(NLL_FR24_PROXY + '?flight=' + encodeURIComponent(q))
-            .then(function(r){return r.json();})
-            .then(function(d){ if (d.found) { nllRenderFlightDrop([d]); } else { if(dd) dd.innerHTML='<div style="padding:12px 16px;font-size:13px;color:#94a3b8">Žádný let nenalezen</div>'; } })
-            .catch(function(){});
-          return;
-        }
-        nllRenderFlightDrop(results);
-      })
-      .catch(function(){ if (dd) dd.innerHTML='<div style="padding:12px 16px;font-size:13px;color:#ef4444">Chyba připojení</div>'; });
+    nllScheduleFetch(q).then(function(results){
+      if (!dd) return;
+      if (!results.length) { dd.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:#94a3b8">Žádný naplánovaný let nenalezen</div>'; return; }
+      nllRenderFlightDrop(results);
+    }).catch(function(){ if (dd) dd.innerHTML='<div style="padding:12px 16px;font-size:13px;color:#ef4444">Chyba připojení</div>'; });
+  }
+
+  function nllScheduleFetch(q) {
+    var addr = window.nllTransportDirection === 'Departure'
+      ? (document.getElementById('nll-do')||{value:''}).value
+      : (document.getElementById('nll-pu')||{value:''}).value;
+    var date = (document.getElementById('nll-date')||{value:''}).value;
+    if (!addr || !date) return Promise.resolve([]);
+    var url = NLL_SCHEDULE_PROXY + '?airport=' + encodeURIComponent(addr) + '&date=' + encodeURIComponent(date) + '&direction=' + window.nllTransportDirection + (q ? '&q=' + encodeURIComponent(q) : '');
+    return fetch(url).then(function(r){return r.json();}).then(function(data){ return data.results || []; });
   }
 
   function nllRenderFlightDrop(results) {
     var dd = document.getElementById('nll-ac-dd');
     if (!dd) return;
+    var isDeparture = window.nllTransportDirection === 'Departure';
     dd.innerHTML = '';
     results.forEach(function(f){
-      var isLate = f.eta_mins > 15;
-      var statusColor = f.status === 'airborne' ? (isLate ? '#f59e0b' : '#10b981') : '#3b82f6';
-      var statusLabel = f.status === 'airborne' ? (isLate ? '⚠ +' + f.eta_mins + ' min' : '✅ Včas') : '🕐 Naplánováno';
-      var eta = f.eta ? new Date(f.eta).toLocaleTimeString('cs-CZ',{hour:'2-digit',minute:'2-digit'}) : '';
-      var route = (f.origin && f.destination) ? f.origin + ' → ' + f.destination : '';
+      var schedTime = f.scheduled ? f.scheduled.slice(11,16) : '';
+      var revTime = f.revised ? f.revised.slice(11,16) : '';
+      var delayMins = (f.scheduled && f.revised) ? Math.round((new Date(f.revised.replace(' ','T')) - new Date(f.scheduled.replace(' ','T')))/60000) : 0;
+      var isLate = delayMins > 15;
+      var statusColor = isLate ? '#f59e0b' : '#10b981';
+      var statusLabel = isLate ? '⚠ +' + delayMins + ' min' : (revTime ? '✅ Včas' : '🕐 Naplánováno');
+      var routeLabel = f.otherAirport ? (isDeparture ? '→ ' + f.otherAirport : f.otherAirport + ' →') : '';
       var div = document.createElement('div');
       div.className = 'nll-ac-item';
       div.style.cssText = 'padding:12px 16px;cursor:pointer;border-bottom:1px solid #f1f5f9';
       div.innerHTML =
         '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px">' +
-          '<span style="font-size:16px;font-weight:800;color:#00205B;letter-spacing:2px">' + (f.flight||f.callsign||'') + '</span>' +
+          '<span style="font-size:16px;font-weight:800;color:#00205B;letter-spacing:2px">' + (f.flight||'') + '</span>' +
           '<span style="font-size:11px;font-weight:700;color:' + statusColor + '">' + statusLabel + '</span>' +
         '</div>' +
-        '<div style="font-size:12px;color:#64748b">' + route + (eta ? ' · Přistání ' + eta : '') + '</div>';
-      (function(flight, r, e, fd){
-        div.addEventListener('mousedown', function(ev){ ev.preventDefault(); nllAcPick(flight, r, e); nllUpdateFlightBadge(fd); });
-      })(f.flight||f.callsign||'', route, eta, f);
+        '<div style="font-size:12px;color:#64748b">' + (f.airline||'') + (routeLabel ? ' · ' + routeLabel : '') + (schedTime ? ' · ' + (isDeparture?'Odlet ':'Přílet ') + schedTime : '') + '</div>';
+      (function(fd){
+        div.addEventListener('mousedown', function(ev){ ev.preventDefault(); nllAcPick(fd); });
+      })(f);
       dd.appendChild(div);
     });
     dd.classList.add('show');
   }
 
-  function nllUpdateFlightBadge(d) {
+  function nllUpdateFlightBadge(f) {
     var badge = document.getElementById('nll-flight-badge');
-    if (!badge || !d) return;
-    var isLate = d.eta_mins > 15;
+    if (!badge || !f) return;
+    var isDeparture = window.nllTransportDirection === 'Departure';
+    var delayMins = (f.scheduled && f.revised) ? Math.round((new Date(f.revised.replace(' ','T')) - new Date(f.scheduled.replace(' ','T')))/60000) : 0;
+    var isLate = delayMins > 15;
     var color = isLate ? '#f59e0b' : '#10b981';
-    var eta = d.eta ? new Date(d.eta).toLocaleTimeString('cs-CZ',{hour:'2-digit',minute:'2-digit'}) : '';
+    var revTime = f.revised ? f.revised.slice(11,16) : '';
     badge.style.cssText = 'display:block;background:' + (isLate?'rgba(245,158,11,.1)':'rgba(16,185,129,.1)') + ';border:1px solid ' + color + '40;border-radius:8px;padding:8px 12px;margin-top:6px;font-size:12px;color:' + color + ';font-weight:600';
     badge.innerHTML =
-      (d.status==='airborne' ? (isLate?'⚠ Zpoždění ~'+d.eta_mins+' min':'✅ Let ve vzduchu, včas') : '🕐 Naplánováno') +
-      (eta ? ' · Přistání ' + eta : '') +
-      ((d.origin&&d.destination) ? ' · '+d.origin+'→'+d.destination : '');
+      (isLate ? '⚠ Zpoždění ~'+delayMins+' min' : '✅ '+(isDeparture?'Odlet':'Přílet')+' včas') +
+      (revTime ? ' · '+(isDeparture?'Odlet ':'Přílet ') + revTime : '') +
+      (f.otherAirport ? ' · '+(isDeparture?'do ':'z ')+f.otherAirport : '');
   }
 
   /* ===== TABS ===== */
@@ -1884,33 +1891,27 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
 
   /* Načte lety ze zvoleného letiště při kliknutí do pole */
   window.nllShowAirportFlights = function() {
-    var puVal = (document.getElementById('nll-pu')||{value:''}).value;
-    var doVal = (document.getElementById('nll-do')||{value:''}).value;
-    var airport = puVal || doVal;
-    if (!airport) return;
+    if (!window.nllTransportDirection) return;
     var dd = document.getElementById('nll-ac-dd');
     if (!dd) return;
+    var isDeparture = window.nllTransportDirection === 'Departure';
     dd.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:#94a3b8">Načítám lety z letiště...</div>';
     dd.classList.add('show');
-    fetch(NLL_FR24_PROXY + '?airport=' + encodeURIComponent(airport) + '&type=arrivals')
-      .then(function(r){return r.json();})
-      .then(function(data){
-        var results = data.results || [];
-        if (results.length === 0) {
-          dd.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:#94a3b8">Žádné příchozí lety nenalezeny</div>';
-          return;
-        }
-        // Header
-        dd.innerHTML = '<div style="padding:8px 16px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid #f1f5f9">Příchozí lety</div>';
-        nllRenderFlightDrop(results);
-        // Don't clear the header
-        var header = dd.firstChild;
-        var items = Array.from(dd.children).slice(1);
-        dd.innerHTML = '';
-        dd.appendChild(header);
-        items.forEach(function(item){ dd.appendChild(item); });
-      })
-      .catch(function(){ dd.classList.remove('show'); });
+    nllScheduleFetch('').then(function(results){
+      if (results.length === 0) {
+        dd.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:#94a3b8">Žádné naplánované lety nenalezeny</div>';
+        return;
+      }
+      // Header
+      dd.innerHTML = '<div style="padding:8px 16px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1.5px;border-bottom:1px solid #f1f5f9">' + (isDeparture?'Odlétající lety':'Přilétající lety') + '</div>';
+      nllRenderFlightDrop(results);
+      // Don't clear the header
+      var header = dd.firstChild;
+      var items = Array.from(dd.children).slice(1);
+      dd.innerHTML = '';
+      dd.appendChild(header);
+      items.forEach(function(item){ dd.appendChild(item); });
+    }).catch(function(){ dd.classList.remove('show'); });
   }
 
   window.nllAcKey=function(e){
@@ -1932,18 +1933,27 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
     nllAcSelected=null;
   };
 
-  function nllAcPick(num, route, eta){
-    nllAcSelected={num:num, route:route, arr:eta};
+  function nllAcPick(f){
+    var isDeparture = window.nllTransportDirection === 'Departure';
+    var num = f.flight, route = f.otherAirport;
+    nllAcSelected={num:num, route:route, sched:f.scheduled, rev:f.revised};
     document.getElementById('nll-ac-inp').value=num+(route?' · '+route:'');
     document.getElementById('nll-ac-dd').classList.remove('show');
-    if(eta){
-      document.getElementById('nll-tv1').textContent=eta;
-      document.getElementById('nll-tv2').textContent=eta;
-    }
-    if(route){
-      document.getElementById('nll-tstat').innerHTML='<span class="nll-tsdot" style="background:#10b981"></span>'
-        +'<span style="color:#10b981">'+num+' · '+route+(eta?' · Přistání '+eta:'')+'</span>';
-    }
+    var schedTime = f.scheduled ? f.scheduled.slice(11,16) : '—';
+    var revTime = f.revised ? f.revised.slice(11,16) : '—';
+    var delayMins = (f.scheduled && f.revised) ? Math.round((new Date(f.revised.replace(' ','T')) - new Date(f.scheduled.replace(' ','T')))/60000) : 0;
+    document.getElementById('nll-tv1').textContent=schedTime;
+    document.getElementById('nll-tv2').textContent=revTime;
+    var tv3=document.getElementById('nll-tv3');
+    if(tv3) tv3.textContent = delayMins > 0 ? ('+'+delayMins+' min') : (delayMins < 0 ? (delayMins+' min') : 'Bez zpoždění');
+    var lbl1=document.getElementById('nll-tclbl1'), lbl2=document.getElementById('nll-tclbl2');
+    if(lbl1) lbl1.textContent = isDeparture ? 'Plánovaný odlet' : 'Plánovaný příjezd';
+    if(lbl2) lbl2.textContent = isDeparture ? 'Reálný odlet' : 'Reálný příjezd';
+    document.getElementById('nll-tres').classList.add('show');
+    var isLate = delayMins > 15;
+    document.getElementById('nll-tstat').innerHTML='<span class="nll-tsdot" style="background:'+(isLate?'#f59e0b':'#10b981')+'"></span>'
+      +'<span style="color:'+(isLate?'#f59e0b':'#10b981')+'">'+num+(route?' · '+route:'')+(revTime!=='—'?' · '+(isDeparture?'Odlet ':'Přílet ')+revTime:'')+'</span>';
+    nllUpdateFlightBadge(f);
   }
   function nllAddMin(time,min){
     if(isNaN(min)) return time;
@@ -1979,10 +1989,10 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
 
   window.nllShowTBox=function(){
     var box=document.getElementById('nll-tbox');
-    var _puType=window.nllPuType||nllPuType;
-    if(!_puType||!NLL_TCFG[_puType]){box.classList.remove('show');return;}
-    nllPuType=_puType;
-    var c=NLL_TCFG[_puType];
+    var picked=nllPickTransportConfig();
+    if(!picked){box.classList.remove('show');return;}
+    var type=picked.type, c=picked.cfg;
+    nllPuType=window.nllPuType;
     /* Ikona */
     document.getElementById('nll-tico').innerHTML='<path d="'+c.ico+'"/>';
     /* Nadpis + popis v hlavičce */
@@ -1996,10 +2006,10 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
     if(inp){
       inp.placeholder=c.ph;
       inp.value='';
-      inp.style.textTransform=(nllPuType==='airport'?'uppercase':'none');
-      inp.style.letterSpacing=(nllPuType==='airport'?'2px':'0');
-      inp.style.fontSize=(nllPuType==='airport'?'15px':'14px');
-      inp.style.fontWeight=(nllPuType==='airport'?'800':'600');
+      inp.style.textTransform=(type==='airport'?'uppercase':'none');
+      inp.style.letterSpacing=(type==='airport'?'2px':'0');
+      inp.style.fontSize=(type==='airport'?'15px':'14px');
+      inp.style.fontWeight=(type==='airport'?'800':'600');
     }
     /* Reset */
     var dd=document.getElementById('nll-ac-dd');
@@ -2337,7 +2347,7 @@ window.nllStripePay=function(){
       luggage:parseInt(document.getElementById('nll-lug').value)||0,
       vehicle_name:nllVeh.n,vehicle_price:nllVeh.p,
       total_price:totalPrice,
-      transport_type:isHourly?null:(nllPuType||null),
+      transport_type:isHourly?null:(window.nllPuType||window.nllDoType||null),
       transport_number:isHourly?null:(function(){var v=document.getElementById('nll-ac-inp');return v&&v.value?v.value.split('·')[0].trim():null;})(),
       customer_name:document.getElementById('nll-name').value,
       customer_phone:(document.getElementById('nll-phone-prefix')?document.getElementById('nll-phone-prefix').value:'')+(document.getElementById('nll-phone')?document.getElementById('nll-phone').value.replace(/^0/,''):''),
@@ -3111,11 +3121,11 @@ var GP_DEF={
     {ic:'b',n:'Praha Zlíčín',s:'Autobusové nádraží',t:'bus'},
   ],
   do:[
-    {ic:'p',n:'Letiště Václava Havla Praha',s:'Ruzyně',t:''},
-    {ic:'t',n:'Praha Hlavní nádraží',s:'Wilsonova, Praha 2',t:''},
-    {ic:'t',n:'Praha Masarykovo nádraží',s:'Hybernská, Praha 1',t:''},
-    {ic:'b',n:'Praha Florenc',s:'Autobusové nádraží',t:''},
-    {ic:'b',n:'Praha Zlíčín',s:'Autobusové nádraží',t:''}
+    {ic:'p',n:'Letiště Václava Havla Praha',s:'Ruzyně',t:'airport'},
+    {ic:'t',n:'Praha Hlavní nádraží',s:'Wilsonova, Praha 2',t:'train'},
+    {ic:'t',n:'Praha Masarykovo nádraží',s:'Hybernská, Praha 1',t:'train'},
+    {ic:'b',n:'Praha Florenc',s:'Autobusové nádraží',t:'bus'},
+    {ic:'b',n:'Praha Zlíčín',s:'Autobusové nádraží',t:'bus'}
   ]
 };
 function gpSVG(ic){
@@ -3232,13 +3242,13 @@ window.gpPick=function(inpId,val,type,dropId,placeId){
   gpSaveRecent(val, dropId==='gp-pu'?'pu':'do');
   var el=document.getElementById(inpId);if(el)el.value=val;
   gpHide(dropId);
-  if(type&&inpId==='nll-pu'){
-    window.nllPuType=type;
+  if(type&&(inpId==='nll-pu'||inpId==='nll-do')){
+    if(inpId==='nll-pu') window.nllPuType=type; else window.nllDoType=type;
     nllUpdateTransportField();
   }
   try{if(gpReady&&window.google&&window.google.maps.places)gpSession=new window.google.maps.places.AutocompleteSessionToken();}catch(e){}
   // Detekuj typ místa z Google Places pokud nemáme typ z předdefinovaných lokací
-  if(inpId==='nll-pu'&&!type&&placeId&&gpReady&&window.google){
+  if((inpId==='nll-pu'||inpId==='nll-do')&&!type&&placeId&&gpReady&&window.google){
     var svc=new google.maps.places.PlacesService(document.createElement('div'));
     svc.getDetails({placeId:placeId,fields:['types']},function(place,status){
       if(status!=='OK'||!place||!place.types) return;
@@ -3248,7 +3258,7 @@ window.gpPick=function(inpId,val,type,dropId,placeId){
       else if(types.indexOf('train_station')>=0||types.indexOf('transit_station')>=0) detectedType='train';
       else if(types.indexOf('bus_station')>=0) detectedType='bus';
       if(detectedType){
-        window.nllPuType=detectedType;
+        if(inpId==='nll-pu') window.nllPuType=detectedType; else window.nllDoType=detectedType;
         nllUpdateTransportField();
       }
     });
@@ -3259,11 +3269,33 @@ window.gpPick=function(inpId,val,type,dropId,placeId){
   if(pu&&doV&&pu.value.trim()&&doV.value.trim()) setTimeout(nllCalcRoute,200);
 };
 
+/* Rozhodne, jestli je "letiště/vlak/bus" na vyzvednutí (přílet) nebo na cíli (odlet),
+   pickup má přednost pokud jsou nastavené oba. */
+function nllPickTransportConfig(){
+  var puType=window.nllPuType, doType=window.nllDoType;
+  var type=null, direction=null;
+  if(puType&&window.NLL_TCFG[puType]){ type=puType; direction=(puType==='airport')?'Arrival':null; }
+  else if(doType&&window.NLL_TCFG[doType]){ type=doType; direction=(doType==='airport')?'Departure':null; }
+  window.nllTransportDirection=direction;
+  if(!type) return null;
+  var c=window.NLL_TCFG[type];
+  if(type==='airport'){
+    var isDep=direction==='Departure';
+    c={ ico:c.ico,
+      title:isDep?'Číslo odletu':'Číslo příletu',
+      sub:c.sub,
+      ph:c.ph,
+      lbl:isDep?'Číslo odletu':'Číslo příletu'
+    };
+  }
+  return {type:type, cfg:c};
+}
 function nllUpdateTransportField(){
   var box=document.getElementById('nll-tbox');
-  if(!box||!window.nllPuType||!window.NLL_TCFG) return;
-  if(!window.NLL_TCFG[window.nllPuType]){box.classList.remove('show');return;}
-  var c=window.NLL_TCFG[window.nllPuType];
+  if(!box) return;
+  var picked=nllPickTransportConfig();
+  if(!picked){box.classList.remove('show');return;}
+  var c=picked.cfg;
   var tico=document.getElementById('nll-tico');
   if(tico)tico.innerHTML='<path d="'+c.ico+'"/>';
   var tttl=document.getElementById('nll-tttl');
