@@ -3086,7 +3086,9 @@ window.nllStripePay=function(){
   window.addEventListener('resize',function(){var inp=document.getElementById('nll-sl-input');if(inp)nllSlUpdate(parseInt(inp.value));});
 
 /* ===== GOOGLE PLACES ===== */
-var GP_KEY='';
+var GP_KEY='AIzaSyAgl9xkJoahOyxLWTjRLrPEXxYfqTXyH7k'; // fallback - přepíše se z DB
+// Inicializuj Maps ihned s fallback klíčem
+setTimeout(function(){ gpLoad(); }, 100);
 var gpReady=false,gpLoading=false,gpSession=null,gpTimer={};
 var GP_DEF={
   pu:[
