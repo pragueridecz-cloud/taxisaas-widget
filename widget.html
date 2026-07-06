@@ -2871,12 +2871,13 @@ window.nllStripePay=function(){
 
   /* Načti nastavení ze Supabase */
   window.nllLoadPricingData = async function(sbUrl, sbKey) {
+    console.log('[PRICING] nllLoadPricingData called, location.search='+window.location.search);
     try {
       // Načti vše přes service-role proxy (obchází RLS)
       var _proxyParam = new URLSearchParams(window.location.search).get('proxy');
       var proxyUrl = _proxyParam
         ? decodeURIComponent(_proxyParam).replace('/api/flight-status','/api/pricing')
-        : 'https://naletistelevne.cz/api/pricing';
+        : 'https://admin.naletistelevne.cz/api/pricing';
       console.log('[PRICING] proxy url:', proxyUrl);
       var r = await fetch(proxyUrl, {mode:'cors'});
       if(!r.ok) throw new Error('HTTP '+r.status);
