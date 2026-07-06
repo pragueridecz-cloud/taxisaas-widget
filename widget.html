@@ -3555,6 +3555,14 @@ window.addEventListener('scroll',function(){
   function calcDistancePrice(km,vehicleId,vehicle){
     var rows=window.NLL_CFG.distance_rows;
     if(!rows||!rows.length) return null;
+    // Normalizuj vehicleId na slug klíč (economy_sedan atd.)
+    var slugMap={'Economy Sedan':'economy_sedan','Business Sedan':'business_sedan','Executive Sedan':'executive_sedan','Economy Van':'economy_van','Business Van':'business_van','Executive Van':'executive_van','Premium Sedan':'business_sedan','Premium Minivan':'business_van','Premium Van':'business_van'};
+    var vKey=vehicleId;
+    if(vehicle&&slugMap[vehicle.name]) vKey=slugMap[vehicle.name];
+    else if(vKey&&vKey.includes('-')){ // UUID — najdi přes název vozidla
+      var veh2=window.NLL_CFG.vehicles.find(function(v){return v.id===vKey;});
+      if(veh2&&slugMap[veh2.name]) vKey=slugMap[veh2.name];
+    }
     // Stupnovany tarif - BEZ zakladni ceny vozidla
     var total=0;
     var remaining=km;
@@ -3562,7 +3570,7 @@ window.addEventListener('scroll',function(){
     for(var i=0;i<sorted.length;i++){
       if(remaining<=0) break;
       var row=sorted[i];
-      var ppm=(row.prices&&row.prices[vehicleId])?row.prices[vehicleId]:0;
+      var ppm=(row.prices&&row.prices[vKey])?row.prices[vKey]:0;
       if(ppm===0) continue;
       var band=row.km_to-row.km_from;
       var inBand=Math.min(remaining,band);
@@ -3571,7 +3579,7 @@ window.addEventListener('scroll',function(){
     }
     if(remaining>0){
       var last=sorted[sorted.length-1];
-      var lastRate=(last.prices&&last.prices[vehicleId])?last.prices[vehicleId]:0;
+      var lastRate=(last.prices&&last.prices[vKey])?last.prices[vKey]:0;
       total+=remaining*lastRate;
     }
     // Zaokrouhli na desitky a aplikuj minimalni cenu
