@@ -2878,8 +2878,10 @@ window.nllStripePay=function(){
         ? decodeURIComponent(_proxyParam).replace('/api/flight-status','/api/pricing')
         : 'https://naletistelevne.cz/api/pricing';
       console.log('[PRICING] proxy url:', proxyUrl);
-      var r = await fetch(proxyUrl);
+      var r = await fetch(proxyUrl, {mode:'cors'});
+      if(!r.ok) throw new Error('HTTP '+r.status);
       var data = await r.json();
+      console.log('[PRICING] loaded zones='+data.zones.length+' dp='+data.distance_pricing.length);
 
       var slugNames={'Economy Sedan':'economy_sedan','Premium Sedan':'premium_sedan','Executive Sedan':'executive_sedan','Economy Van':'economy_van','Premium Van':'premium_van','Executive Van':'executive_van','Business Sedan':'premium_sedan','Business Van':'premium_van'};
 
@@ -2923,7 +2925,7 @@ window.nllStripePay=function(){
       var d3=await r3.json(); if(d3&&d3.length) window.NLL_CFG.landmarks=d3;
 
       console.log('[TaxiSaaS] Pricing loaded: vehicles='+window.NLL_CFG.vehicles.length+', distance_rows='+window.NLL_CFG.distance_rows.length+', zones='+window.NLL_CFG.pricing_zones.length);
-    } catch(e){ console.warn('[TaxiSaaS] Pricing load error:',e); }
+    } catch(e){ console.error('[TaxiSaaS] Pricing load ERROR:', e.message, e); }
   };
 
     /* Zajisti ze NLL_CFG existuje pred jakymkoliv volanim */
