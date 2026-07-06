@@ -949,7 +949,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
               <div class="nll-vtype-img"><img src="" alt="Sedan" onerror="this.style.display='none'"></div>
               <div class="nll-vtype-pax">1–4 cestujících</div>
               <div class="nll-vtype-sep"></div>
-              <label class="nll-vsub sel" id="nll-vc-es" onclick="nllSelVSub(this,'Economy Sedan',790,'economy_sedan',event)">
+              <label class="nll-vsub sel" id="nll-vc-es" onclick="nllSelVSub(this,'Economy Sedan',790,'economy_sedan',event,790)">
                 <input type="radio" name="nllveh" checked>
                 <div class="nll-vsub-radio"></div>
                 <div class="nll-vsub-info">
@@ -957,7 +957,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
                   <div class="nll-vsub-desc">Škoda Superb nebo podobný</div>
                 </div>
               </label>
-              <label class="nll-vsub" id="nll-vc-ps" onclick="nllSelVSub(this,'Premium Sedan',1190,'premium_sedan',event)">
+              <label class="nll-vsub" id="nll-vc-ps" onclick="nllSelVSub(this,'Premium Sedan',1190,'premium_sedan',event,1190)">
                 <input type="radio" name="nllveh">
                 <div class="nll-vsub-radio"></div>
                 <div class="nll-vsub-info">
@@ -977,7 +977,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
               <div class="nll-vtype-img"><img src="" alt="Minivan" onerror="this.style.display='none'"></div>
               <div class="nll-vtype-pax">5–8 cestujících</div>
               <div class="nll-vtype-sep"></div>
-              <label class="nll-vsub" id="nll-vc-ev" onclick="nllSelVSub(this,'Economy Van',1290,'economy_van',event)">
+              <label class="nll-vsub" id="nll-vc-ev" onclick="nllSelVSub(this,'Economy Van',1290,'economy_van',event,1290)">
                 <input type="radio" name="nllveh">
                 <div class="nll-vsub-radio"></div>
                 <div class="nll-vsub-info">
@@ -985,7 +985,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
                   <div class="nll-vsub-desc">Ford Transit nebo podobný</div>
                 </div>
               </label>
-              <label class="nll-vsub" id="nll-vc-pv" onclick="nllSelVSub(this,'Premium Van',1690,'premium_van',event)">
+              <label class="nll-vsub" id="nll-vc-pv" onclick="nllSelVSub(this,'Premium Van',1690,'premium_van',event,1690)">
                 <input type="radio" name="nllveh">
                 <div class="nll-vsub-radio"></div>
                 <div class="nll-vsub-info">
@@ -1604,7 +1604,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
   var NLL_LOCALE=(function(){try{var p=new URLSearchParams(window.location.search);var v=p.get('locale');return v==='en'?'en':'cs';}catch(e){return 'cs';}})();
   function nllSaveOrder(data){return fetch(NLL_SB_URL+'/rest/v1/orders',{method:'POST',headers:{'apikey':NLL_SB_KEY,'Authorization':'Bearer '+NLL_SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify(data)});}
 
-    window.nllVeh={n:'Economy Sedan',p:790,id:'economy_sedan'};
+    window.nllVeh={n:'Economy Sedan',p:790,id:'economy_sedan',hourly_rate:790};
   var nllVeh=window.nllVeh;
   window.nllCurrentKm=null;
   window.nllCurrentKm=null; var nllCurrentDuration=null,nllLastPriceResult=null;
@@ -2104,7 +2104,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
   });
 
 
-  window.nllSelVSub=function(subEl,name,price,vid,e){
+  window.nllSelVSub=function(subEl,name,price,vid,e,hourlyRate){
     if(e&&e.stopPropagation)e.stopPropagation();
     if(!subEl)return;
     document.querySelectorAll('.nll-vsub').forEach(function(s){s.classList.remove('sel');});
@@ -2116,7 +2116,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
       var photo=subEl.getAttribute('data-photo');
       if(photo){var img=typeEl.querySelector('.nll-vtype-img img');if(img)img.src=photo;}
     }
-    nllVeh={n:name,p:price,id:vid||subEl.id.replace('nll-vc-','')};window.nllVeh=nllVeh;
+    nllVeh={n:name,p:price,id:vid||subEl.id.replace('nll-vc-',''),hourly_rate:hourlyRate};window.nllVeh=nllVeh;
     if(window.nllIsHourly&&typeof nllUpdHourlyPrices==='function')nllUpdHourlyPrices();
     else if(typeof nllUpdPrice==='function')nllUpdPrice();
   };
@@ -2276,12 +2276,26 @@ window.nllStripePay=function(){
   };
 
   function nllFinish(isError, errorMsg){
+    var isHourly=!!window.nllIsHourly;
+    var pu,doV,date,hr,mn,totalPrice;
+    if(isHourly){
+      pu=document.getElementById('nll-hpu').value;
+      var endrideOther=document.getElementById('nll-er-other-btn')&&document.getElementById('nll-er-other-btn').classList.contains('active');
+      var hend=document.getElementById('nll-hend');
+      doV='(Hodinový pronájem '+nllSlHours+'h)'+(endrideOther&&hend&&hend.value.trim()?' → '+hend.value.trim():'');
+      date=document.getElementById('nll-hdate').value;
+      hr=document.getElementById('nll-hhr').value||'0';
+      mn=document.getElementById('nll-hmn').value||'0';
+      totalPrice=Math.round(nllSlHours*(nllVeh.hourly_rate||nllVeh.p||0));
+    }else{
+      pu=document.getElementById('nll-pu').value;
+      doV=document.getElementById('nll-do').value;
+      date=document.getElementById('nll-date').value;
+      hr=document.getElementById('nll-hr').value||'0';
+      mn=document.getElementById('nll-mn').value||'0';
+      totalPrice=nllLastPriceResult?nllLastPriceResult.total:(nllTrip==='rt'?nllVeh.p*2:nllVeh.p);
+    }
     /* Naplň shrnutí */
-    var pu=document.getElementById('nll-pu').value;
-    var doV=document.getElementById('nll-do').value;
-    var date=document.getElementById('nll-date').value;
-    var hr=document.getElementById('nll-hr').value||'0';
-    var mn=document.getElementById('nll-mn').value||'0';
     var confPu=document.getElementById('nll-conf-pu');
     var confDo=document.getElementById('nll-conf-do');
     var confDt=document.getElementById('nll-conf-dt');
@@ -2312,19 +2326,19 @@ window.nllStripePay=function(){
     var ref='TAX-'+Math.random().toString(36).substr(2,6).toUpperCase();
     var d={ref:ref,status:'new',
       pickup:pu,dropoff:doV,
-      trip_type:nllTrip==='rt'?'return':'oneway',is_return:nllTrip==='rt',
+      trip_type:(!isHourly&&nllTrip==='rt')?'return':'oneway',is_return:!isHourly&&nllTrip==='rt',
       pickup_date:date,
       pickup_hour:parseInt(hr)||0,
       pickup_minute:parseInt(mn)||0,
-      return_date:nllTrip==='rt'?(document.getElementById('nll-date2').value||null):null,
-      return_hour:nllTrip==='rt'?(parseInt(document.getElementById('nll-hr2').value)||null):null,
-      return_minute:nllTrip==='rt'?(parseInt(document.getElementById('nll-mn2').value)||null):null,
+      return_date:(!isHourly&&nllTrip==='rt')?(document.getElementById('nll-date2').value||null):null,
+      return_hour:(!isHourly&&nllTrip==='rt')?(parseInt(document.getElementById('nll-hr2').value)||null):null,
+      return_minute:(!isHourly&&nllTrip==='rt')?(parseInt(document.getElementById('nll-mn2').value)||null):null,
       passengers:parseInt(document.getElementById('nll-pax').value)||1,
       luggage:parseInt(document.getElementById('nll-lug').value)||0,
       vehicle_name:nllVeh.n,vehicle_price:nllVeh.p,
-      total_price:nllLastPriceResult?nllLastPriceResult.total:(nllTrip==='rt'?nllVeh.p*2:nllVeh.p),
-      transport_type:nllPuType||null,
-      transport_number:(function(){var v=document.getElementById('nll-ac-inp');return v&&v.value?v.value.split('·')[0].trim():null;})(),
+      total_price:totalPrice,
+      transport_type:isHourly?null:(nllPuType||null),
+      transport_number:isHourly?null:(function(){var v=document.getElementById('nll-ac-inp');return v&&v.value?v.value.split('·')[0].trim():null;})(),
       customer_name:document.getElementById('nll-name').value,
       customer_phone:(document.getElementById('nll-phone-prefix')?document.getElementById('nll-phone-prefix').value:'')+(document.getElementById('nll-phone')?document.getElementById('nll-phone').value.replace(/^0/,''):''),
       customer_email:document.getElementById('nll-email').value,
@@ -2476,12 +2490,10 @@ window.nllStripePay=function(){
     nllAlert('Poptávka hodinového pronájmu odeslána!\nOzveme se vám do 30 minut.');
   };
 
-  var NLL_HOURLY_RATES={economy_sedan:790,premium_sedan:1190,economy_van:1290,premium_van:1690};
-
   window.nllUpdHourlyPrices=function(){
     var h=nllSlHours||2;
     var veh=window.nllVeh||nllVeh;
-    var rate=NLL_HOURLY_RATES[veh.id]||790;
+    var rate=veh.hourly_rate||veh.p||0;
     var ps=nllFormatPrice(rate*h);
     ['nll-price','nll-price2'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=ps;});
   };
@@ -3037,7 +3049,7 @@ window.nllStripePay=function(){
       var firstInGroup = isFirst;
       groupVehicles.forEach(function(v) {
         var isSel = firstInGroup;
-        if (isSel) { nllVeh = {n: v.name, p: v.price, id: v.id}; window.nllVeh = nllVeh; }
+        if (isSel) { nllVeh = {n: v.name, p: v.price, id: v.id, hourly_rate: v.hourly_rate}; window.nllVeh = nllVeh; }
         firstInGroup = false;
         var sub = document.createElement('label');
         sub.className = 'nll-vsub' + (isSel ? ' sel' : '');
@@ -3049,7 +3061,7 @@ window.nllStripePay=function(){
           + '<div class="nll-vsub-desc">'+(v.description||'')+'</div></div>'
           ;
         sub.onclick = (function(s, vv){ return function(e){
-          nllSelVSub(s, vv.name, vv.price, vv.id, e);
+          nllSelVSub(s, vv.name, vv.price, vv.id, e, vv.hourly_rate);
         }; })(sub, v);
         col.querySelector('.nll-vtype-body').appendChild(sub);
       });
@@ -3444,14 +3456,6 @@ function vUpdPrice(){
   };
 
   /* ===== ČEKÁNÍ V DESTINACI ===== */
-  function nllGetWaitPrice() {
-    var sel = document.getElementById('nll-wait-time');
-    if (!sel) return 0;
-    var hours = parseFloat(sel.value) || 0;
-    if (hours <= 0) return 0;
-    var hourlyRate = nllVeh.hourly_rate || nllVeh.p || 0;
-    return Math.round(hours * hourlyRate);
-  }
 
   function nllUpdateWaitPrice() {
     var price = nllGetWaitPrice();
