@@ -3555,35 +3555,30 @@ window.addEventListener('scroll',function(){
   function calcDistancePrice(km,vehicleId,vehicle){
     var rows=window.NLL_CFG.distance_rows;
     if(!rows||!rows.length) return null;
-    // Normalizuj vehicleId na slug klíč (economy_sedan atd.)
-    var slugMap={'Economy Sedan':'economy_sedan','Business Sedan':'business_sedan','Executive Sedan':'executive_sedan','Economy Van':'economy_van','Business Van':'business_van','Executive Van':'executive_van','Premium Sedan':'business_sedan','Premium Minivan':'business_van','Premium Van':'business_van'};
+    // Normalizuj vehicleId na slug klíč
+    var slugMap={'Economy Sedan':'economy_sedan','Business Sedan':'business_sedan','Executive Sedan':'executive_sedan','Economy Van':'economy_van','Business Van':'business_van','Executive Van':'executive_van','Premium Sedan':'premium_sedan','Premium Minivan':'premium_van','Premium Van':'premium_van'};
     var vKey=vehicleId;
     if(vehicle&&slugMap[vehicle.name]) vKey=slugMap[vehicle.name];
-    else if(vKey&&vKey.includes('-')){ // UUID — najdi přes název vozidla
+    else if(vKey&&vKey.includes('-')){
       var veh2=window.NLL_CFG.vehicles.find(function(v){return v.id===vKey;});
       if(veh2&&slugMap[veh2.name]) vKey=slugMap[veh2.name];
     }
-    // Stupnovany tarif - BEZ zakladni ceny vozidla
-    var total=0;
-    var remaining=km;
+    // Najdi pásmo podle CELKOVÉ vzdálenosti a aplikuj jednu sazbu
     var sorted=rows.slice().sort(function(a,b){return a.km_from-b.km_from;});
+    var rate=0;
     for(var i=0;i<sorted.length;i++){
-      if(remaining<=0) break;
-      var row=sorted[i];
-      var ppm=(row.prices&&row.prices[vKey])?row.prices[vKey]:0;
-      if(ppm===0) continue;
-      var band=row.km_to-row.km_from;
-      var inBand=Math.min(remaining,band);
-      total+=inBand*ppm;
-      remaining-=inBand;
+      if(km>=sorted[i].km_from && km<sorted[i].km_to){
+        rate=(sorted[i].prices&&sorted[i].prices[vKey])?sorted[i].prices[vKey]:0;
+        break;
+      }
     }
-    if(remaining>0){
+    // Fallback na poslední pásmo
+    if(rate===0){
       var last=sorted[sorted.length-1];
-      var lastRate=(last.prices&&last.prices[vKey])?last.prices[vKey]:0;
-      total+=remaining*lastRate;
+      rate=(last.prices&&last.prices[vKey])?last.prices[vKey]:0;
     }
-    // Zaokrouhli na desitky a aplikuj minimalni cenu
-    total=Math.round(total/10)*10;
+    if(rate===0) return null;
+    var total=Math.round(km*rate/50)*50;
     var minPrice=vehicle.min_price||750;
     return Math.max(total,minPrice);
   }
