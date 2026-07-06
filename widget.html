@@ -2876,7 +2876,11 @@ window.nllStripePay=function(){
       var d1 = await r1.json();
       if(d1&&d1.length){
         var cfg=d1[0];
-        if(cfg.vehicles) window.NLL_CFG.vehicles=cfg.vehicles.filter(function(v){return v.active;});
+        var slugNames={'Economy Sedan':'economy_sedan','Premium Sedan':'premium_sedan','Executive Sedan':'executive_sedan','Economy Van':'economy_van','Premium Van':'premium_van','Executive Van':'executive_van','Business Sedan':'premium_sedan','Business Van':'premium_van'};
+      if(cfg.vehicles) window.NLL_CFG.vehicles=cfg.vehicles.filter(function(v){return v.active;}).map(function(v){
+        var slug=slugNames[v.name];
+        return slug ? Object.assign({},v,{id:slug}) : v;
+      });
         if(cfg.min_price) window.NLL_CFG.min_price=cfg.min_price;
         if(cfg.pricing_zones) window.NLL_CFG.pricing_zones=cfg.pricing_zones;
         if(cfg.zone_matrix) window.NLL_CFG.zone_matrix=cfg.zone_matrix;
