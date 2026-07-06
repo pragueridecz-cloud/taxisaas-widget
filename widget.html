@@ -3615,35 +3615,29 @@ window.addEventListener('scroll',function(){
     console.log('[CALC] vehicle found:', vehicle.id, 'min_price:', vehicle.min_price);
     var basePrice=null; var pricingMethod='unknown';
 
-    // 1. Pevná místa
+    // 1. Letistni transfer (landmark alebo zona) → pevna cena
     var puLM=findLandmark(params.pickup);
     var doLM=findLandmark(params.dropoff);
     if(puLM&&doLM){
       var zp=calcZonePrice(puLM.zone_id||puLM.id, doLM.zone_id||doLM.id, params.vehicleId, params.distanceKm);
       if(zp!==null){basePrice=zp;pricingMethod='landmark';}
     }
-
-    // 2. Detekce zóny přes GPS souřadnice (polygon)
+    // Zona polygon - jen pokud je letiste jednou ze stran
     if(basePrice===null&&params.puLatLng&&params.doLatLng){
       var puZ=findZoneByPoint(params.puLatLng.lat, params.puLatLng.lng);
       var doZ=findZoneByPoint(params.doLatLng.lat, params.doLatLng.lng);
       console.log('[ZONE] pu zone:', puZ?puZ.name:'none', 'do zone:', doZ?doZ.name:'none');
-      if(puZ&&doZ){
+      var isAirport=(puZ&&puZ.name==='Letiště Praha')||(doZ&&doZ.name==='Letiště Praha');
+      if(puZ&&doZ&&isAirport){
         var zp3=calcZonePrice(puZ.id,doZ.id,params.vehicleId,params.distanceKm);
-        if(zp3!==null){basePrice=zp3;pricingMethod='zone-polygon';}
+        if(zp3!==null){basePrice=zp3;pricingMethod='zone';}
       }
     }
 
-    // 3. Zóny PSČ (fallback)
-    if(basePrice===null){
-      var puZ2=findZoneByPostal(params.pickup);
-      var doZ2=findZoneByPostal(params.dropoff);
-      if(puZ2&&doZ2){var zp2=calcZonePrice(puZ2.id,doZ2.id,params.vehicleId,params.distanceKm);if(zp2!==null){basePrice=zp2;pricingMethod='zone';}}
-    }
-
-    // 3. Vzdálenostní ceník
+    // 2. Km ceník (vse ostatni)
     if(basePrice===null&&params.km&&params.km>0){
       var dp=calcDistancePrice(params.km,params.vehicleId,vehicle);
+      console.log('[KM] km='+params.km+' result='+dp+' vehicle='+params.vehicleId);
       if(dp!==null){basePrice=dp;pricingMethod='distance';}
     }
 
