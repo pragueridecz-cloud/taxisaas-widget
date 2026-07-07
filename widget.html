@@ -189,23 +189,14 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
 .nll-pb-b{font-size:10px;font-weight:700;background:var(--red);color:#fff;padding:2px 9px;border-radius:3px;margin-top:4px;display:none}
 
 /* ===== AUTOCOMPLETE LETŮ ===== */
-.nll-tbox{display:none;margin-bottom:18px;border:1.5px solid var(--navy);border-radius:6px;overflow:hidden}
-.nll-tbox.show{display:block;animation:nllfade .3s ease}
-.nll-thead{background:var(--navy);padding:11px 18px;display:flex;align-items:center;gap:10px}
-.nll-thead svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
-.nll-thtitle{font-size:12px;font-weight:700;color:#fff}
-.nll-thsub{font-size:10px;color:rgba(255,255,255,.5);margin-left:auto;font-weight:500}
-.nll-tbody{padding:16px 18px;background:rgba(0,32,91,.02)}
-
-/* Autocomplete input wrapper */
-.nll-ac-wrap{position:relative;margin-bottom:0}
-.nll-ac-inp{border:1.5px solid var(--border);border-radius:5px;padding:12px 14px 12px 42px;color:var(--navy);font-size:15px;font-weight:800;outline:none;transition:border-color .2s;background:#fff;width:100%;letter-spacing:2px;text-transform:uppercase}
 @keyframes nllSpin{to{transform:rotate(360deg)}}
-.nll-ac-inp:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(0,32,91,.08)}
-.nll-ac-inp::placeholder{font-size:12px;font-weight:400;letter-spacing:0;text-transform:none;color:#bbb}
-.nll-ac-ico{position:absolute;left:13px;top:50%;transform:translateY(-50%);pointer-events:none}
-.nll-ac-ico svg{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.nll-ac-clear{position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;display:none;background:var(--off);border:none;border-radius:50%;width:22px;height:22px;font-size:14px;color:var(--muted);align-items:center;justify-content:center;line-height:1;transition:all .2s}
+
+/* Autocomplete input wrapper — stejný vzhled jako ostatní pole (.nll-wi) */
+.nll-ac-wrap{position:relative;margin-bottom:0}
+.nll-ac-inp{border:1.5px solid var(--border);border-radius:5px;padding:11px 34px 11px 13px;color:var(--navy);font-size:13px;font-weight:600;outline:none;transition:border-color .2s;background:#fff;width:100%}
+.nll-ac-inp:focus{border-color:var(--navy)}
+.nll-ac-inp::placeholder{color:#bbb;font-weight:400}
+.nll-ac-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);cursor:pointer;display:none;background:var(--off);border:none;border-radius:50%;width:20px;height:20px;font-size:12px;color:var(--muted);align-items:center;justify-content:center;line-height:1;transition:all .2s}
 .nll-ac-clear.show{display:flex}
 .nll-ac-clear:hover{background:var(--border);color:var(--navy)}
 
@@ -1002,32 +993,34 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
       <!-- KROK 3 — KONTAKT -->
       <div class="nll-panel" id="nll-p3">
 
-        <!-- Autocomplete letů -->
-        <div class="nll-tbox" id="nll-tbox">
-          <div class="nll-thead">
-            <svg id="nll-tico" viewBox="0 0 24 24"><path d="M17.8 19.2L16 11l3.5-3.5C21 6 21 4 19.5 2.5c-1.5-1.5-3.5-1.5-5 0L11 6 2.8 4.2c-.5-.1-.9.1-1.1.5l-1 1.7c-.1.4-.1.8.3 1.1l5.8 3.7-2.3 2.3-1.7-.4c-.3-.1-.6 0-.8.2l-.6.6c-.3.3-.3.7 0 1l2.2 2.2 2.2 2.2c.3.3.7.3 1 0l.6-.6c.2-.2.3-.5.2-.8l-.4-1.7 2.3-2.3 3.7 5.8c.3.4.7.4 1.1.3l1.7-1c.4-.2.6-.6.5-1.1z"/></svg>
-            <div class="nll-thtitle" id="nll-tttl">Číslo letu</div>
-            <div class="nll-thsub" id="nll-tsub">Začněte psát — zobrazíme dostupné lety</div>
-          </div>
-          <div class="nll-tbody">
-            <div class="nll-fg" style="margin-bottom:10px">
-              <div class="nll-lbl" id="nll-tlbl">Číslo letu</div>
-            </div>
-            <div class="nll-ac-wrap">
-              <div class="nll-ac-ico"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-              <input class="nll-ac-inp" id="nll-ac-inp" placeholder="Zadejte číslo letu, např. OK204..." autocomplete="off"
-                oninput="nllAcSearch(this.value)" onkeydown="nllAcKey(event)" onfocus="if(!this.value)nllShowAirportFlights()">
-              <button class="nll-ac-clear" id="nll-ac-clear" onclick="nllAcClear()">✕</button>
-              <div class="nll-ac-dd" id="nll-ac-dd"></div>
-            </div>
-          </div>
-        </div>
-
         <div class="nll-cp-grid">
 
           <!-- LEVÝ SLOUPEC: Kontaktní údaje -->
           <div>
             <div class="nll-cp-stitle">Kontaktní údaje</div>
+
+            <!-- Číslo letu (tam) -->
+            <div class="nll-wf" id="nll-flight-block" style="margin-bottom:12px;display:none">
+              <div class="nll-wl" id="nll-tlbl">Číslo letu</div>
+              <div class="nll-ac-wrap">
+                <input class="nll-ac-inp" id="nll-ac-inp" placeholder="Zadejte číslo letu, např. OK204..." autocomplete="off"
+                  oninput="nllAcSearch(this.value,'out')" onkeydown="nllAcKey(event,'out')" onfocus="if(!this.value)nllShowAirportFlights('out')">
+                <button class="nll-ac-clear" id="nll-ac-clear" onclick="nllAcClear('out')">✕</button>
+                <div class="nll-ac-dd" id="nll-ac-dd"></div>
+              </div>
+            </div>
+
+            <!-- Zpáteční číslo letu (jen u "tam a zpět") -->
+            <div class="nll-wf" id="nll-flight-block2" style="margin-bottom:12px;display:none">
+              <div class="nll-wl" id="nll-tlbl2">Zpáteční číslo letu</div>
+              <div class="nll-ac-wrap">
+                <input class="nll-ac-inp" id="nll-ac-inp2" placeholder="Zadejte číslo letu, např. OK204..." autocomplete="off"
+                  oninput="nllAcSearch(this.value,'ret')" onkeydown="nllAcKey(event,'ret')" onfocus="if(!this.value)nllShowAirportFlights('ret')">
+                <button class="nll-ac-clear" id="nll-ac-clear2" onclick="nllAcClear('ret')">✕</button>
+                <div class="nll-ac-dd" id="nll-ac-dd2"></div>
+              </div>
+            </div>
+
             <div class="nll-wf" style="margin-bottom:12px"><div class="nll-wl" id="nll-lbl-name">Jméno a příjmení</div><input class="nll-wi" id="nll-name" placeholder="Jan Novák"></div>
             <div class="nll-wf" style="margin-bottom:12px"><div class="nll-wl" id="nll-lbl-phone">Telefonní číslo</div>
               <div style="display:flex;gap:0">
@@ -1592,7 +1585,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
   window.nllCurrentKm=null; var nllCurrentDuration=null,nllLastPriceResult=null;
   var nllSeats={infant:0,baby:0,booster:0};
   var nllPaidOnline=false;
-  var nllAcTimer=null,nllAcSelected=null;
+  var nllAcTimer={out:null,ret:null},nllAcSelected={out:null,ret:null};
   // Proxy URL se předá jako ?proxy= parametr z rodičovské stránky (nebo fallback na produkci)
   var NLL_FR24_PROXY=(function(){
     try {
@@ -1607,37 +1600,48 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
   /* ===== FLIGHT SEARCH via AeroDataBox — rozpis letů pro zvolené letiště+datum =====
      Zákazník rezervuje často i pár dní dopředu, takže "zpoždění"/"reálný čas" u letu
      v tuhle chvíli nic neznamená — to je informace pro admina/řidiče blíž k jízdě,
-     ne pro tenhle formulář. Widgetu stačí nabídnout let podle plánovaného rozpisu. */
-  var NLL_SCHEDULE_CACHE = {key:null, data:[]};
+     ne pro tenhle formulář. Widgetu stačí nabídnout let podle plánovaného rozpisu.
+     Dvě nezávislá pole: 'out' (tam) a 'ret' (zpáteční, jen u "tam a zpět") — stejné
+     letiště, ale opačný směr a datum/čas ze zpáteční části kroku 1. */
+  var NLL_SCHEDULE_CACHE = {out:{key:null,data:[]}, ret:{key:null,data:[]}};
   var NLL_SCHEDULE_PAGE = 5;
-  var nllScheduleWindowStart = 0;
+  var nllScheduleWindowStart = {out:0, ret:0};
 
-  function nllScheduleKey(){
-    var addr = window.nllTransportDirection === 'Departure'
+  function nllFlightSlot(slot){
+    var isRet = slot==='ret';
+    var outDir = window.nllTransportDirection;
+    var direction = isRet ? (outDir==='Arrival'?'Departure':'Arrival') : outDir;
+    var addr = outDir === 'Departure'
       ? (document.getElementById('nll-do')||{value:''}).value
       : (document.getElementById('nll-pu')||{value:''}).value;
-    var date = (document.getElementById('nll-date')||{value:''}).value;
-    return (addr && date) ? (addr+'|'+date+'|'+window.nllTransportDirection) : null;
+    return {
+      ddId: isRet?'nll-ac-dd2':'nll-ac-dd',
+      direction: direction,
+      addr: addr,
+      date: (document.getElementById(isRet?'nll-date2':'nll-date')||{value:''}).value,
+      hr: (document.getElementById(isRet?'nll-hr2':'nll-hr')||{value:'12'}).value,
+      mn: (document.getElementById(isRet?'nll-mn2':'nll-mn')||{value:'0'}).value
+    };
   }
 
-  function nllScheduleLoad(){
-    var key = nllScheduleKey();
+  function nllScheduleLoad(slot){
+    var s = nllFlightSlot(slot);
+    var key = (s.addr && s.date) ? (s.addr+'|'+s.date+'|'+s.direction) : null;
     if (!key) return Promise.resolve([]);
-    if (NLL_SCHEDULE_CACHE.key === key) return Promise.resolve(NLL_SCHEDULE_CACHE.data);
-    var addr = window.nllTransportDirection === 'Departure' ? document.getElementById('nll-do').value : document.getElementById('nll-pu').value;
-    var date = document.getElementById('nll-date').value;
-    var url = NLL_SCHEDULE_PROXY + '?airport=' + encodeURIComponent(addr) + '&date=' + encodeURIComponent(date) + '&direction=' + window.nllTransportDirection;
+    var c = NLL_SCHEDULE_CACHE[slot];
+    if (c.key === key) return Promise.resolve(c.data);
+    var url = NLL_SCHEDULE_PROXY + '?airport=' + encodeURIComponent(s.addr) + '&date=' + encodeURIComponent(s.date) + '&direction=' + s.direction;
     return fetch(url).then(function(r){return r.json();}).then(function(data){
       var results = data.results || [];
-      NLL_SCHEDULE_CACHE = {key:key, data:results};
+      NLL_SCHEDULE_CACHE[slot] = {key:key, data:results};
       return results;
     });
   }
 
-  /* Index letu, jehož plánovaný čas je nejblíž datu+času zvolenému v kroku 1 */
-  function nllScheduleClosestIndex(list){
-    var hr = parseInt((document.getElementById('nll-hr')||{value:'12'}).value);
-    var mn = parseInt((document.getElementById('nll-mn')||{value:'0'}).value);
+  /* Index letu, jehož plánovaný čas je nejblíž datu+času zvolenému v kroku 1 (tam/zpět) */
+  function nllScheduleClosestIndex(slot, list){
+    var s = nllFlightSlot(slot);
+    var hr = parseInt(s.hr), mn = parseInt(s.mn);
     var targetMins = (isNaN(hr)?12:hr)*60 + (isNaN(mn)?0:mn);
     var best=0, bestDiff=Infinity;
     list.forEach(function(f,i){
@@ -1649,39 +1653,44 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
     return best;
   }
 
-  function nllFetchFlight(q) {
-    if (!window.nllTransportDirection) { nllAcHide(); return; }
-    if (!q || q.length < 2) { nllAcHide(); return; }
-    var dd = document.getElementById('nll-ac-dd');
+  function nllFetchFlight(q, slot) {
+    slot = slot||'out';
+    if (!window.nllTransportDirection) { nllAcHide(slot); return; }
+    if (!q || q.length < 2) { nllAcHide(slot); return; }
+    var dd = document.getElementById(nllFlightSlot(slot).ddId);
     if (dd) {
       dd.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:#94a3b8">Hledám lety...</div>';
       dd.classList.add('show');
     }
-    nllScheduleLoad().then(function(list){
+    nllScheduleLoad(slot).then(function(list){
       if (!dd) return;
       var qn = q.toUpperCase().replace(/\s/g,'');
       var matches = list.filter(function(f){ return f.flight.replace(/\s/g,'').toUpperCase().indexOf(qn) >= 0; });
       if (!matches.length) { dd.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:#94a3b8">Žádný naplánovaný let nenalezen</div>'; return; }
-      nllRenderFlightDrop(matches, false);
+      nllRenderFlightDrop(matches, false, slot);
     }).catch(function(){ if (dd) dd.innerHTML='<div style="padding:12px 16px;font-size:13px;color:#ef4444">Chyba připojení</div>'; });
   }
 
-  window.nllScheduleNav = function(dir){
-    var list = NLL_SCHEDULE_CACHE.data;
+  window.nllScheduleNav = function(dir, slot){
+    slot = slot||'out';
+    var list = NLL_SCHEDULE_CACHE[slot].data;
     var maxStart = Math.max(0, list.length - NLL_SCHEDULE_PAGE);
-    nllScheduleWindowStart = Math.min(maxStart, Math.max(0, nllScheduleWindowStart + dir*NLL_SCHEDULE_PAGE));
-    nllRenderFlightDrop(list.slice(nllScheduleWindowStart, nllScheduleWindowStart+NLL_SCHEDULE_PAGE), true);
+    nllScheduleWindowStart[slot] = Math.min(maxStart, Math.max(0, nllScheduleWindowStart[slot] + dir*NLL_SCHEDULE_PAGE));
+    nllRenderFlightDrop(list.slice(nllScheduleWindowStart[slot], nllScheduleWindowStart[slot]+NLL_SCHEDULE_PAGE), true, slot);
   };
 
-  function nllRenderFlightDrop(results, showNav) {
-    var dd = document.getElementById('nll-ac-dd');
+  function nllRenderFlightDrop(results, showNav, slot) {
+    slot = slot||'out';
+    var s = nllFlightSlot(slot);
+    var dd = document.getElementById(s.ddId);
     if (!dd) return;
-    var isDeparture = window.nllTransportDirection === 'Departure';
+    var isDeparture = s.direction === 'Departure';
     dd.innerHTML = '';
     if (showNav) {
-      var list = NLL_SCHEDULE_CACHE.data;
-      var atStart = nllScheduleWindowStart <= 0;
-      var atEnd = nllScheduleWindowStart + NLL_SCHEDULE_PAGE >= list.length;
+      var list = NLL_SCHEDULE_CACHE[slot].data;
+      var ws = nllScheduleWindowStart[slot];
+      var atStart = ws <= 0;
+      var atEnd = ws + NLL_SCHEDULE_PAGE >= list.length;
       var nav = document.createElement('div');
       nav.className = 'nll-ac-nav';
       nav.innerHTML =
@@ -1689,8 +1698,8 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
         '<span class="nll-ac-nav-lbl">' + (isDeparture?'Odlety':'Přílety') + '</span>' +
         '<button type="button" class="nll-ac-nav-btn"' + (atEnd?' disabled':'') + '>Pozdější ▼</button>';
       var btns = nav.querySelectorAll('.nll-ac-nav-btn');
-      btns[0].addEventListener('mousedown', function(ev){ ev.preventDefault(); nllScheduleNav(-1); });
-      btns[1].addEventListener('mousedown', function(ev){ ev.preventDefault(); nllScheduleNav(1); });
+      btns[0].addEventListener('mousedown', function(ev){ ev.preventDefault(); nllScheduleNav(-1, slot); });
+      btns[1].addEventListener('mousedown', function(ev){ ev.preventDefault(); nllScheduleNav(1, slot); });
       dd.appendChild(nav);
     }
     results.forEach(function(f){
@@ -1706,7 +1715,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
         '</div>' +
         '<div style="font-size:12px;color:#64748b">' + (f.airline||'') + (routeLabel ? ' · ' + (isDeparture?'→ ':'z ') + routeLabel : '') + '</div>';
       (function(fd){
-        div.addEventListener('mousedown', function(ev){ ev.preventDefault(); nllAcPick(fd); });
+        div.addEventListener('mousedown', function(ev){ ev.preventDefault(); nllAcPick(fd, slot); });
       })(f);
       dd.appendChild(div);
     });
@@ -1895,58 +1904,62 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
     dd.style.left=r.left+'px';
     dd.style.width=r.width+'px';
   }
-  window.nllAcSearch=function(val){
-    clearTimeout(nllAcTimer);
-    var clear=document.getElementById('nll-ac-clear');
+  window.nllAcSearch=function(val, slot){
+    slot = slot||'out';
+    clearTimeout(nllAcTimer[slot]);
+    var clear=document.getElementById(slot==='ret'?'nll-ac-clear2':'nll-ac-clear');
     if(clear) clear.classList.toggle('show',val.length>0);
-    nllAcSelected=null;
+    nllAcSelected[slot]=null;
     if(val.length<2){
       // Pokud je prázdné pole, zkus načíst lety z letiště
-      nllShowAirportFlights();
+      nllShowAirportFlights(slot);
       return;
     }
-    nllAcTimer=setTimeout(function(){ nllFetchFlight(val.trim()); },500);
+    nllAcTimer[slot]=setTimeout(function(){ nllFetchFlight(val.trim(), slot); },500);
   };
 
-  /* Načte lety ze zvoleného letiště, seřazené a vystředěné podle data+času z kroku 1 */
-  window.nllShowAirportFlights = function() {
+  /* Načte lety ze zvoleného letiště, seřazené a vystředěné podle data+času z kroku 1 (tam/zpět) */
+  window.nllShowAirportFlights = function(slot) {
+    slot = slot||'out';
     if (!window.nllTransportDirection) return;
-    var dd = document.getElementById('nll-ac-dd');
+    var dd = document.getElementById(nllFlightSlot(slot).ddId);
     if (!dd) return;
     dd.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:#94a3b8">Načítám lety z letiště...</div>';
     dd.classList.add('show');
-    nllScheduleLoad().then(function(list){
+    nllScheduleLoad(slot).then(function(list){
       if (list.length === 0) {
         dd.innerHTML = '<div style="padding:12px 16px;font-size:13px;color:#94a3b8">Žádné naplánované lety nenalezeny</div>';
         return;
       }
-      var closest = nllScheduleClosestIndex(list);
-      nllScheduleWindowStart = Math.min(Math.max(0, list.length-NLL_SCHEDULE_PAGE), Math.max(0, closest - Math.floor(NLL_SCHEDULE_PAGE/2)));
-      nllRenderFlightDrop(list.slice(nllScheduleWindowStart, nllScheduleWindowStart+NLL_SCHEDULE_PAGE), true);
+      var closest = nllScheduleClosestIndex(slot, list);
+      nllScheduleWindowStart[slot] = Math.min(Math.max(0, list.length-NLL_SCHEDULE_PAGE), Math.max(0, closest - Math.floor(NLL_SCHEDULE_PAGE/2)));
+      nllRenderFlightDrop(list.slice(nllScheduleWindowStart[slot], nllScheduleWindowStart[slot]+NLL_SCHEDULE_PAGE), true, slot);
     }).catch(function(){ dd.classList.remove('show'); });
   }
 
-  window.nllAcKey=function(e){
-    if(e.key==='Escape'){document.getElementById('nll-ac-dd').classList.remove('show');}
+  window.nllAcKey=function(e, slot){
+    if(e.key==='Escape'){document.getElementById(slot==='ret'?'nll-ac-dd2':'nll-ac-dd').classList.remove('show');}
   };
 
-  window.nllAcHide=function(){
-    var dd=document.getElementById('nll-ac-dd');
+  window.nllAcHide=function(slot){
+    var dd=document.getElementById(slot==='ret'?'nll-ac-dd2':'nll-ac-dd');
     if(dd) dd.classList.remove('show');
   };
 
-  window.nllAcClear=function(){
-    document.getElementById('nll-ac-inp').value='';
-    document.getElementById('nll-ac-dd').classList.remove('show');
-    document.getElementById('nll-ac-clear').classList.remove('show');
-    nllAcSelected=null;
+  window.nllAcClear=function(slot){
+    slot = slot||'out';
+    document.getElementById(slot==='ret'?'nll-ac-inp2':'nll-ac-inp').value='';
+    document.getElementById(slot==='ret'?'nll-ac-dd2':'nll-ac-dd').classList.remove('show');
+    document.getElementById(slot==='ret'?'nll-ac-clear2':'nll-ac-clear').classList.remove('show');
+    nllAcSelected[slot]=null;
   };
 
-  function nllAcPick(f){
+  function nllAcPick(f, slot){
+    slot = slot||'out';
     var route = f.otherAirportName || f.otherAirport;
-    nllAcSelected={num:f.flight, route:route, sched:f.scheduled};
-    document.getElementById('nll-ac-inp').value=f.flight+(route?' · '+route:'');
-    document.getElementById('nll-ac-dd').classList.remove('show');
+    nllAcSelected[slot]={num:f.flight, route:route, sched:f.scheduled};
+    document.getElementById(slot==='ret'?'nll-ac-inp2':'nll-ac-inp').value=f.flight+(route?' · '+route:'');
+    document.getElementById(slot==='ret'?'nll-ac-dd2':'nll-ac-dd').classList.remove('show');
   }
   function nllAddMin(time,min){
     if(isNaN(min)) return time;
@@ -1981,35 +1994,12 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
   };
 
   window.nllShowTBox=function(){
-    var box=document.getElementById('nll-tbox');
-    var picked=nllPickTransportConfig();
-    if(!picked){box.classList.remove('show');return;}
-    var type=picked.type, c=picked.cfg;
     nllPuType=window.nllPuType;
-    /* Ikona */
-    document.getElementById('nll-tico').innerHTML='<path d="'+c.ico+'"/>';
-    /* Nadpis + popis v hlavičce */
-    document.getElementById('nll-tttl').textContent=c.title;
-    document.getElementById('nll-tsub').textContent=c.sub;
-    /* Label nad inputem */
-    var lbl=document.getElementById('nll-tlbl');
-    if(lbl) lbl.textContent=c.lbl;
-    /* Placeholder inputu */
-    var inp=document.getElementById('nll-ac-inp');
-    if(inp){
-      inp.placeholder=c.ph;
-      inp.value='';
-      inp.style.textTransform=(type==='airport'?'uppercase':'none');
-      inp.style.letterSpacing=(type==='airport'?'2px':'0');
-      inp.style.fontSize=(type==='airport'?'15px':'14px');
-      inp.style.fontWeight=(type==='airport'?'800':'600');
-    }
-    /* Reset */
-    var dd=document.getElementById('nll-ac-dd');
-    if(dd) dd.classList.remove('show');
-    var clr=document.getElementById('nll-ac-clear');
-    if(clr) clr.classList.remove('show');
-    box.classList.add('show');
+    nllUpdateTransportField();
+    /* Reset obou polí (tam i zpět) */
+    ['nll-ac-inp','nll-ac-inp2'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+    ['nll-ac-dd','nll-ac-dd2'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('show');});
+    ['nll-ac-clear','nll-ac-clear2'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('show');});
   }
 
   /* ===== VOZIDLA ===== */
@@ -2339,7 +2329,14 @@ window.nllStripePay=function(){
       vehicle_name:nllVeh.n,vehicle_price:nllVeh.p,
       total_price:totalPrice,
       transport_type:isHourly?null:(window.nllPuType||window.nllDoType||null),
-      transport_number:isHourly?null:(function(){var v=document.getElementById('nll-ac-inp');return v&&v.value?v.value.split('·')[0].trim():null;})(),
+      transport_number:isHourly?null:(function(){
+        var out=(document.getElementById('nll-ac-inp')||{}).value;
+        var ret=(document.getElementById('nll-ac-inp2')||{}).value;
+        out=out?out.split('·')[0].trim():'';
+        ret=ret?ret.split('·')[0].trim():'';
+        if(out&&ret) return out+' (tam) · '+ret+' (zpět)';
+        return out||ret||null;
+      })(),
       customer_name:document.getElementById('nll-name').value,
       customer_phone:(document.getElementById('nll-phone-prefix')?document.getElementById('nll-phone-prefix').value:'')+(document.getElementById('nll-phone')?document.getElementById('nll-phone').value.replace(/^0/,''):''),
       customer_email:document.getElementById('nll-email').value,
@@ -3272,32 +3269,35 @@ function nllPickTransportConfig(){
   var c=window.NLL_TCFG[type];
   if(type==='airport'){
     var isDep=direction==='Departure';
-    c={ ico:c.ico,
-      title:isDep?'Číslo odletu':'Číslo příletu',
-      sub:c.sub,
-      ph:c.ph,
-      lbl:isDep?'Číslo odletu':'Číslo příletu'
-    };
+    c={ ph:c.ph, lbl:isDep?'Číslo odletu':'Číslo příletu' };
   }
   return {type:type, cfg:c};
 }
 function nllUpdateTransportField(){
-  var box=document.getElementById('nll-tbox');
-  if(!box) return;
+  var block=document.getElementById('nll-flight-block');
+  var block2=document.getElementById('nll-flight-block2');
+  if(!block||!block2) return;
   var picked=nllPickTransportConfig();
-  if(!picked){box.classList.remove('show');return;}
+  if(!picked){ block.style.display='none'; block2.style.display='none'; return; }
   var c=picked.cfg;
-  var tico=document.getElementById('nll-tico');
-  if(tico)tico.innerHTML='<path d="'+c.ico+'"/>';
-  var tttl=document.getElementById('nll-tttl');
-  if(tttl)tttl.textContent=c.title;
-  var tsub=document.getElementById('nll-tsub');
-  if(tsub)tsub.textContent=c.sub;
   var tlbl=document.getElementById('nll-tlbl');
-  if(tlbl)tlbl.textContent=c.lbl;
+  if(tlbl) tlbl.textContent=c.lbl;
   var inp=document.getElementById('nll-ac-inp');
-  if(inp)inp.placeholder=c.ph;
-  box.classList.add('show');
+  if(inp) inp.placeholder=c.ph;
+  block.style.display='block';
+
+  // Zpáteční číslo letu — jen u letiště + "tam a zpět" (opačný směr, datum/čas z návratu)
+  var showReturn = picked.type==='airport' && nllTrip==='rt';
+  if(showReturn){
+    var isRetDeparture = window.nllTransportDirection==='Arrival';
+    var tlbl2=document.getElementById('nll-tlbl2');
+    if(tlbl2) tlbl2.textContent = isRetDeparture ? 'Zpáteční číslo odletu' : 'Zpáteční číslo příletu';
+    var inp2=document.getElementById('nll-ac-inp2');
+    if(inp2) inp2.placeholder=c.ph;
+    block2.style.display='block';
+  } else {
+    block2.style.display='none';
+  }
 }
 async function gpFetch(inp,id,q){
   if(!gpReady||!window.google){gpShowDefs(inp,id,q);return;}
