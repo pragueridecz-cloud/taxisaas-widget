@@ -222,6 +222,10 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
 .nll-ac-loading{padding:14px;text-align:center;font-size:12px;color:var(--muted);font-weight:500}
 .nll-ac-empty{padding:14px;text-align:center;font-size:12px;color:var(--muted);font-style:italic}
 
+/* Rámeček kolem sekce čísla letu */
+.nll-flight-card{border:1.5px solid var(--navy);border-radius:6px;padding:14px 16px 16px}
+.nll-flight-card-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--navy);margin-bottom:10px}
+
 /* Navigace šipkami v seznamu letů */
 .nll-ac-nav{display:flex;align-items:center;justify-content:space-between;padding:6px 14px;border-bottom:1px solid #f1f5f9;background:#fafbfd}
 .nll-ac-nav-btn{background:none;border:none;cursor:pointer;color:#075aaa;font-size:11px;font-weight:700;padding:4px 8px;display:flex;align-items:center;gap:4px;border-radius:4px}
@@ -1001,8 +1005,8 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
             <div class="nll-cp-stitle">Kontaktní údaje</div>
 
             <!-- Číslo letu -->
-            <div id="nll-flight-section" style="display:none;margin-bottom:14px">
-              <div class="nll-seats-title" id="nll-flight-title">Číslo letu</div>
+            <div id="nll-flight-section" class="nll-flight-card" style="display:none;margin-bottom:14px">
+              <div class="nll-flight-card-title" id="nll-flight-title">Číslo letu</div>
               <div class="nll-wrow nll-wrow-single" id="nll-flight-row" style="margin-bottom:0">
                 <div class="nll-wf" id="nll-flight-block">
                   <div class="nll-wl" id="nll-tlbl">Číslo letu</div>
