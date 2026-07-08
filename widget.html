@@ -1018,15 +1018,6 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
                     <div class="nll-ac-dd" id="nll-ac-dd"></div>
                   </div>
                 </div>
-                <div class="nll-wf" id="nll-flight-block2" style="display:none">
-                  <div class="nll-wl" id="nll-tlbl2">Zpáteční číslo letu</div>
-                  <div class="nll-ac-wrap">
-                    <input class="nll-ac-inp" id="nll-ac-inp2" placeholder="Zadejte číslo letu, např. OK204..." autocomplete="off"
-                      oninput="nllAcSearch(this.value,'ret')" onkeydown="nllAcKey(event,'ret')" onfocus="if(!this.value)nllShowAirportFlights('ret')">
-                    <button class="nll-ac-clear" id="nll-ac-clear2" onclick="nllAcClear('ret')">✕</button>
-                    <div class="nll-ac-dd" id="nll-ac-dd2"></div>
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -1624,7 +1615,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
       ? (document.getElementById('nll-do')||{value:''}).value
       : (document.getElementById('nll-pu')||{value:''}).value;
     return {
-      ddId: isRet?'nll-ac-dd2':'nll-ac-dd',
+      ddId: 'nll-ac-dd',
       direction: direction,
       addr: addr,
       date: (document.getElementById(isRet?'nll-date2':'nll-date')||{value:''}).value,
@@ -1916,7 +1907,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
   window.nllAcSearch=function(val, slot){
     slot = slot||'out';
     clearTimeout(nllAcTimer[slot]);
-    var clear=document.getElementById(slot==='ret'?'nll-ac-clear2':'nll-ac-clear');
+    var clear=document.getElementById('nll-ac-clear');
     if(clear) clear.classList.toggle('show',val.length>0);
     nllAcSelected[slot]=null;
     if(val.length<2){
@@ -1947,19 +1938,19 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
   }
 
   window.nllAcKey=function(e, slot){
-    if(e.key==='Escape'){document.getElementById(slot==='ret'?'nll-ac-dd2':'nll-ac-dd').classList.remove('show');}
+    if(e.key==='Escape'){document.getElementById('nll-ac-dd').classList.remove('show');}
   };
 
   window.nllAcHide=function(slot){
-    var dd=document.getElementById(slot==='ret'?'nll-ac-dd2':'nll-ac-dd');
+    var dd=document.getElementById('nll-ac-dd');
     if(dd) dd.classList.remove('show');
   };
 
   window.nllAcClear=function(slot){
     slot = slot||'out';
-    document.getElementById(slot==='ret'?'nll-ac-inp2':'nll-ac-inp').value='';
-    document.getElementById(slot==='ret'?'nll-ac-dd2':'nll-ac-dd').classList.remove('show');
-    document.getElementById(slot==='ret'?'nll-ac-clear2':'nll-ac-clear').classList.remove('show');
+    document.getElementById('nll-ac-inp').value='';
+    document.getElementById('nll-ac-dd').classList.remove('show');
+    document.getElementById('nll-ac-clear').classList.remove('show');
     nllAcSelected[slot]=null;
   };
 
@@ -1967,8 +1958,8 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
     slot = slot||'out';
     var route = f.otherAirportName || f.otherAirport;
     nllAcSelected[slot]={num:f.flight, route:route, sched:f.scheduled};
-    document.getElementById(slot==='ret'?'nll-ac-inp2':'nll-ac-inp').value=f.flight+(route?' · '+route:'');
-    document.getElementById(slot==='ret'?'nll-ac-dd2':'nll-ac-dd').classList.remove('show');
+    document.getElementById('nll-ac-inp').value=f.flight+(route?' · '+route:'');
+    document.getElementById('nll-ac-dd').classList.remove('show');
   }
   function nllAddMin(time,min){
     if(isNaN(min)) return time;
@@ -2006,9 +1997,9 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
     nllPuType=window.nllPuType;
     nllUpdateTransportField();
     /* Reset obou polí (tam i zpět) */
-    ['nll-ac-inp','nll-ac-inp2'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
-    ['nll-ac-dd','nll-ac-dd2'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('show');});
-    ['nll-ac-clear','nll-ac-clear2'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('show');});
+    ['nll-ac-inp'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+    ['nll-ac-dd'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('show');});
+    ['nll-ac-clear'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.remove('show');});
   }
 
   /* ===== VOZIDLA ===== */
@@ -2340,7 +2331,7 @@ window.nllStripePay=function(){
       transport_type:isHourly?null:(window.nllPuType||window.nllDoType||null),
       transport_number:isHourly?null:(function(){
         var out=(document.getElementById('nll-ac-inp')||{}).value;
-        var ret=(document.getElementById('nll-ac-inp2')||{}).value;
+        var ret='';
         out=out?out.split('·')[0].trim():'';
         ret=ret?ret.split('·')[0].trim():'';
         if(out&&ret) return out+' (tam) · '+ret+' (zpět)';
@@ -3342,19 +3333,8 @@ function nllUpdateTransportField(){
   section.style.display='block';
 
   // Zpáteční číslo letu — jen u letiště + "tam a zpět" (opačný směr, datum/čas z návratu)
-  var showReturn = picked.type==='airport' && nllTrip==='rt';
-  if(showReturn){
-    var isRetDeparture = window.nllTransportDirection==='Arrival';
-    var tlbl2=document.getElementById('nll-tlbl2');
-    if(tlbl2) tlbl2.textContent = isRetDeparture ? 'Zpáteční číslo odletu' : 'Zpáteční číslo příletu';
-    var inp2=document.getElementById('nll-ac-inp2');
-    if(inp2) inp2.placeholder=c.ph;
-    block2.style.display='block';
-    row.classList.remove('nll-wrow-single');
-  } else {
-    block2.style.display='none';
-    row.classList.add('nll-wrow-single');
-  }
+  block2 && (block2.style.display='none');
+  row && row.classList.add('nll-wrow-single');
 }
 async function gpFetch(inp,id,q){
   if(!gpReady||!window.google){gpShowDefs(inp,id,q);return;}
