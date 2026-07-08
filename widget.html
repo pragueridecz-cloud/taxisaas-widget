@@ -3322,7 +3322,7 @@ function nllUpdateTransportField(){
   var section=document.getElementById('nll-flight-section');
   var row=document.getElementById('nll-flight-row');
   var block2=document.getElementById('nll-flight-block2');
-  if(!section||!row||!block2) return;
+  if(!section||!row) return;
   var picked=nllPickTransportConfig();
   if(!picked){ section.style.display='none'; return; }
   var c=picked.cfg;
