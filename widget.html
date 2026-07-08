@@ -3206,7 +3206,15 @@ function gpShowDefs(inp,id,q){
     var recent=gpGetRecent(key);
     if(recent.length){
       var rHdr=document.createElement('div');rHdr.className='nll-gp-hdr';rHdr.textContent='Poslední vyhledávání';drop.appendChild(rHdr);
-      recent.forEach(function(item){drop.appendChild(gpMakeItem(inpId,item.n,'',item.t||'recent',item.t,id,''));});
+      recent.forEach(function(item){
+        // Normalizuj ikonový typ na transport typ
+        var t = item.t;
+        if(t==='p'||t==='airport') t='airport';
+        else if(t==='t'||t==='train') t='train';
+        else if(t==='b'||t==='bus') t='bus';
+        else t='';
+        drop.appendChild(gpMakeItem(inpId,item.n,'',item.t||'recent',t,id,''));
+      });
     }
   }
   if(!items.length&&q){drop.classList.remove('open');return;}
