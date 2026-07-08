@@ -3126,39 +3126,28 @@ var GP_DEF={
   ]
 };
 // Mapování na Tabler Icons
-var TABLER_ICONS = {
-  'airport':    'ti-plane',
-  'p':          'ti-plane',
-  'train':      'ti-train',
-  't':          'ti-train',
-  'bus':        'ti-bus',
-  'b':          'ti-bus',
-  'hotel':      'ti-bed',
-  'hospital':   'ti-first-aid-kit',
-  'health':     'ti-first-aid-kit',
-  'museum':     'ti-building-arch',
-  'theater':    'ti-masks-theater',
-  'culture':    'ti-building-arch',
-  'shop':       'ti-shopping-bag',
-  'mall':       'ti-shopping-bag',
-  'restaurant': 'ti-tools-kitchen-2',
-  'food':       'ti-tools-kitchen-2',
-  'ski':        'ti-ski',
-  'golf':       'ti-golf',
-  'sport':      'ti-ball-football',
-  'park':       'ti-trees',
-  'nature':     'ti-trees',
-  'recent':     'ti-clock',
-  'x':          'ti-map-pin',
-  'pin':        'ti-map-pin',
+var TABLER_SVG = {
+  'airport':    '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14.5 6.5a2 2 0 0 0 -4 0v5.5l-4 3v2l4 -1v3.5l-1.5 1v1.5l2.5 -.5l2.5 .5v-1.5l-1.5 -1v-3.5l4 1v-2l-4 -3z"/>',
+  'train':      '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M8 19v2m8-2v2"/>',
+  'bus':        '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 17h18M3 7h18M5 17V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10"/><circle cx="8" cy="17" r="1" fill="currentColor"/><circle cx="16" cy="17" r="1" fill="currentColor"/>',
+  'hotel':      '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v13H3V7z"/><path d="M3 11h18M9 11v9"/><rect x="13" y="15" width="4" height="5"/>',
+  'hospital':   '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12h6M12 9v6"/>',
+  'museum':     '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 21h18M3 10l9-7 9 7M5 21V10M19 21V10M9 21v-4a3 3 0 0 1 6 0v4"/>',
+  'theater':    '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="7" cy="10" r="4"/><circle cx="17" cy="10" r="4"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>',
+  'shop':       '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>',
+  'restaurant': '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M19 3v12h-5c-.023-3.681.184-7.406 5-12zm0 12v6h-1v-3m-10-14v17m-3-17v3a3 3 0 1 0 6 0V3"/>',
+  'ski':        '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="17" cy="4" r="1"/><path d="M3 20l6-6 3 2 3.5-3.5M8 20l5.5-5.5 3 2.5 3.5-3"/>',
+  'golf':       '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 18V7l7 3.5-7 3.5"/><circle cx="10" cy="20" r="2"/>',
+  'sport':      '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="12" cy="12" r="9"/><path d="M12 3c1.333 3 1.333 6 0 9s-1.333 6 0 9M3 12h18"/>',
+  'park':       '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3l4 4-2 .001 3 4h-3l4 4H6l4-4H7l3-4H8z"/><line x1="12" y1="15" x2="12" y2="21"/>',
+  'recent':     '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+  'pin':        '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="12" cy="11" r="3"/><path d="M17.657 16.657L13.414 20.9a2 2 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z"/>',
 };
-function gpSVG(ic){ return ''; } // zachováno pro zpětnou kompatibilitu
+function gpSVG(ic){ return TABLER_SVG[ic]||TABLER_SVG['pin']; }
 function gpIcon(ic){
-  var cls = TABLER_ICONS[ic] || 'ti-map-pin';
-  return '<i class="ti '+cls+'" style="font-size:15px;color:#075aaa;flex-shrink:0;margin-top:1px;width:16px;text-align:center"></i>';
+  var path = TABLER_SVG[ic] || TABLER_SVG['pin'];
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#075aaa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px">'+path+'</svg>';
 }
-
-// Mapování Google Places types na ikony
 function gpTypeToIcon(types){
   if(!types||!types.length) return 'pin';
   var t=types;
@@ -3177,7 +3166,7 @@ function gpTypeToIcon(types){
   if(t.indexOf('park')>=0||t.indexOf('natural_feature')>=0) return 'park';
   return 'pin';
 }
-function gpIcon(ic){return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#075aaa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px">'+gpSVG(ic)+'</svg>';}
+
 function gpPos(inp,id){
   var d=document.getElementById(id);if(!d)return;
   var r=inp.getBoundingClientRect();
