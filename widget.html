@@ -238,7 +238,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
 .nll-wrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
 .nll-wrow-single{grid-template-columns:1fr}
 .nll-wf{display:flex;flex-direction:column;gap:5px}
-.nll-wl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.nll-wl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
 .nll-wi{border:1.5px solid var(--border);border-radius:5px;padding:11px 13px;color:var(--navy);font-size:13px;font-weight:600;outline:none;transition:border-color .2s;background:#fff;width:100%}
 .nll-wi:focus{border-color:var(--navy)}
 .nll-wi::placeholder{color:#bbb;font-weight:400}
@@ -1007,7 +1007,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
 
             <!-- Číslo letu -->
             <div id="nll-flight-section" class="nll-wf" style="display:none;margin-bottom:12px">
-              <div class="nll-wl" id="nll-tlbl">Číslo letu</div>
+              <div class="nll-wl" id="nll-tlbl" style="margin-bottom:6px">Číslo letu</div>
               <div class="nll-ac-wrap">
                 <input class="nll-wi" id="nll-ac-inp" placeholder="např. OK204" autocomplete="off"
                   oninput="nllAcSearch(this.value,'out')" onkeydown="nllAcKey(event,'out')" onfocus="if(!this.value)nllShowAirportFlights('out')">
