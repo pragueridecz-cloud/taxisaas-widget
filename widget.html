@@ -2976,8 +2976,8 @@ window.nllStripePay=function(){
       /* Oblíbené lokace */
       if (cfg.favorite_locations && cfg.favorite_locations.length) {
         GP_DEF.pu = cfg.favorite_locations.map(function(l){
-          var ic = l.icon==='plane'?'p': l.icon==='train'?'t':'b';
-          var t = l.type || (l.icon==='plane'?'airport': l.icon==='train'?'train': l.icon==='bus'?'bus':'');
+          var ic = l.icon==='plane'?'p': l.icon==='train'?'t':          '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 4c-1.48 0 -2.656 .229 -3.6 .6c-1.064 .414 -1.4 .831 -1.4 1.4v3l9 0v-3c0 -.569 -.336 -.986 -1.4 -1.4c-.944 -.371 -2.12 -.6 -3.6 -.6z"/><path d="M7 14l0 2.5a1.5 1.5 0 0 0 3 0l0 -.5h4l0 .5a1.5 1.5 0 0 0 3 0l0 -2.5"/><path d="M7 9l0 5l10 0l0 -5"/><path d="M8 19l-1 1"/><path d="M17 20l-1 -1"/><path d="M9 19l6 0"/>';
+          var t = l.type || (l.icon==='plane'?'airport': l.icon==='train'?'train': l.icon==='bus'?'bus':          '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M18 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 17h-2v-11a1 1 0 0 1 1 -1h14a5 7 0 0 1 5 7v5h-2m-4 0h-8"/><path d="M16 5l1.5 7l4.5 0"/><path d="M2 10l15 0"/><path d="M7 5l0 5"/><path d="M12 5l0 5"/>');
           return {ic: ic, n: l.name, s: l.sub, t: t};
         });
         GP_DEF.do = cfg.favorite_locations.map(function(l){
@@ -3127,12 +3127,12 @@ var GP_DEF={
 };
 // Mapování na Tabler Icons
 var TABLER_SVG = {
-  'p':          '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14.5 6.5a2 2 0 0 0 -4 0v5.5l-4 3v2l4 -1v3.5l-1.5 1v1.5l2.5 -.5l2.5 .5v-1.5l-1.5 -1v-3.5l4 1v-2l-4 -3z"/>',
+  'p':          '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14.5 2.099l7.09 7.09a1.41 1.41 0 0 1 -1.01 2.41l-3.58 .01l-4 4l.5 5l-1.5 1.5l-2.5 -4.5l-3.5 -3.5l-4.5 -2.5l1.5 -1.5l5 .5l4 -4v-3.58a1.41 1.41 0 0 1 2.5 -.92z"/>',
   't':          '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M8 19v2m8-2v2"/>',
-  'b':          '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 17h18M3 7h18M5 17V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10"/><circle cx="8" cy="17" r="1" fill="currentColor"/><circle cx="16" cy="17" r="1" fill="currentColor"/>',
+  'b':          '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M18 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 17h-2v-11a1 1 0 0 1 1 -1h14a5 7 0 0 1 5 7v5h-2m-4 0h-8"/><path d="M16 5l1.5 7l4.5 0"/><path d="M2 10l15 0"/><path d="M7 5l0 5"/><path d="M12 5l0 5"/>',
   'x':          '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="12" cy="11" r="3"/><path d="M17.657 16.657L13.414 20.9a2 2 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z"/>',
-  'airport':    '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14.5 6.5a2 2 0 0 0 -4 0v5.5l-4 3v2l4 -1v3.5l-1.5 1v1.5l2.5 -.5l2.5 .5v-1.5l-1.5 -1v-3.5l4 1v-2l-4 -3z"/>',
-  'train':      '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M8 19v2m8-2v2"/>',
+  'airport':          '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M14.5 2.099l7.09 7.09a1.41 1.41 0 0 1 -1.01 2.41l-3.58 .01l-4 4l.5 5l-1.5 1.5l-2.5 -4.5l-3.5 -3.5l-4.5 -2.5l1.5 -1.5l5 .5l4 -4v-3.58a1.41 1.41 0 0 1 2.5 -.92z"/>',
+  'train':          '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 4c-1.48 0 -2.656 .229 -3.6 .6c-1.064 .414 -1.4 .831 -1.4 1.4v3l9 0v-3c0 -.569 -.336 -.986 -1.4 -1.4c-.944 -.371 -2.12 -.6 -3.6 -.6z"/><path d="M7 14l0 2.5a1.5 1.5 0 0 0 3 0l0 -.5h4l0 .5a1.5 1.5 0 0 0 3 0l0 -2.5"/><path d="M7 9l0 5l10 0l0 -5"/><path d="M8 19l-1 1"/><path d="M17 20l-1 -1"/><path d="M9 19l6 0"/>',
   'bus':        '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 17h18M3 7h18M5 17V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10"/><circle cx="8" cy="17" r="1" fill="currentColor"/><circle cx="16" cy="17" r="1" fill="currentColor"/>',
   'hotel':      '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v13H3V7z"/><path d="M3 11h18M9 11v9"/><rect x="13" y="15" width="4" height="5"/>',
   'hospital':   '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 12h6M12 9v6"/>',
@@ -3144,13 +3144,13 @@ var TABLER_SVG = {
   'golf':       '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 18V7l7 3.5-7 3.5"/><circle cx="10" cy="20" r="2"/>',
   'sport':      '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="12" cy="12" r="9"/><path d="M12 3c1.333 3 1.333 6 0 9s-1.333 6 0 9M3 12h18"/>',
   'park':       '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3l4 4-2 .001 3 4h-3l4 4H6l4-4H7l3-4H8z"/><line x1="12" y1="15" x2="12" y2="21"/>',
-  'recent':     '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+  'recent':          '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 8l0 4l2 2"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"/>',
   'pin':        '<path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="12" cy="11" r="3"/><path d="M17.657 16.657L13.414 20.9a2 2 0 0 1-2.827 0l-4.244-4.243a8 8 0 1 1 11.314 0z"/>',
 };
 function gpSVG(ic){ return TABLER_SVG[ic]||TABLER_SVG['pin']; }
 function gpIcon(ic){
   var path = TABLER_SVG[ic] || TABLER_SVG['pin'];
-  return '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#075aaa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px">'+path+'</svg>';
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#00205B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px">'+path+'</svg>';
 }
 function gpTypeToIcon(types){
   if(!types||!types.length) return 'pin';
