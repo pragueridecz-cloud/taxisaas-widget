@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -3124,22 +3125,37 @@ var GP_DEF={
     {ic:'b',n:'Praha Zlíčín',s:'Autobusové nádraží',t:'bus'}
   ]
 };
-function gpSVG(ic){
-  if(ic==='p'||ic==='airport')return '<path d="M17.8 19.2L16 11l3.5-3.5C21 6 21 4 19.5 2.5c-1.5-1.5-3.5-1.5-5 0L11 6 2.8 4.2c-.5-.1-.9.1-1.1.5l-1 1.7c-.1.4-.1.8.3 1.1l5.8 3.7-2.3 2.3-1.7-.4c-.3-.1-.6 0-.8.2l-.6.6c-.3.3-.3.7 0 1l2.2 2.2 2.2 2.2c.3.3.7.3 1 0l.6-.6c.2-.2.3-.5.2-.8l-.4-1.7 2.3-2.3 3.7 5.8c.3.4.7.4 1.1.3l1.7-1c.4-.2.6-.6.5-1.1z"/>';
-  if(ic==='t'||ic==='train')return '<rect x="4" y="3" width="16" height="16" rx="2"/><path d="M4 11h16"/><path d="M8 19v2m8-2v2"/>';
-  if(ic==='b'||ic==='bus')return '<path d="M3 17h18M3 7h18M5 17V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v10"/><circle cx="8" cy="17" r="1" fill="currentColor"/><circle cx="16" cy="17" r="1" fill="currentColor"/>';
-  if(ic==='hotel')return '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/><rect x="12" y="13" width="4" height="4"/>';
-  if(ic==='golf')return '<circle cx="12" cy="19" r="2"/><path d="M12 17V5l7 4"/>';
-  if(ic==='ski')return '<path d="M3 20l5-5 4 4 9-9"/><circle cx="17" cy="5" r="2"/>';
-  if(ic==='museum'||ic==='theater'||ic==='culture')return '<path d="M2 22V8l10-6 10 6v14H2z"/><path d="M2 8h20M12 2v6"/>';
-  if(ic==='hospital'||ic==='health')return '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/>';
-  if(ic==='shop'||ic==='mall')return '<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>';
-  if(ic==='restaurant'||ic==='food')return '<path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/>';
-  if(ic==='sport')return '<circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/>';
-  if(ic==='park'||ic==='nature')return '<path d="M12 22V12m0 0l-4-4m4 4l4-4"/><path d="M7 6a5 5 0 0 1 10 0c0 4-5 6-5 6S7 10 7 6z"/>';
-  if(ic==='recent')return '<path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/>';
-  // default pin
-  return '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>';
+// Mapování na Tabler Icons
+var TABLER_ICONS = {
+  'airport':    'ti-plane',
+  'p':          'ti-plane',
+  'train':      'ti-train',
+  't':          'ti-train',
+  'bus':        'ti-bus',
+  'b':          'ti-bus',
+  'hotel':      'ti-bed',
+  'hospital':   'ti-first-aid-kit',
+  'health':     'ti-first-aid-kit',
+  'museum':     'ti-building-arch',
+  'theater':    'ti-masks-theater',
+  'culture':    'ti-building-arch',
+  'shop':       'ti-shopping-bag',
+  'mall':       'ti-shopping-bag',
+  'restaurant': 'ti-tools-kitchen-2',
+  'food':       'ti-tools-kitchen-2',
+  'ski':        'ti-ski',
+  'golf':       'ti-golf',
+  'sport':      'ti-ball-football',
+  'park':       'ti-trees',
+  'nature':     'ti-trees',
+  'recent':     'ti-clock',
+  'x':          'ti-map-pin',
+  'pin':        'ti-map-pin',
+};
+function gpSVG(ic){ return ''; } // zachováno pro zpětnou kompatibilitu
+function gpIcon(ic){
+  var cls = TABLER_ICONS[ic] || 'ti-map-pin';
+  return '<i class="ti '+cls+'" style="font-size:15px;color:#075aaa;flex-shrink:0;margin-top:1px;width:16px;text-align:center"></i>';
 }
 
 // Mapování Google Places types na ikony
@@ -3149,8 +3165,8 @@ function gpTypeToIcon(types){
   if(t.indexOf('airport')>=0) return 'airport';
   if(t.indexOf('train_station')>=0||t.indexOf('subway_station')>=0||t.indexOf('transit_station')>=0) return 'train';
   if(t.indexOf('bus_station')>=0) return 'bus';
-  if(t.indexOf('lodging')>=0||t.indexOf('hotel')>=0) return 'hotel';
-  if(t.indexOf('hospital')>=0||t.indexOf('health')>=0||t.indexOf('pharmacy')>=0) return 'hospital';
+  if(t.indexOf('lodging')>=0) return 'hotel';
+  if(t.indexOf('hospital')>=0||t.indexOf('pharmacy')>=0) return 'hospital';
   if(t.indexOf('museum')>=0) return 'museum';
   if(t.indexOf('theater')>=0||t.indexOf('night_club')>=0) return 'theater';
   if(t.indexOf('shopping_mall')>=0||t.indexOf('supermarket')>=0||t.indexOf('store')>=0) return 'shop';
