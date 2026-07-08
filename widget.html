@@ -3155,13 +3155,14 @@ function gpMakeItem(inpId,name,sub,ic,type,dropId,q,placeId){
   div.onmousedown=function(){gpPick(inpId,name,type,dropId,placeId||null);};
   return div;
 }
-function gpSaveRecent(name,rkey){
+function gpSaveRecent(name,rkey,type){
   try{var k='nll_recent_'+rkey,items=JSON.parse(localStorage.getItem(k)||'[]');
-    items=items.filter(function(i){return i!==name;});items.unshift(name);
+    items=items.filter(function(i){return (i.n||i)!==name;});
+    items.unshift({n:name,t:type||''});
     localStorage.setItem(k,JSON.stringify(items.slice(0,5)));}catch(e){}
 }
 function gpGetRecent(rkey){
-  try{return JSON.parse(localStorage.getItem('nll_recent_'+rkey)||'[]');}catch(e){return [];}
+  try{return JSON.parse(localStorage.getItem('nll_recent_'+rkey)||'[]').map(function(i){return typeof i==='string'?{n:i,t:''}:i;});}catch(e){return [];}
 }
 function gpShowDefs(inp,id,q){
   var drop=document.getElementById(id);if(!drop)return;
@@ -3173,7 +3174,7 @@ function gpShowDefs(inp,id,q){
     var recent=gpGetRecent(key);
     if(recent.length){
       var rHdr=document.createElement('div');rHdr.className='nll-gp-hdr';rHdr.textContent='Poslední vyhledávání';drop.appendChild(rHdr);
-      recent.forEach(function(name){drop.appendChild(gpMakeItem(inpId,name,'','p','',id,''));});
+      recent.forEach(function(item){drop.appendChild(gpMakeItem(inpId,item.n,'',item.t==='airport'?'p':'p',item.t,id,''));});
     }
   }
   if(!items.length&&q){drop.classList.remove('open');return;}
@@ -3235,7 +3236,7 @@ window.gpInput=function(inp,id){
   gpTimer[id]=setTimeout(function(){gpFetch(inp,id,q);},280);
 };
 window.gpPick=function(inpId,val,type,dropId,placeId){
-  gpSaveRecent(val, dropId==='gp-pu'?'pu':'do');
+  gpSaveRecent(val, dropId==='gp-pu'?'pu':'do', type);
   var el=document.getElementById(inpId);if(el)el.value=val;
   gpHide(dropId);
   if(type&&(inpId==='nll-pu'||inpId==='nll-do')){
