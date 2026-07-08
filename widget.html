@@ -1592,7 +1592,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
       var p = new URLSearchParams(window.location.search).get('proxy');
       if (p) return decodeURIComponent(p);
     } catch(e){}
-    return 'https://naletistelevne.cz/api/flight-status';
+    return 'https://admin.naletistelevne.cz/api/flight-status';
   })();
   // Rozpis letů (AeroDataBox) běží vedle live-trackingu (FR24) na stejné doméně
   var NLL_SCHEDULE_PROXY = NLL_FR24_PROXY.replace(/\/flight-status(\?.*)?$/, '/flight-schedule');
