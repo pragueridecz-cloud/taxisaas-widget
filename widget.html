@@ -1006,18 +1006,13 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
             <div class="nll-cp-stitle">Kontaktní údaje</div>
 
             <!-- Číslo letu -->
-            <div id="nll-flight-section" class="nll-flight-card" style="display:none;margin-bottom:14px">
-              <div class="nll-flight-card-title" id="nll-flight-title">Číslo letu</div>
-              <div class="nll-wrow nll-wrow-single" id="nll-flight-row" style="margin-bottom:0">
-                <div class="nll-wf" id="nll-flight-block">
-                  <div class="nll-wl" id="nll-tlbl">Číslo letu</div>
-                  <div class="nll-ac-wrap">
-                    <input class="nll-ac-inp" id="nll-ac-inp" placeholder="Zadejte číslo letu, např. OK204..." autocomplete="off"
-                      oninput="nllAcSearch(this.value,'out')" onkeydown="nllAcKey(event,'out')" onfocus="if(!this.value)nllShowAirportFlights('out')">
-                    <button class="nll-ac-clear" id="nll-ac-clear" onclick="nllAcClear('out')">✕</button>
-                    <div class="nll-ac-dd" id="nll-ac-dd"></div>
-                  </div>
-                </div>
+            <div id="nll-flight-section" style="display:none;margin-bottom:12px">
+              <div class="nll-wl" id="nll-tlbl">Číslo letu</div>
+              <div class="nll-ac-wrap" style="max-width:260px">
+                <input class="nll-ac-inp" id="nll-ac-inp" placeholder="např. OK204" autocomplete="off"
+                  oninput="nllAcSearch(this.value,'out')" onkeydown="nllAcKey(event,'out')" onfocus="if(!this.value)nllShowAirportFlights('out')">
+                <button class="nll-ac-clear" id="nll-ac-clear" onclick="nllAcClear('out')">✕</button>
+                <div class="nll-ac-dd" id="nll-ac-dd"></div>
               </div>
             </div>
 
@@ -3328,21 +3323,14 @@ function nllPickTransportConfig(){
 }
 function nllUpdateTransportField(){
   var section=document.getElementById('nll-flight-section');
-  var row=document.getElementById('nll-flight-row');
-  var block2=document.getElementById('nll-flight-block2');
-  if(!section||!row) return;
+  if(!section) return;
   var picked=nllPickTransportConfig();
   if(!picked){ section.style.display='none'; return; }
-  var c=picked.cfg;
   var tlbl=document.getElementById('nll-tlbl');
-  if(tlbl) tlbl.textContent=c.lbl;
+  if(tlbl) tlbl.textContent=picked.cfg.lbl;
   var inp=document.getElementById('nll-ac-inp');
-  if(inp) inp.placeholder=c.ph;
+  if(inp) inp.placeholder='např. OK204';
   section.style.display='block';
-
-  // Zpáteční číslo letu — jen u letiště + "tam a zpět" (opačný směr, datum/čas z návratu)
-  block2 && (block2.style.display='none');
-  row && row.classList.add('nll-wrow-single');
 }
 async function gpFetch(inp,id,q){
   if(!gpReady||!window.google){gpShowDefs(inp,id,q);return;}
