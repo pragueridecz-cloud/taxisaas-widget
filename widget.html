@@ -3207,8 +3207,9 @@ function gpShowDefs(inp,id,q){
         if(t==='p'||t==='airport') t='airport';
         else if(t==='t'||t==='train') t='train';
         else if(t==='b'||t==='bus') t='bus';
-        else t='';
-        drop.appendChild(gpMakeItem(inpId,item.n,'',item.t||'recent',t,id,''));
+        else if(!t) t='recent';
+        // Použij normalizovaný typ i pro ikonu
+        drop.appendChild(gpMakeItem(inpId,item.n,'',t,t,id,''));
       });
     }
   }
