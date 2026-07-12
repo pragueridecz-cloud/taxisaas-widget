@@ -3716,6 +3716,12 @@ window.addEventListener('scroll',function(){
     if(basePrice===null&&params.puLatLng&&params.doLatLng){
       var puZ=findZoneByPoint(params.puLatLng.lat, params.puLatLng.lng);
       var doZ=findZoneByPoint(params.doLatLng.lat, params.doLatLng.lng);
+      // Pokud je typ adresy 'airport', forcuj Letiště Praha zónu
+      var airportZone=window.NLL_CFG.pricing_zones.find(function(z){return z.name==='Letiště Praha';});
+      if(airportZone){
+        if(window.nllPuType==='airport'||params.pickup.toLowerCase().indexOf('letiš')>=0) puZ=airportZone;
+        if(window.nllDoType==='airport'||params.dropoff.toLowerCase().indexOf('letiš')>=0) doZ=airportZone;
+      }
       console.log('[ZONE] pu zone:', puZ?puZ.name:'none', 'do zone:', doZ?doZ.name:'none');
       var isAirport=(puZ&&puZ.name==='Letiště Praha')||(doZ&&doZ.name==='Letiště Praha');
       if(puZ&&doZ&&isAirport){
