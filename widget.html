@@ -2352,6 +2352,16 @@ window.nllStripePay=function(){
           method:'POST',headers:{'Content-Type':'application/json'},
           body:JSON.stringify({title:'🆕 Nová objednávka',body:(d.pickup||'')+' → '+(d.dropoff||'')+' · '+ref,url:'/orders',tag:'new-order'})
         }).catch(function(){});
+        // Email zákazníkovi (čeká na schválení) + interní notifikace adminovi
+        var proxyBase=(window.NLL_FR24_PROXY||'').replace('/api/flight-status','') || 'https://admin.naletistelevne.cz';
+        fetch(proxyBase+'/api/send-email',{
+          method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({type:'pending',order:d})
+        }).catch(function(){});
+        fetch(proxyBase+'/api/send-email',{
+          method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({type:'internal',order:d})
+        }).catch(function(){});
       } else r.text().then(function(t){console.error('SB:',r.status,t);});
     }).catch(function(e){console.error('SB:',e);});
     document.getElementById('nll-ref').textContent=ref;
