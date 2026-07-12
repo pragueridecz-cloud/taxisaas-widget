@@ -3719,8 +3719,11 @@ window.addEventListener('scroll',function(){
       // Pokud je typ adresy 'airport', forcuj Letiště Praha zónu
       var airportZone=window.NLL_CFG.pricing_zones.find(function(z){return z.name==='Letiště Praha';});
       if(airportZone){
-        if(window.nllPuType==='airport'||params.pickup.toLowerCase().indexOf('letiš')>=0) puZ=airportZone;
-        if(window.nllDoType==='airport'||params.dropoff.toLowerCase().indexOf('letiš')>=0) doZ=airportZone;
+        var puText=(params.pickup||'').toLowerCase();
+        var doText=(params.dropoff||'').toLowerCase();
+        var isAirportText=function(t){return t.indexOf('letiš')>=0||t.indexOf('letist')>=0||t.indexOf('airport')>=0||t.indexOf('vaclav')>=0||t.indexOf('václav')>=0||t.indexOf('prg')>=0||t.indexOf('ruzyně')>=0||t.indexOf('ruzyne')>=0;};
+        if(window.nllPuType==='airport'||isAirportText(puText)) puZ=airportZone;
+        if(window.nllDoType==='airport'||isAirportText(doText)) doZ=airportZone;
       }
       console.log('[ZONE] pu zone:', puZ?puZ.name:'none', 'do zone:', doZ?doZ.name:'none');
       var isAirport=(puZ&&puZ.name==='Letiště Praha')||(doZ&&doZ.name==='Letiště Praha');
