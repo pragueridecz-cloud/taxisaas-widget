@@ -2142,7 +2142,7 @@ input[type="date"].nll-inp::-webkit-datetime-edit-fields-wrapper{
           skis:  window.nllBulky ? (window.nllBulky.ski  || 0) : 0,
           isHoliday: false,
         },
-        voucherDisc: window.vData ? window.vData.disc : 0,
+        voucherDisc: vData ? vData.disc : 0,
         onlineDiscount: document.getElementById('nll-pay-o') && document.getElementById('nll-pay-o').classList.contains('sel') ? 0.10 : 0,
       }).then(function(result) {
         if (!result) { nllUpdPriceFallback(); return; }
@@ -2347,6 +2347,8 @@ window.nllStripePay=function(){
     nllSaveOrder(d).then(function(r){
       if(r.ok){
         console.log('✓ OK:',ref);
+        // Navýšení použití voucheru, pokud byl uplatněn (aby max_uses fungovalo)
+        if(vData&&vData.code) nllIncrementVoucherUse(vData.code);
         // Push notifikace adminům – nová objednávka
         fetch('https://taxisaas-admin.vercel.app/api/send-push',{
           method:'POST',headers:{'Content-Type':'application/json'},
@@ -3426,9 +3428,10 @@ window.vApply=async function(){
     if(!data||!data.length){inp.className='nll-vinp err';msg.textContent='Kód není platný nebo vypršel.';msg.className='nll-vmsg err';vData=null;}
     else{
       var v=data[0];
+      var base=nllTrip==='rt'?nllVeh.p*2:nllVeh.p;
       if(v.max_uses>0&&v.used_count>=v.max_uses){inp.className='nll-vinp err';msg.textContent='Kód byl již vyčerpan.';msg.className='nll-vmsg err';vData=null;}
+      else if(v.min_order>0&&base<v.min_order){inp.className='nll-vinp err';msg.textContent='Minimální hodnota objednávky pro tento kód je '+nllFormatPrice(v.min_order)+'.';msg.className='nll-vmsg err';vData=null;}
       else{
-        var base=nllTrip==='rt'?nllVeh.p*2:nllVeh.p;
         var disc=v.type==='percent'?Math.round(base*v.value/100):v.value;
         disc=Math.min(disc,base);
         vData={code:v.code,type:v.type,value:v.value,disc:disc};
@@ -3440,6 +3443,21 @@ window.vApply=async function(){
   }catch(e){msg.textContent='Chyba při ověřování.';msg.className='nll-vmsg err';}
   vUpdPrice();btn.disabled=false;
 };
+/* Navýš used_count o 1 po dokončené objednávce s voucherem (best-effort, ne atomicky) */
+function nllIncrementVoucherUse(code){
+  var url=NLL_SB_URL+'/rest/v1/vouchers?code=eq.'+encodeURIComponent(code)+'&select=used_count';
+  fetch(url,{headers:{'apikey':NLL_SB_KEY,'Authorization':'Bearer '+NLL_SB_KEY}})
+    .then(function(r){return r.json();})
+    .then(function(rows){
+      if(!rows||!rows.length) return;
+      var newCount=(rows[0].used_count||0)+1;
+      return fetch(NLL_SB_URL+'/rest/v1/vouchers?code=eq.'+encodeURIComponent(code),{
+        method:'PATCH',
+        headers:{'apikey':NLL_SB_KEY,'Authorization':'Bearer '+NLL_SB_KEY,'Content-Type':'application/json','Prefer':'return=minimal'},
+        body:JSON.stringify({used_count:newCount})
+      });
+    }).catch(function(e){console.error('Voucher used_count update error:',e);});
+}
 function vUpdPrice(){
   var base=nllTrip==='rt'?nllVeh.p*2:nllVeh.p;
   var disc=document.getElementById('nll-vdisc');
