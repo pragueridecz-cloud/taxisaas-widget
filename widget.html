@@ -3718,6 +3718,19 @@ window.addEventListener('scroll',function(){
     return Math.round(total);
   }
 
+  /* Slevy nastavené v Nastavení → Ceník → Slevy — platí automaticky pro
+     každou objednávku, pokud jsou zapnuté (na rozdíl od voucherů se
+     nezadávají kódem). */
+  function calcConfiguredDiscounts(priceWithSurcharges,basePrice){
+    var list=window.NLL_CFG.discounts||[]; var total=0;
+    list.forEach(function(d){
+      if(!d.enabled) return;
+      var applyOn=d.applies_to==='base'?basePrice:priceWithSurcharges;
+      total+=d.type==='percent'?Math.round(applyOn*d.value/100):(d.value||0);
+    });
+    return Math.round(total);
+  }
+
   window.nllCalculatePrice = async function(params){
     console.log('[CALC] params:', JSON.stringify(params));
     console.log('[CALC] window.NLL_CFG.vehicles:', window.NLL_CFG.vehicles.length, window.NLL_CFG.vehicles.map(function(v){return v.id;}));
@@ -3786,10 +3799,13 @@ window.addEventListener('scroll',function(){
 
     // Voucher
     var discountTotal=params.voucherDisc||0;
+    // Automatické slevy z administrace (Ceník → Slevy)
+    discountTotal+=calcConfiguredDiscounts(priceWithSurcharges,basePrice);
     // 10% sleva za online platbu predem
     if(params.onlineDiscount&&params.onlineDiscount>0){
       discountTotal+=Math.round(priceWithSurcharges*params.onlineDiscount);
     }
+    discountTotal=Math.min(discountTotal, priceWithSurcharges);
     var finalPrice=Math.max(priceWithSurcharges-discountTotal, vehicle.min_price||window.NLL_CFG.min_price||0);
 
     return {base:basePrice,surcharges:surchargeTotal,discounts:discountTotal,total:Math.round(finalPrice),method:pricingMethod,vehicle:vehicle};
