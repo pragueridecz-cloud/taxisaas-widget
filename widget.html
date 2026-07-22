@@ -3682,28 +3682,22 @@ window.addEventListener('scroll',function(){
       var veh2=window.NLL_CFG.vehicles.find(function(v){return v.id===vKey;});
       if(veh2&&slugMap[veh2.name]) vKey=slugMap[veh2.name];
     }
-    // KUMULATIVNÍ TARIF - každé pásmo zvlášť
+    // FLAT RATE - najdi pasmo dle celkove vzdalenosti, aplikuj sazbu na vsechny km
     var sorted=rows.slice().sort(function(a,b){return a.km_from-b.km_from;});
-    var total=0;
-    var remaining=km;
+    var rate=0;
     for(var i=0;i<sorted.length;i++){
-      if(remaining<=0) break;
-      var row=sorted[i];
-      var rate=(row.prices&&row.prices[vKey])?row.prices[vKey]:0;
-      if(rate===0) continue;
-      var bandSize=row.km_to-row.km_from;
-      var inBand=Math.min(remaining,bandSize);
-      total+=inBand*rate;
-      remaining-=inBand;
+      if(km<=sorted[i].km_to){
+        rate=(sorted[i].prices&&sorted[i].prices[vKey])?sorted[i].prices[vKey]:0;
+        break;
+      }
     }
-    if(remaining>0){
+    if(rate===0){
       var last=sorted[sorted.length-1];
-      var lastRate=(last.prices&&last.prices[vKey])?last.prices[vKey]:0;
-      if(lastRate>0) total+=remaining*lastRate;
+      rate=(last.prices&&last.prices[vKey])?last.prices[vKey]:0;
     }
-    if(total===0) return null;
+    if(rate===0) return null;
     var minPrice=(vehicle&&vehicle.min_price)||800;
-    return Math.max(Math.round(total/50)*50, minPrice);
+    return Math.max(Math.round(km*rate/50)*50, minPrice);
   }
 
   function applySurcharge(s,base){
